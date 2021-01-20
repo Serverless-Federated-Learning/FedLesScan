@@ -2,6 +2,12 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.pytest.ini_options]
+addopts = "--cov=fedless --cov-report=xml --cov-branch"
+testpaths = [
+    "test"
+]
+
 [tool.black]
 line-length = 88
 target-version = ['py38']
@@ -19,6 +25,7 @@ exclude = '''
     | buck-out
     | build
     | dist
+    | node_modules
   )
 )
 '''

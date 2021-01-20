@@ -13,5 +13,5 @@ setup(
     install_requires=requirements,
     tests_require=test_requirements,
     extras_require={"dev": test_requirements},
-    python_requires=">=3.8",
+    python_requires=">=3.7",
 )
