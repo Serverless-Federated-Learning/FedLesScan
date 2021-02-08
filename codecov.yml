@@ -3,4 +3,7 @@ coverage:
     project:
       default:
         target: auto
-        threshold: 5%
+        threshold: 5% # Allowed overall percentage drop
+    patch:
+      default:
+        target: 90% # Coverage of lines added

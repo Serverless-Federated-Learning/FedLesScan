@@ -3,9 +3,12 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-addopts = "--cov=fedless --cov-report=xml --cov-branch"
+addopts = '--cov=fedless --cov-report=xml --cov-branch -m "not integ"'
 testpaths = [
     "test"
+]
+markers = [
+    "integ: marks tests as integration tests (deselect with '-m \"not integ\"')",
 ]
 
 [tool.black]
