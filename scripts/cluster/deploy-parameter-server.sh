@@ -2,9 +2,9 @@
 
 # Deploys the parameter server (mongodb database) on the local cluster or upgrades it if it already exists
 
-DB_USERNAME="${PARAMETER_SERVER_ROOT_USERNAME?"Need to set PARAMETER_SERVER_ROOT_USERNAME"}"
-DB_PASSWORD="${PARAMETER_SERVER_ROOT_PASSWORD?"Need to set PARAMETER_SERVER_ROOT_PASSWORD"}"
-PORT="${PARAMETER_SERVER_PORT?"Need to set PARAMETER_SERVER_PORT"}"
+DB_USERNAME="${FEDLESS_MONGODB_USERNAME?"Need to set FEDLESS_MONGODB_USERNAME"}"
+DB_PASSWORD="${FEDLESS_MONGODB_PASSWORD?"Need to set FEDLESS_MONGODB_PASSWORD"}"
+PORT="${FEDLESS_MONGODB_PORT?"Need to set FEDLESS_MONGODB_PORT"}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ROOT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
