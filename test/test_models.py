@@ -1,172 +1,77 @@
-from unittest.mock import patch, MagicMock
-
-import pydantic
 import pytest
-import tensorflow as tf
+from pydantic import ValidationError, BaseModel, validator
 
-from .fixtures import simple_model
-from fedless.models import (
-    ModelLoaderBuilder,
-    ModelLoaderConfig,
-    PayloadModelLoader,
-    PayloadModelLoaderConfig,
-    ModelLoadError,
-)
-from fedless.serialization import (
-    ModelSerializerConfig,
-    ModelSerializerBuilder,
-    ModelSerializer,
-    SerializationError,
-)
+from fedless.models import params_validate_types_match
 
 
-class SerializerStub(ModelSerializer):
-    def __init__(self):
-        self.model = None
+class Model(BaseModel):
+    """Example Parameters"""
 
-    def serialize(self, model):
-        self.model = model
-        return b""
-
-    def deserialize(self, blob: bytes):
-        return self.model
+    type: str = "aws"
+    attribute: bool
 
 
-def test_model_loader_builder_raises_not_implemented_error():
-    config = MagicMock(ModelLoaderConfig)
-    config.type = "does-not-exist"
+class MetaModel(BaseModel):
+    """Meta config that wraps parameters"""
 
-    with pytest.raises(NotImplementedError):
-        ModelLoaderBuilder.from_config(config)
+    type: str
+    params: Model
 
-
-@patch("fedless.models.PayloadModelLoader")
-def test_model_loader_builder_returns_correct_object(payload_model_loader_mock):
-    class LoaderStub:
-        pass
-
-    config_mock = ModelLoaderConfig(
-        type="payload", params=PayloadModelLoaderConfig(payload="abc123")
+    _params_type_matches_type = validator("params", allow_reuse=True)(
+        params_validate_types_match
     )
 
-    payload_model_loader_mock.from_config.return_value = loader_stub = LoaderStub()
 
-    model_loader = ModelLoaderBuilder.from_config(config_mock)
-    assert model_loader == loader_stub
-    payload_model_loader_mock.from_config.assert_called_with(config_mock.params)
-
-
-@patch("fedless.validation.params_validate_types_match")
-def test_model_loader_config_types_match(params_validate_types_match):
-    payload_config = MagicMock(PayloadModelLoaderConfig)
-    with pytest.raises(pydantic.ValidationError):
-        ModelLoaderConfig(type="other", params=payload_config)
-    assert params_validate_types_match.called_at_least_once
+def test_params_match_type():
+    model = Model(attribute=False)
+    values = {"type": "aws"}
+    returned_model = params_validate_types_match(model, values)
+    assert returned_model == model
 
 
-def test_model_loader_config_only_accepts_valid_configs():
-    class FakeConfig(pydantic.BaseModel):
-        type: str = "does-not-exist"
-        attr: int
-
-    with pytest.raises(pydantic.ValidationError):
-        # noinspection PyTypeChecker
-        ModelLoaderConfig(type="does-not-exist", params=FakeConfig(attr=2))
+def test_params_match_type_fails_without_type():
+    model = Model(attribute=False)
+    values = {}
+    with pytest.raises(ValueError):
+        params_validate_types_match(model, values)
 
 
-def test_payload_model_loader_config_type_fixed():
-    with pytest.raises(pydantic.ValidationError):
-        PayloadModelLoaderConfig(type="something-else", payload="")
+def test_params_match_type_fails_without_type_in_model():
+    class ModelWithoutType(BaseModel):
+        attribute: bool
+
+    model = ModelWithoutType(attribute=False)
+    values = {"type": "aws"}
+    with pytest.raises(ValueError):
+        params_validate_types_match(model, values)
 
 
-def test_payload_model_loader_config_from_dict():
-    config_dict = {
-        "payload": "abc",
-    }
-    config = PayloadModelLoaderConfig.parse_obj(config_dict)
-    assert config is not None
-    assert config.payload == "abc"
+def test_params_match_type_fails_for_different_types():
+    model = Model(attribute=False)
+    values = {"type": "local"}
+    with pytest.raises(TypeError):
+        params_validate_types_match(model, values)
 
 
-def test_payload_model_loader_from_config_correct():
-    with patch.object(ModelSerializerBuilder, "from_config") as from_config_mock:
-        from_config_mock.return_value = serializer_stub = SerializerStub()
+def test_pydantic_always_wraps_error_in_validator():
+    with pytest.raises(ValidationError):
+        MetaModel(type="not-aws", params=Model(attribute=False))
 
-        config = PayloadModelLoaderConfig(
-            payload="abc", serializer=ModelSerializerConfig(type="h5")
+    with pytest.raises(ValidationError):
+        MetaModel.parse_obj({"params": {"attribute": True}})
+
+    with pytest.raises(ValidationError):
+        MetaModel.parse_obj({"type": "not-aws", "params": {"attribute": True}})
+
+    with pytest.raises(ValidationError):
+        MetaModel.parse_obj(
+            {"type": "aws", "params": {"type": "not-aws", "attribute": True}}
         )
-        loader = PayloadModelLoader.from_config(config)
-    assert loader is not None
-    assert loader.payload == "abc"
-    assert loader.serializer == serializer_stub
 
 
-def test_payload_model_loader_fails_on_invalid_serializer():
-    with pytest.raises(NotImplementedError):
-        with patch.object(ModelSerializerBuilder, "from_config") as from_config_mock:
-            from_config_mock.side_effect = NotImplementedError()
-
-            PayloadModelLoader.from_config(
-                PayloadModelLoaderConfig(
-                    payload="abc", serializer=ModelSerializerConfig(type="h5")
-                )
-            )
-
-
-@patch("fedless.models.Base64StringConverter")
-@patch("fedless.models.ModelSerializerBuilder")
-def test_payload_model_loader_works_correctly(
-    serializer_builder_mock, string_converter_mock, simple_model
-):
-    serializer_stub = MagicMock(SerializerStub())
-    serializer_stub.deserialize.return_value = simple_model
-    serializer_builder_mock.from_config.return_value = serializer_stub
-    string_converter_mock.from_str.return_value = b"0123abc"
-
-    loader = PayloadModelLoader.from_config(
-        PayloadModelLoaderConfig(
-            payload="abc", serializer=ModelSerializerConfig(type="h5")
-        )
+def test_validator_accepts_objects():
+    model = MetaModel(type="aws", params=Model(type="aws", attribute=False))
+    model_from_dict = MetaModel.parse_obj(
+        {"type": "aws", "params": {"attribute": False}}
     )
-
-    model: tf.keras.Model = loader.load()
-
-    string_converter_mock.from_str.assert_called_with("abc")
-    serializer_stub.deserialize.assert_called_with(b"0123abc")
-    assert model == simple_model
-
-
-@patch("fedless.models.Base64StringConverter")
-@patch("fedless.models.ModelSerializerBuilder")
-def test_payload_model_loader_throws_model_error_when_serializer_fails(
-    serializer_builder_mock, string_converter_mock
-):
-    with pytest.raises(ModelLoadError):
-        string_converter_mock.from_str.return_value = b"0123abc"
-        serializer_stub = MagicMock(SerializerStub())
-        serializer_stub.deserialize.side_effect = SerializationError()
-        serializer_builder_mock.from_config.return_value = serializer_stub
-
-        loader = PayloadModelLoader.from_config(
-            PayloadModelLoaderConfig(
-                payload="abc", serializer=ModelSerializerConfig(type="h5")
-            )
-        )
-
-        tf.keras.Model = loader.load()
-
-
-@patch("fedless.models.Base64StringConverter")
-def test_payload_model_loader_throws_model_error_for_invalid_payload(
-    string_converter_mock,
-):
-    with pytest.raises(ModelLoadError):
-        string_converter_mock.from_str.side_effect = ValueError()
-
-        loader = PayloadModelLoader.from_config(
-            PayloadModelLoaderConfig(
-                payload="abc", serializer=ModelSerializerConfig(type="h5")
-            )
-        )
-
-        tf.keras.Model = loader.load()
+    assert model.json() == model_from_dict.json()

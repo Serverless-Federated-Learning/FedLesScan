@@ -14,4 +14,8 @@ setup(
     tests_require=test_requirements,
     extras_require={"dev": test_requirements},
     python_requires=">=3.7",
+    entry_points="""
+        [console_scripts]
+        fedkeeper=fedless.benchmark.fedkeeper:cli
+    """,
 )

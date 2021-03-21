@@ -3,21 +3,21 @@
 set -e
 
 wsk -i action update \
-  client \
+  invoker \
   main.py \
   --docker andreasgrafberger/fedless-openwhisk \
-  --memory 2048 \
+  --memory 256 \
   --timeout 60000 \
   --web raw \
-  --web-secure false \
-  --concurrency 1
+  --web-secure false
+  #--concurrency 1
 
 # Print info if deployed successfully
-wsk -i action get client
+wsk -i action get invoker
 
 # Print url to invoke function
 API_HOST=$(wsk -i  property get --apihost -o raw)
 NAMESPACE=$(wsk -i  property get --namespace -o raw)
-ENDPOINT="https://$API_HOST/api/v1/web/$NAMESPACE/default/client.json"
+ENDPOINT="https://$API_HOST/api/v1/web/$NAMESPACE/default/invoker.json"
 echo "To invoke function, run:"
 echo "curl -X POST -k $ENDPOINT"

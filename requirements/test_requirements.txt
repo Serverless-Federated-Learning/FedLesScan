@@ -3,3 +3,4 @@ pytest-cov==2.11.1
 black==20.8b1
 requests-mock==1.8.0
 mongomock~=3.22.1
+httpretty~=1.0.5

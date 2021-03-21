@@ -1,14 +1,14 @@
 from pydantic import ValidationError
 
-from fedless.client import (
-    default_handler,
-    ClientError,
+from fedless.invocation import (
+    InvocationError,
+    function_invoker_handler,
 )
-from fedless.models import ClientInvocationParams
 from fedless.providers import lambda_proxy_handler
+from fedless.models import InvokerParams
 
 
-@lambda_proxy_handler(caught_exceptions=(ValidationError, ClientError))
+@lambda_proxy_handler(caught_exceptions=(ValidationError, InvocationError))
 def handler(event, context):
     """
     Train client on given data and model and return :class:`fedless.client.ClientResult`.
@@ -16,11 +16,11 @@ def handler(event, context):
     for return object conversion and error handling
     :return Response dictionary compatible with API gateway's lambda-proxy integration
     """
-    config = ClientInvocationParams.parse_obj(event["body"])
+    config = InvokerParams.parse_obj(event["body"])
 
-    return default_handler(
-        data_config=config.data,
-        model_config=config.model,
-        hyperparams=config.hyperparams,
-        test_data_config=config.test_data,
+    return function_invoker_handler(
+        session_id=config.session_id,
+        round_id=config.round_id,
+        client_id=config.client_id,
+        database=config.database,
     )

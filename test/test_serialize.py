@@ -1,64 +1,42 @@
 import base64
-import json
 import random
 from itertools import zip_longest
-from json import JSONDecodeError
-from typing import List, Tuple
-from unittest.mock import patch
+from typing import Tuple, Dict
+from unittest.mock import patch, MagicMock
 
 import h5py
-import numpy as np
 import pydantic
 from _pytest.monkeypatch import MonkeyPatch
 from pydantic import ValidationError
 
+from fedless.models import (
+    WeightsSerializerConfig,
+    H5FullModelSerializerConfig,
+    SerializedParameters,
+    NpzWeightsSerializerConfig,
+    ModelLoaderConfig,
+    PayloadModelLoaderConfig,
+    ModelSerializerConfig,
+)
 from fedless.serialization import (
     H5FullModelSerializer,
+    WeightsSerializerBuilder,
+    deserialize_parameters,
     ModelSerializer,
-    SerializationError,
-    Base64StringConverter,
-    ModelSerializerConfig,
+    ModelLoaderBuilder,
     ModelSerializerBuilder,
-    NpzWeightsSerializer,
+    PayloadModelLoader,
+    ModelLoadError,
+    SerializationError,
+    SimpleModelLoader,
 )
-from .common import get_error_function
+from .common import (
+    get_error_function,
+    are_weights_equal,
+    is_optimizer_state_preserved,
+    is_model_trainable,
+)
 from .fixtures import *
-
-
-def are_weights_equal(weight_old: List[np.ndarray], weights_new: List[np.ndarray]):
-    for a, b in zip_longest(weight_old, weights_new):
-        if not np.allclose(a, b):
-            return False
-    return True
-
-
-def is_optimizer_state_preserved(
-    optimizer_old: tf.keras.Model, optimizer_new: tf.keras.Model
-):
-    if optimizer_old is None or optimizer_new is None:
-        return False
-    if not optimizer_old.get_config() == optimizer_new.get_config():
-        return False
-    if not are_weights_equal(optimizer_old.get_weights(), optimizer_new.get_weights()):
-        return False
-    return True
-
-
-def is_model_trainable(model: tf.keras.Model, data: Tuple[np.ndarray, np.ndarray]):
-    features, labels = data
-    try:
-        model.fit(features, labels, batch_size=1)
-    except (RuntimeError, ValueError):
-        return False
-    return True
-
-
-def is_valid_json(json_str):
-    try:
-        json.loads(json_str)
-    except (JSONDecodeError, ValueError):
-        return False
-    return True
 
 
 def assert_models_equal(model: tf.keras.Model, model_re: tf.keras.Model):
@@ -131,23 +109,23 @@ def test_h5_serializer_fails_on_invalid_blob(simple_model, monkeypatch: MonkeyPa
 
 
 def test_h5_serializer_config_type():
-    config = H5FullModelSerializer.Config(save_traces=False)
+    config = H5FullModelSerializerConfig(save_traces=False)
     assert not config.save_traces
 
-    config = H5FullModelSerializer.Config(type="h5", save_traces=True)
+    config = H5FullModelSerializerConfig(type="h5", save_traces=True)
     assert config.save_traces and config.type == "h5"
 
     with pytest.raises(pydantic.ValidationError):
-        H5FullModelSerializer.Config(type="s3")
+        H5FullModelSerializerConfig(type="s3")
 
     with pytest.raises(pydantic.ValidationError):
         # noinspection PyTypeChecker
-        H5FullModelSerializer.Config(save_traces="Yes, please")
+        H5FullModelSerializerConfig(save_traces="Yes, please")
 
 
 @pytest.mark.parametrize("save_traces", [True, False])
 def test_h5_serializer_can_be_constructed_from_config(save_traces):
-    config = H5FullModelSerializer.Config(save_traces=save_traces)
+    config = H5FullModelSerializerConfig(save_traces=save_traces)
     serializer = H5FullModelSerializer.from_config(config)
     assert serializer is not None
     assert serializer.save_traces == save_traces
@@ -159,7 +137,7 @@ def test_model_serializer_config_types_must_match():
         ModelSerializerConfig.parse_obj(config_dict)
 
 
-@pytest.mark.parametrize("serializer_config", [H5FullModelSerializer.Config()])
+@pytest.mark.parametrize("serializer_config", [H5FullModelSerializerConfig()])
 def test_model_serializer_config_types_can_be_created(serializer_config):
     config = ModelSerializerConfig(
         type=serializer_config.type, params=serializer_config
@@ -177,7 +155,7 @@ def test_model_serializer_builder_fails_on_unknown_type():
 
 @patch("fedless.serialization.H5FullModelSerializer")
 def test_model_serializer_builder_creates_object(serializer_mock):
-    serializer_config = H5FullModelSerializer.Config()
+    serializer_config = H5FullModelSerializerConfig()
     config = ModelSerializerConfig(type="h5", params=serializer_config)
     serializer = ModelSerializerBuilder.from_config(config)
     assert serializer is not None
@@ -265,3 +243,268 @@ def test_npz_weights_serializer_wraps_loading_errors(
     with pytest.raises(SerializationError):
         monkeypatch.setattr(np, "load", get_error_function(IOError))
         s.deserialize(b"")
+
+
+def test_weights_serializer_builder_returns_npz_serializer():
+    config = WeightsSerializerConfig.parse_obj(
+        {"type": "npz", "params": {"compressed": False}}
+    )
+
+    serializer = WeightsSerializerBuilder.from_config(config)
+    assert isinstance(serializer, NpzWeightsSerializer)
+    assert serializer.compressed is False
+
+
+def test_weights_serializer_builder_throws_not_implemented_error():
+    class FakeConfig(pydantic.BaseModel):
+        type: str
+        params: Dict
+
+    fake_config = FakeConfig(type="does-not-exist", params={})
+    with pytest.raises(NotImplementedError):
+        WeightsSerializerBuilder.from_config(fake_config)
+
+
+def test_deserialize_parameters_correct():
+    weights = [np.random.rand(10, 10, 15), np.random.rand(99, 4, 3)]
+    serializer = NpzWeightsSerializer(compressed=True)
+    blob_bytes = serializer.serialize(weights)
+    blob_string = Base64StringConverter.to_str(blob_bytes)
+    params_serialized = SerializedParameters(
+        blob=blob_string,
+        serializer=WeightsSerializerConfig(
+            type="npz", params=NpzWeightsSerializerConfig(compressed=True)
+        ),
+    )
+
+    parameters = deserialize_parameters(params_serialized)
+    assert are_weights_equal(parameters, weights)
+
+
+class SerializerStub(ModelSerializer):
+    def __init__(self):
+        self.model = None
+
+    def serialize(self, model):
+        self.model = model
+        return b""
+
+    def deserialize(self, blob: bytes):
+        return self.model
+
+
+def test_model_loader_builder_raises_not_implemented_error():
+    config = MagicMock(ModelLoaderConfig)
+    config.type = "does-not-exist"
+
+    with pytest.raises(NotImplementedError):
+        ModelLoaderBuilder.from_config(config)
+
+
+@patch("fedless.serialization.PayloadModelLoader")
+def test_model_loader_builder_returns_payload_loader(payload_model_loader_mock):
+    class LoaderStub:
+        pass
+
+    config_mock = ModelLoaderConfig(
+        type="payload", params=PayloadModelLoaderConfig(payload="abc123")
+    )
+
+    payload_model_loader_mock.from_config.return_value = loader_stub = LoaderStub()
+
+    model_loader = ModelLoaderBuilder.from_config(config_mock)
+    assert model_loader == loader_stub
+    payload_model_loader_mock.from_config.assert_called_with(config_mock.params)
+
+
+@patch("fedless.serialization.SimpleModelLoader")
+def test_model_loader_builder_returns_simple_loader(simple_model_loader_mock):
+    class LoaderStub:
+        pass
+
+    class ConfigStub(pydantic.BaseModel):
+        type: str
+        params: Dict
+
+    config_mock = ConfigStub(type="simple", params={})
+
+    simple_model_loader_mock.from_config.return_value = loader_stub = LoaderStub()
+
+    model_loader = ModelLoaderBuilder.from_config(config_mock)
+    assert model_loader == loader_stub
+    simple_model_loader_mock.from_config.assert_called_with(config_mock.params)
+
+
+@patch("fedless.models.params_validate_types_match")
+def test_model_loader_config_types_match(params_validate_types_match):
+    payload_config = MagicMock(PayloadModelLoaderConfig)
+    with pytest.raises(pydantic.ValidationError):
+        ModelLoaderConfig(type="other", params=payload_config)
+    assert params_validate_types_match.called_at_least_once
+
+
+def test_model_loader_config_only_accepts_valid_configs():
+    class FakeConfig(pydantic.BaseModel):
+        type: str = "does-not-exist"
+        attr: int
+
+    with pytest.raises(pydantic.ValidationError):
+        # noinspection PyTypeChecker
+        ModelLoaderConfig(type="does-not-exist", params=FakeConfig(attr=2))
+
+
+def test_payload_model_loader_config_type_fixed():
+    with pytest.raises(pydantic.ValidationError):
+        PayloadModelLoaderConfig(type="something-else", payload="")
+
+
+def test_payload_model_loader_config_from_dict():
+    config_dict = {
+        "payload": "abc",
+    }
+    config = PayloadModelLoaderConfig.parse_obj(config_dict)
+    assert config is not None
+    assert config.payload == "abc"
+
+
+def test_payload_model_loader_from_config_correct():
+    with patch.object(ModelSerializerBuilder, "from_config") as from_config_mock:
+        from_config_mock.return_value = serializer_stub = SerializerStub()
+
+        config = PayloadModelLoaderConfig(
+            payload="abc", serializer=ModelSerializerConfig(type="h5")
+        )
+        loader = PayloadModelLoader.from_config(config)
+    assert loader is not None
+    assert loader.payload == "abc"
+    assert loader.serializer == serializer_stub
+
+
+def test_payload_model_loader_fails_on_invalid_serializer():
+    with pytest.raises(NotImplementedError):
+        with patch.object(ModelSerializerBuilder, "from_config") as from_config_mock:
+            from_config_mock.side_effect = NotImplementedError()
+
+            PayloadModelLoader.from_config(
+                PayloadModelLoaderConfig(
+                    payload="abc", serializer=ModelSerializerConfig(type="h5")
+                )
+            )
+
+
+@patch("fedless.serialization.Base64StringConverter")
+@patch("fedless.serialization.ModelSerializerBuilder")
+def test_payload_model_loader_works_correctly(
+    serializer_builder_mock, string_converter_mock, simple_model
+):
+    serializer_stub = MagicMock(SerializerStub())
+    serializer_stub.deserialize.return_value = simple_model
+    serializer_builder_mock.from_config.return_value = serializer_stub
+    string_converter_mock.from_str.return_value = b"0123abc"
+
+    loader = PayloadModelLoader.from_config(
+        PayloadModelLoaderConfig(
+            payload="abc", serializer=ModelSerializerConfig(type="h5")
+        )
+    )
+
+    model: tf.keras.Model = loader.load()
+
+    string_converter_mock.from_str.assert_called_with("abc")
+    serializer_stub.deserialize.assert_called_with(b"0123abc")
+    assert model == simple_model
+
+
+@patch("fedless.serialization.Base64StringConverter")
+@patch("fedless.serialization.ModelSerializerBuilder")
+def test_payload_model_loader_throws_model_error_when_serializer_fails(
+    serializer_builder_mock, string_converter_mock
+):
+    with pytest.raises(ModelLoadError):
+        string_converter_mock.from_str.return_value = b"0123abc"
+        serializer_stub = MagicMock(SerializerStub())
+        serializer_stub.deserialize.side_effect = SerializationError()
+        serializer_builder_mock.from_config.return_value = serializer_stub
+
+        loader = PayloadModelLoader.from_config(
+            PayloadModelLoaderConfig(
+                payload="abc", serializer=ModelSerializerConfig(type="h5")
+            )
+        )
+
+        tf.keras.Model = loader.load()
+
+
+@patch("fedless.serialization.Base64StringConverter")
+def test_payload_model_loader_throws_model_error_for_invalid_payload(
+    string_converter_mock,
+):
+    with pytest.raises(ModelLoadError):
+        string_converter_mock.from_str.side_effect = ValueError()
+
+        loader = PayloadModelLoader.from_config(
+            PayloadModelLoaderConfig(
+                payload="abc", serializer=ModelSerializerConfig(type="h5")
+            )
+        )
+
+        tf.keras.Model = loader.load()
+
+
+@patch("fedless.serialization.deserialize_parameters")
+def test_simple_model_loader_works_works_and_compiles_model(
+    deserialize_parameters_mock,
+    simple_model: tf.keras.Model,
+):
+    deserialize_parameters_mock.return_value = simple_model.get_weights()
+
+    loader = SimpleModelLoader(
+        parameters=None,
+        model=simple_model.to_json(),
+        compiled=True,
+        optimizer=tf.keras.optimizers.serialize(simple_model.optimizer),
+        loss="mse",
+        # metrics=simple_model.compiled_metrics.metrics,
+    )
+
+    model = loader.load()
+    assert are_weights_equal(model.get_weights(), simple_model.get_weights())
+    assert type(model.optimizer) == type(simple_model.optimizer)
+
+
+@patch("fedless.serialization.deserialize_parameters")
+def test_simple_model_loader_works_without_compiling_model(
+    deserialize_parameters_mock, simple_model: tf.keras.Model
+):
+    deserialize_parameters_mock.return_value = simple_model.get_weights()
+
+    loader = SimpleModelLoader(
+        parameters=None,
+        model=simple_model.to_json(),
+        compiled=False,
+    )
+
+    model = loader.load()
+    assert are_weights_equal(model.get_weights(), simple_model.get_weights())
+
+
+@patch("fedless.serialization.deserialize_parameters")
+def test_simple_model_loader_throws_correct_errors(
+    deserialize_parameters_mock, simple_model: tf.keras.Model
+):
+
+    with pytest.raises(ModelLoadError):
+        deserialize_parameters_mock.return_value = simple_model.get_weights()
+        SimpleModelLoader(
+            parameters=None,
+            model="invalid-json:'",
+            compiled=False,
+        ).load()
+
+    with pytest.raises(ModelLoadError):
+        deserialize_parameters_mock.side_effect = SerializationError
+        SimpleModelLoader(
+            parameters=None,
+            model=simple_model.to_json(),
+            compiled=False,
+        ).load()

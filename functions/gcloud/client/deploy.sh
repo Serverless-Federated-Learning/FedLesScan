@@ -16,6 +16,6 @@ gcloud functions deploy http \
   --allow-unauthenticated \
   --memory=2048MB \
   --timeout=300s \
-  --max-instances 10 \
+  --max-instances 50 \
   --set-build-env-vars GIT_COMMIT_IDENTIFIER="@$COMMIT_HASH",GITHUB_AUTH_TOKEN="$GITHUB_AUTH_TOKEN"
 

@@ -1,24 +1,32 @@
 import base64
 
-import pytest
 import numpy as np
+import pytest
 import requests_mock
 import tensorflow.keras as keras
+from pydantic import ValidationError
 
 from fedless.client import (
     default_handler,
-    Hyperparams,
     ClientError,
-    ClientConfig,
-    lambda_proxy_handler,
+)
+from fedless.models import (
+    Hyperparams,
+    ClientInvocationParams,
     ClientResult,
+    LEAFConfig,
+    DatasetLoaderConfig,
+    PayloadModelLoaderConfig,
+    ModelLoaderConfig,
+)
+from fedless.providers import (
+    lambda_proxy_handler,
     gcloud_http_error_handler,
     openwhisk_action_handler,
 )
-from fedless.models import ModelLoaderConfig, PayloadModelLoaderConfig
-from fedless.data import DatasetLoaderConfig, LEAFConfig
-from fedless.serialization import Base64StringConverter, NpzWeightsSerializer
-
+from fedless.serialization import (
+    deserialize_parameters,
+)
 from .common import resource_folder_path
 
 FEMNIST_DATA_DIR = resource_folder_path() / "leaf" / "femnist"
@@ -64,9 +72,7 @@ def test_femnist_training_with_local_data(model_loader_config, data_loader_confi
         hyperparams=Hyperparams(batch_size=1, epochs=10, shuffle_data=False),
     )
     losses = result.history["loss"]
-    weights = NpzWeightsSerializer().deserialize(
-        Base64StringConverter.from_str(result.weights)
-    )
+    weights = deserialize_parameters(result.parameters)
     assert isinstance(weights, list)
     assert isinstance(weights[0], np.ndarray)
     assert losses[0] > losses[-1]
@@ -92,9 +98,7 @@ def test_femnist_training_with_remote_data(
         hyperparams=Hyperparams(batch_size=10, epochs=5, shuffle_data=True),
     )
     losses = result.history["loss"]
-    weights = NpzWeightsSerializer().deserialize(
-        Base64StringConverter.from_str(result.weights)
-    )
+    weights = deserialize_parameters(result.parameters)
 
     assert isinstance(weights, list)
     assert isinstance(weights[0], np.ndarray)
@@ -118,9 +122,7 @@ def test_femnist_training_with_custom_optimizer_and_loss(
     )
     losses = result.history["loss"]
     accuracies = result.history["accuracy"]
-    weights = NpzWeightsSerializer().deserialize(
-        Base64StringConverter.from_str(result.weights)
-    )
+    weights = deserialize_parameters(result.parameters)
 
     assert isinstance(weights, list)
     assert isinstance(weights[0], np.ndarray)
@@ -149,9 +151,9 @@ def test_femnist_training_wraps_value_error(
 def test_femnist_training_with_lambda_proxy(
     model_loader_config, remote_data_loader_config
 ):
-    @lambda_proxy_handler
+    @lambda_proxy_handler((ValidationError, ClientError))
     def lambda_handler(event, context):
-        config = ClientConfig.parse_obj(event["body"])
+        config = ClientInvocationParams.parse_obj(event["body"])
         return default_handler(
             data_config=config.data,
             model_config=config.model,
@@ -159,7 +161,7 @@ def test_femnist_training_with_lambda_proxy(
         )
 
     event = {
-        "body": ClientConfig(
+        "body": ClientInvocationParams(
             data=remote_data_loader_config,
             model=model_loader_config,
             hyperparams=Hyperparams(batch_size=10, epochs=5),
@@ -177,10 +179,10 @@ def test_femnist_training_with_lambda_proxy(
 def test_femnist_training_with_gcloud_handler(
     model_loader_config, remote_data_loader_config
 ):
-    @gcloud_http_error_handler
+    @gcloud_http_error_handler((ValidationError, ClientError))
     def gcloud_handler(request):
         body: bytes = request.get_data()
-        config = ClientConfig.parse_raw(body)
+        config = ClientInvocationParams.parse_raw(body)
         return default_handler(
             data_config=config.data,
             model_config=config.model,
@@ -190,7 +192,7 @@ def test_femnist_training_with_gcloud_handler(
     class RequestStub:
         def get_data(self):
             return bytes(
-                ClientConfig(
+                ClientInvocationParams(
                     data=remote_data_loader_config,
                     model=model_loader_config,
                     hyperparams=Hyperparams(batch_size=10, epochs=5),
@@ -209,9 +211,9 @@ def test_femnist_training_with_gcloud_handler(
 def test_femnist_training_with_openwhisk_handler(
     model_loader_config, remote_data_loader_config
 ):
-    @openwhisk_action_handler
+    @openwhisk_action_handler((ValidationError, ClientError))
     def ow_handler(request):
-        config = ClientConfig.parse_obj(request["body"])
+        config = ClientInvocationParams.parse_obj(request["body"])
 
         return default_handler(
             data_config=config.data,
@@ -222,7 +224,7 @@ def test_femnist_training_with_openwhisk_handler(
     request = {
         "__ow_body": base64.b64encode(
             bytes(
-                ClientConfig(
+                ClientInvocationParams(
                     data=remote_data_loader_config,
                     model=model_loader_config,
                     hyperparams=Hyperparams(batch_size=10, epochs=5),

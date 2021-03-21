@@ -1,21 +1,19 @@
 import json
-from itertools import product
 from unittest.mock import patch, MagicMock
 
+import numpy as np
 import pytest
 import requests
 import requests_mock
-import numpy as np
 from pydantic import ValidationError
 
 from fedless.data import (
     LEAF,
     DatasetNotLoadedError,
     DatasetFormatError,
-    DatasetLoaderConfig,
-    LEAFConfig,
     DatasetLoaderBuilder,
 )
+from fedless.models import LEAFConfig, DatasetLoaderConfig, LeafDataset
 from .common import resource_folder_path, get_error_function
 
 LEAF_RES_PATH = resource_folder_path() / "leaf"
@@ -206,7 +204,7 @@ def test_dataset_loader_builder_returns_leaf_loader(location):
     )
     # noinspection PyTypeChecker
     loader: LEAF = DatasetLoaderBuilder.from_config(config)
-    assert loader.dataset == LEAF.LeafDataset.FEMNIST
+    assert loader.dataset == LeafDataset.FEMNIST
     assert loader.source == location
     assert loader.http_params is None
 

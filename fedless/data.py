@@ -1,18 +1,16 @@
 import abc
 import json
-from enum import Enum
 from functools import reduce
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Union, Dict, Iterator
+from typing import Union, Dict, Iterator, List, Optional
 
-import pydantic
 import requests
 import tensorflow as tf
+from pydantic import validate_arguments, AnyHttpUrl
 from requests import RequestException
 
-from fedless.validation import params_validate_types_match
-from pydantic import validate_arguments, AnyHttpUrl, BaseModel, Field, validator
+from fedless.models import LEAFConfig, DatasetLoaderConfig, LeafDataset, MNISTConfig
 
 
 class DatasetNotLoadedError(Exception):
@@ -48,17 +46,6 @@ class LEAF(DatasetLoader):
     https://arxiv.org/pdf/1812.01097.pdf and https://github.com/TalwalkarLab/leaf
     """
 
-    class LeafDataset(Enum):
-        """
-        Officially supported datasets
-        """
-
-        FEMNIST = "femnist"
-        REDDIT = "reddit"
-        CELEBA = "celeba"
-        SHAKESPEARE = "shakespeare"
-        SENT140 = "sent140"
-
     @validate_arguments
     def __init__(
         self,
@@ -68,7 +55,7 @@ class LEAF(DatasetLoader):
     ):
         """
         Create dataset loader for the specified source
-        :param dataset: Dataset name, one of :py:class:`fedless.data.LEAF.LeafDataset`
+        :param dataset: Dataset name, one of :py:class:`fedless.models.LeafDataset`
         :param location: Location of dataset partition in form of a json file.
         :param http_params: Additional parameters to send with http request. Only used when location is an URL
          Use location:// to load from disk. For valid entries see :py:meth:`requests.get`
@@ -77,7 +64,7 @@ class LEAF(DatasetLoader):
         self.source = location
         self.http_params = http_params
 
-        if dataset != self.LeafDataset.FEMNIST:
+        if dataset != LeafDataset.FEMNIST:
             raise NotImplementedError()
 
     def _iter_dataset_files(self) -> Iterator[Union[AnyHttpUrl, Path]]:
@@ -147,24 +134,34 @@ class LEAF(DatasetLoader):
             raise DatasetFormatError(e) from e
 
 
-class LEAFConfig(BaseModel):
-    """Configuration parameters for LEAF dataset loader"""
+class MNIST(DatasetLoader):
+    def __init__(
+        self,
+        indices: Optional[List[int]] = None,
+        split: str = "train",
+    ):
+        self.split = split
+        self.indices = indices
 
-    type: str = Field("leaf", const=True)
-    dataset: LEAF.LeafDataset
-    location: Union[AnyHttpUrl, Path]
-    http_params: Dict = None
+    def load(self) -> tf.data.Dataset:
+        (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 
+        if self.split.lower() == "train":
+            features, labels = x_train, y_train
+        elif self.split.lower() == "test":
+            features, labels = x_test, y_test
+        else:
+            raise DatasetNotLoadedError(f"Mnist split {self.split} does not exist")
 
-class DatasetLoaderConfig(pydantic.BaseModel):
-    """Configuration for arbitrary dataset loaders"""
+        if self.indices:
+            features, labels = features[self.indices], labels[self.indices]
 
-    type: str
-    params: Union[LEAFConfig]
+        def _scale_features(features, label):
+            return tf.cast(features, tf.float32) / 255.0, tf.cast(label, tf.int32)
 
-    _params_type_matches_type = validator("params", allow_reuse=True)(
-        params_validate_types_match
-    )
+        ds = tf.data.Dataset.from_tensor_slices((features, labels))
+
+        return ds.map(_scale_features)
 
 
 class DatasetLoaderBuilder:
@@ -183,6 +180,9 @@ class DatasetLoaderBuilder:
                 location=params.location,
                 http_params=params.http_params,
             )
+        elif config.type == "mnist":
+            params: MNISTConfig = config.params
+            return MNIST(split=params.split, indices=params.indices)
         else:
             raise NotImplementedError(
                 f"Dataset loader {config.type} is not implemented"
