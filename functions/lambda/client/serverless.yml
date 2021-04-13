@@ -14,6 +14,15 @@ provider:
     images:
       baseimage:
         path: .
+  apiGateway:
+    apiKeys:
+      - ${env:API_GW_API_KEY_CLIENT}
+    usagePlan:
+      quota:
+        limit: 2000
+        period: MONTH
+      throttle:
+        rateLimit: 100
 
 functions:
   hello:
@@ -23,3 +32,4 @@ functions:
           path: federated/client
           method: post
           integration: lambda-proxy
+          private: true

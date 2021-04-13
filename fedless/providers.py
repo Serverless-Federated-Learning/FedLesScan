@@ -133,7 +133,10 @@ def openwhisk_action_handler(
             # Put parameters or request body under key "body". Strip __ow_ prefix for web action support
             # See https://github.com/apache/openwhisk/blob/master/docs/webactions.md#http-context for more info
             if any(map(lambda name: name.startswith("__ow_"), params.keys())):
-                params = {key[len("__ow_") :]: value for key, value in params.items()}
+                params = {
+                    (key[len("__ow_") :] if key.startswith("__ow_") else key): value
+                    for key, value in params.items()
+                }
             else:
                 params = {"body": params}
 

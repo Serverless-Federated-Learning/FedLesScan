@@ -1,0 +1,38 @@
+service: client-jwt-authorizer
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: python3.8
+
+  stage: dev
+  region: eu-central-1
+  memorySize: 2048
+  timeout: 30 # Note: API Gateway current maximum is 30 seconds
+  ecr:
+    images:
+      baseimage:
+        path: .
+  httpApi:
+    authorizers:
+      # JWT authorizers to back HTTP API endpoints
+      jwtAuthorizer:
+        identitySource: $request.header.Authorization
+        issuerUrl: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_8wToSTlPj
+        audience:
+          - 6dms4nuf6g34sn8r6ri4365pn0
+
+functions:
+  hello:
+    image: baseimage
+    events:
+      - httpApi:
+          path: /client-jwt-authorized
+          method: POST
+          integration: lambda-proxy
+          #private: true
+          authorizer:
+            name: jwtAuthorizer
+            scopes:
+              - client-0/invoke

@@ -18,6 +18,7 @@ from fedless.models import (
     ModelLoaderConfig,
     SimpleModelLoaderConfig,
     GCloudFunctionConfig,
+    OpenwhiskWebActionConfig,
 )
 from fedless.persistence import (
     ClientConfigDao,
@@ -127,6 +128,7 @@ def invoke_sync(
     session: Optional[requests.Session] = None,
 ):
     """Convenience method to invoke the given function and abstract different FaaS platforms"""
+    session = session or requests.Session()
 
     if function_config.type == "openwhisk":
         params: OpenwhiskActionConfig = function_config.params
@@ -139,8 +141,21 @@ def invoke_sync(
             verify_certificate=not params.self_signed_cert,
             max_poll_time=timeout,
         )
+    elif function_config.type == "openwhisk-web":
+        params: OpenwhiskWebActionConfig = function_config.params
+        if params.token:
+            session.headers.update({"X-require-whisk-auth": params.token})
+        return invoke_http_function_sync(
+            url=params.endpoint,
+            data=data,
+            session=session,
+            timeout=timeout,
+            verify_certificate=not params.self_signed_cert,
+        )
     elif function_config.type == "lambda":
         params: ApiGatewayLambdaFunctionConfig = function_config.params
+        if params.api_key:
+            session.headers.update({"X-api-key": params.api_key})
         return invoke_http_function_sync(
             url=params.apigateway, data=data, session=session, timeout=timeout
         )

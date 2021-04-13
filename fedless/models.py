@@ -12,6 +12,7 @@ from pydantic import (
     AnyUrl,
     BaseSettings,
     PositiveInt,
+    SecretStr,
 )
 from pydantic.fields import ModelField
 
@@ -165,11 +166,19 @@ class OpenwhiskActionConfig(BaseModel):
     self_signed_cert: bool
 
 
+class OpenwhiskWebActionConfig(BaseModel):
+    type: str = Field("openwhisk-web", const=True)
+    self_signed_cert: bool = True
+    endpoint: AnyUrl
+    token: Optional[str]
+
+
 class ApiGatewayLambdaFunctionConfig(BaseModel):
     """Lambda function deployed via Api Gateway. All requests time out after 30 seconds due to fixed limit"""
 
     type: str = Field("lambda", const=True)
     apigateway: AnyUrl
+    api_key: Optional[str]
 
 
 class GCloudFunctionConfig(BaseModel):
@@ -184,7 +193,10 @@ class FunctionInvocationConfig(BaseModel):
 
     type: str
     params: Union[
-        OpenwhiskActionConfig, ApiGatewayLambdaFunctionConfig, GCloudFunctionConfig
+        OpenwhiskActionConfig,
+        ApiGatewayLambdaFunctionConfig,
+        GCloudFunctionConfig,
+        OpenwhiskWebActionConfig,
     ]
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
