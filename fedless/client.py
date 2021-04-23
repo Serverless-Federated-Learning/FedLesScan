@@ -1,5 +1,12 @@
+from typing import Optional
+
 import tensorflow.keras as keras
 from tensorflow.python.keras.callbacks import History
+from tensorflow_privacy import (
+    DPKerasAdamOptimizer,
+    DPKerasAdagradOptimizer,
+    DPKerasSGDOptimizer,
+)
 
 from fedless.data import (
     DatasetLoader,
@@ -13,6 +20,7 @@ from fedless.models import (
     ClientResult,
     SerializedParameters,
     TestMetrics,
+    LocalDifferentialPrivacyParams,
 )
 from fedless.serialization import (
     ModelLoadError,
@@ -77,6 +85,7 @@ def run(
     string_serializer: StringSerializer,
     validation_split: float = None,
     test_data_loader: DatasetLoader = None,
+    privacy_params: Optional[LocalDifferentialPrivacyParams] = None,
 ) -> ClientResult:
     """
     Loads model and data, trains the model and returns serialized parameters wrapped as :class:`ClientResult`
@@ -89,7 +98,7 @@ def run(
     model = model_loader.load()
 
     # Set configured optimizer if specified
-    loss = hyperparams.loss or model.loss
+    loss = keras.losses.get(hyperparams.loss) if hyperparams.loss else model.loss
     optimizer = (
         keras.optimizers.get(hyperparams.optimizer)
         if hyperparams.optimizer
@@ -98,6 +107,36 @@ def run(
     metrics = (
         hyperparams.metrics or model.compiled_metrics.metrics
     )  # compiled_metrics are explicitly defined by the user
+
+    if privacy_params:
+        opt_config = optimizer.get_config()
+        opt_name = opt_config.get("name", "unknown")
+        if opt_name == "Adam":
+            optimizer = DPKerasAdamOptimizer(
+                l2_norm_clip=privacy_params.l2_norm_clip,
+                noise_multiplier=privacy_params.noise_multiplier,
+                num_microbatches=privacy_params.num_microbatches,
+                **opt_config,
+            )
+        elif opt_name == "Adagrad":
+            optimizer = DPKerasAdagradOptimizer(
+                l2_norm_clip=privacy_params.l2_norm_clip,
+                noise_multiplier=privacy_params.noise_multiplier,
+                num_microbatches=privacy_params.num_microbatches,
+                **opt_config,
+            )
+        elif opt_name == "SGD":
+            optimizer = DPKerasSGDOptimizer(
+                l2_norm_clip=privacy_params.l2_norm_clip,
+                noise_multiplier=privacy_params.noise_multiplier,
+                num_microbatches=privacy_params.num_microbatches,
+                **opt_config,
+            )
+        else:
+            raise ValueError(
+                f"No DP variant for optimizer {opt_name} found in TF Privacy..."
+            )
+
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
     # Batch data, necessary or model fitting will fail

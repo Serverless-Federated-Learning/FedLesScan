@@ -115,9 +115,10 @@ class Hyperparams(BaseModel):
         description="Optimizer, either string with name of optimizer or "
         "a config dictionary retrieved via tf.keras.optimizers.serialize. ",
     )
-    loss: Optional[str] = Field(
+    loss: Optional[Union[str, Dict]] = Field(
         default=None,
-        description="Name of loss function, see https://www.tensorflow.org/api_docs/python/tf/keras/losses",
+        description="Name of loss function, see https://www.tensorflow.org/api_docs/python/tf/keras/losses, or "
+        "a config dictionary retrieved via tf.keras.losses.serialize. ",
     )
     metrics: Optional[List[str]] = Field(
         default=None,
@@ -441,3 +442,9 @@ class FunctionDeploymentConfig(BaseModel):
     _params_type_matches_type = validator("params", allow_reuse=True)(
         params_validate_types_match
     )
+
+
+class LocalDifferentialPrivacyParams(BaseModel):
+    l2_norm_clip: float
+    noise_multiplier: float
+    num_microbatches: Optional[int]
