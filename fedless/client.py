@@ -137,6 +137,27 @@ def run(
                 f"No DP variant for optimizer {opt_name} found in TF Privacy..."
             )
 
+        # Manually set loss' reduction method to None to support per-example loss calculation
+        # Required to enable different microbatch sizes
+        loss_serialized = keras.losses.serialize(keras.losses.get(loss))
+        loss_name = (
+            loss_serialized
+            if isinstance(loss_serialized, str)
+            else loss_serialized.get("config", dict()).get("name", "unknown")
+        )
+        if loss_name == "sparse_categorical_crossentropy":
+            loss = keras.losses.SparseCategoricalCrossentropy(
+                reduction=keras.losses.Reduction.NONE
+            )
+        elif loss_name == "categorical_crossentropy":
+            loss = keras.losses.CategoricalCrossentropy(
+                reduction=keras.losses.Reduction.NONE
+            )
+        elif loss_name == "mean_squared_error":
+            loss = keras.losses.MeanSquaredError(reduction=keras.losses.Reduction.NONE)
+        else:
+            raise ValueError(f"Unkown loss type {loss_name}")
+
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
     # Batch data, necessary or model fitting will fail
