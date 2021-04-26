@@ -7,6 +7,9 @@ from tensorflow_privacy import (
     DPKerasAdagradOptimizer,
     DPKerasSGDOptimizer,
 )
+from tensorflow_privacy.privacy.analysis.compute_dp_sgd_privacy_lib import (
+    compute_dp_sgd_privacy,
+)
 
 from fedless.data import (
     DatasetLoader,
@@ -21,6 +24,7 @@ from fedless.models import (
     SerializedParameters,
     TestMetrics,
     LocalDifferentialPrivacyParams,
+    EpsDelta,
 )
 from fedless.serialization import (
     ModelLoadError,
@@ -85,7 +89,6 @@ def run(
     string_serializer: StringSerializer,
     validation_split: float = None,
     test_data_loader: DatasetLoader = None,
-    privacy_params: Optional[LocalDifferentialPrivacyParams] = None,
 ) -> ClientResult:
     """
     Loads model and data, trains the model and returns serialized parameters wrapped as :class:`ClientResult`
@@ -108,7 +111,23 @@ def run(
         hyperparams.metrics or model.compiled_metrics.metrics
     )  # compiled_metrics are explicitly defined by the user
 
-    if privacy_params:
+    # Batch data, necessary or model fitting will fail
+    if validation_split:
+        cardinality = float(dataset.cardinality())
+        train_validation_split_idx = int(cardinality - cardinality * validation_split)
+        train_dataset = dataset.take(train_validation_split_idx)
+        val_dataset = dataset.skip(train_validation_split_idx)
+        train_dataset = train_dataset.batch(hyperparams.batch_size)
+        val_dataset = val_dataset.batch(hyperparams.batch_size)
+        train_cardinality = train_validation_split_idx
+    else:
+        train_dataset = dataset.batch(hyperparams.batch_size)
+        train_cardinality = dataset.cardinality()
+        val_dataset = None
+
+    privacy_guarantees: Optional[EpsDelta] = None
+    if hyperparams.local_privacy:
+        privacy_params = hyperparams.local_privacy
         opt_config = optimizer.get_config()
         opt_name = opt_config.get("name", "unknown")
         if opt_name == "Adam":
@@ -137,6 +156,16 @@ def run(
                 f"No DP variant for optimizer {opt_name} found in TF Privacy..."
             )
 
+        delta = 1.0 / (int(train_cardinality) ** 1.1)
+        eps, opt_order = compute_dp_sgd_privacy(
+            n=train_cardinality,
+            batch_size=hyperparams.batch_size,
+            noise_multiplier=privacy_params.noise_multiplier,
+            epochs=hyperparams.epochs,
+            delta=delta,
+        )
+        privacy_guarantees = EpsDelta(eps=eps, delta=delta)
+
         # Manually set loss' reduction method to None to support per-example loss calculation
         # Required to enable different microbatch sizes
         loss_serialized = keras.losses.serialize(keras.losses.get(loss))
@@ -159,20 +188,6 @@ def run(
             raise ValueError(f"Unkown loss type {loss_name}")
 
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
-
-    # Batch data, necessary or model fitting will fail
-    if validation_split:
-        cardinality = float(dataset.cardinality())
-        train_validation_split_idx = int(cardinality - cardinality * validation_split)
-        train_dataset = dataset.take(train_validation_split_idx)
-        val_dataset = dataset.skip(train_validation_split_idx)
-        train_dataset = train_dataset.batch(hyperparams.batch_size)
-        val_dataset = val_dataset.batch(hyperparams.batch_size)
-        train_cardinality = train_validation_split_idx
-    else:
-        train_dataset = dataset.batch(hyperparams.batch_size)
-        train_cardinality = dataset.cardinality()
-        val_dataset = None
 
     # Train Model
     # RuntimeError, ValueError
@@ -206,4 +221,5 @@ def run(
         history=history.history,
         test_metrics=test_metrics,
         cardinality=train_cardinality,
+        privacy_guarantees=privacy_guarantees,
     )

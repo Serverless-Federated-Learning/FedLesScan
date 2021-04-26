@@ -104,6 +104,12 @@ class LeafDataset(str, Enum):
     SENT140 = "sent140"
 
 
+class LocalDifferentialPrivacyParams(BaseModel):
+    l2_norm_clip: float
+    noise_multiplier: float
+    num_microbatches: Optional[int]
+
+
 class Hyperparams(BaseModel):
     """Parameters for training and some data processing"""
 
@@ -124,6 +130,7 @@ class Hyperparams(BaseModel):
         default=None,
         description="List of metrics to be evaluated by the model",
     )
+    local_privacy: Optional[LocalDifferentialPrivacyParams]
 
 
 class LEAFConfig(BaseModel):
@@ -263,6 +270,11 @@ class SerializedParameters(BaseModel):
     string_format: BinaryStringFormat = BinaryStringFormat.BASE64
 
 
+class EpsDelta(BaseModel):
+    eps: float
+    delta: float
+
+
 class ClientResult(BaseModel):
     """Result of client function execution"""
 
@@ -275,6 +287,7 @@ class ClientResult(BaseModel):
         "(e.g. when the dataset source is a file). "
         "Source: https://www.tensorflow.org/api_docs/python/tf/data/Dataset#cardinality"
     )
+    privacy_guarantees: Optional[EpsDelta]
 
 
 class ClientResultStorageObject(BaseModel):
@@ -442,9 +455,3 @@ class FunctionDeploymentConfig(BaseModel):
     _params_type_matches_type = validator("params", allow_reuse=True)(
         params_validate_types_match
     )
-
-
-class LocalDifferentialPrivacyParams(BaseModel):
-    l2_norm_clip: float
-    noise_multiplier: float
-    num_microbatches: Optional[int]
