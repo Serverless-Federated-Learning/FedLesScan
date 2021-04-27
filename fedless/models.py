@@ -107,7 +107,7 @@ class LeafDataset(str, Enum):
 class LocalDifferentialPrivacyParams(BaseModel):
     l2_norm_clip: float
     noise_multiplier: float
-    num_microbatches: Optional[int]
+    num_microbatches: int
 
 
 class Hyperparams(BaseModel):

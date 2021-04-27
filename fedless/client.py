@@ -23,7 +23,6 @@ from fedless.models import (
     ClientResult,
     SerializedParameters,
     TestMetrics,
-    LocalDifferentialPrivacyParams,
     EpsDelta,
 )
 from fedless.serialization import (
