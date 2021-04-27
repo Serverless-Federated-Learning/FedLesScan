@@ -111,7 +111,7 @@ def create_mnist_train_data_loader_configs(
 def create_mnist_cnn(num_classes=10):
     model = keras.models.Sequential(
         [
-            keras.layers.Input((28 * 28,)),
+            keras.layers.Input((28, 28)),
             keras.layers.Reshape((28, 28, 1)),
             keras.layers.Conv2D(
                 32,

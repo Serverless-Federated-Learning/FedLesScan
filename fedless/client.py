@@ -48,6 +48,7 @@ def default_handler(
     test_data_config: DatasetLoaderConfig = None,
     weights_serializer: WeightsSerializer = NpzWeightsSerializer(),
     string_serializer: StringSerializer = Base64StringConverter(),
+    verbose: bool = True,
 ) -> ClientResult:
     """
     Basic handler that only requires data and model loader configs plus hyperparams.
@@ -68,6 +69,7 @@ def default_handler(
             weights_serializer=weights_serializer,
             string_serializer=string_serializer,
             test_data_loader=test_data_loader,
+            verbose=verbose,
         )
     except (
         NotImplementedError,
@@ -88,6 +90,7 @@ def run(
     string_serializer: StringSerializer,
     validation_split: float = None,
     test_data_loader: DatasetLoader = None,
+    verbose: bool = True,
 ) -> ClientResult:
     """
     Loads model and data, trains the model and returns serialized parameters wrapped as :class:`ClientResult`
@@ -195,6 +198,7 @@ def run(
         epochs=hyperparams.epochs,
         shuffle=hyperparams.shuffle_data,
         validation_data=val_dataset,
+        verbose=verbose,
     )
 
     test_metrics = None
