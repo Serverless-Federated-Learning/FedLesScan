@@ -161,7 +161,11 @@ def test_leaf_loader_works_for_file():
 def test_leaf_femnist_converter_handles_invalid_file():
     invalid_content_dict = {"users": ["a"], "user_data": {"b": {}}}
     with pytest.raises(DatasetFormatError):
-        list(LEAF(dataset="femnist", location=FEMNIST_FILE_PATH)._convert_dict_to_dataset((invalid_content_dict)))
+        list(
+            LEAF(
+                dataset="femnist", location=FEMNIST_FILE_PATH
+            )._convert_dict_to_dataset((invalid_content_dict))
+        )
 
         invalid_content_dict = {
             "users": ["a"],
@@ -184,6 +188,7 @@ def test_leaf_femnist_loads_correctly(location, requests_mock: requests_mock.Moc
 
     assert len(dataset) == 8
     assert np.equal(true_labels, labels).all()
+
 
 def test_leaf_femnist_loads_only_specified_user():
     true_labels = np.array([38, 54, 56], dtype=np.int)

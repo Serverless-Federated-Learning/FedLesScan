@@ -48,11 +48,11 @@ class LEAF(DatasetLoader):
 
     @validate_arguments
     def __init__(
-            self,
-            dataset: LeafDataset,
-            location: Union[AnyHttpUrl, Path],
-            http_params: Dict = None,
-            user_indices: Optional[List[int]] = None
+        self,
+        dataset: LeafDataset,
+        location: Union[AnyHttpUrl, Path],
+        http_params: Dict = None,
+        user_indices: Optional[List[int]] = None,
     ):
         """
         Create dataset loader for the specified source
@@ -84,7 +84,9 @@ class LEAF(DatasetLoader):
     def users(self):
         return self._users
 
-    def _convert_dict_to_dataset(self, file_content: Dict, user_indices: List[int] = None) -> tf.data.Dataset:
+    def _convert_dict_to_dataset(
+        self, file_content: Dict, user_indices: List[int] = None
+    ) -> tf.data.Dataset:
         try:
             users = file_content["users"]
             user_data = file_content["user_data"]
@@ -103,16 +105,20 @@ class LEAF(DatasetLoader):
             vectorizer = tf.keras.layers.experimental.preprocessing.TextVectorization(
                 standardize=None,
                 split=tf.strings.bytes_split,
-                vocabulary=[c for c in vocabulary]
+                vocabulary=[c for c in vocabulary],
             )
-            return vectorizer(tf.convert_to_tensor(user_data["x"])), vectorizer(tf.convert_to_tensor(user_data["y"]))
+            return vectorizer(tf.convert_to_tensor(user_data["x"])), vectorizer(
+                tf.convert_to_tensor(user_data["y"])
+            )
 
         return user_data["x"], user_data["y"]
 
     def _process_all_sources(self) -> Iterator[tf.data.Dataset]:
         for source in self._iter_dataset_files():
             file_content: Dict = self._read_source(source)
-            for dataset in self._convert_dict_to_dataset(file_content, user_indices=self.user_indices):
+            for dataset in self._convert_dict_to_dataset(
+                file_content, user_indices=self.user_indices
+            ):
                 yield dataset
 
     def _read_source(self, source: Union[AnyHttpUrl, Path]) -> Dict:
@@ -155,9 +161,9 @@ class LEAF(DatasetLoader):
 
 class MNIST(DatasetLoader):
     def __init__(
-            self,
-            indices: Optional[List[int]] = None,
-            split: str = "train",
+        self,
+        indices: Optional[List[int]] = None,
+        split: str = "train",
     ):
         self.split = split
         self.indices = indices
@@ -198,7 +204,7 @@ class DatasetLoaderBuilder:
                 dataset=params.dataset,
                 location=params.location,
                 http_params=params.http_params,
-                user_indices=params.user_indices
+                user_indices=params.user_indices,
             )
         elif config.type == "mnist":
             params: MNISTConfig = config.params
