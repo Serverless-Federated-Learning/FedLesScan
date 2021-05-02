@@ -140,6 +140,7 @@ class LEAFConfig(BaseModel):
     dataset: LeafDataset
     location: Union[AnyHttpUrl, Path]
     http_params: Dict = None
+    user_indices: Optional[List[int]] = None
 
 
 class MNISTConfig(BaseModel):

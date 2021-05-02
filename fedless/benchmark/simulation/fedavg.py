@@ -40,8 +40,8 @@ from fedless.serialization import (
 @click.option("--devices", type=int, default=100)
 @click.option("--epochs", type=int, default=100)
 @click.option("--local-epochs", type=int, default=10)
-@click.option("--clients-per-round", type=int, default=5)
-@click.option("--l2-norm-clip", type=float, default=2.0)
+@click.option("--clients-per-round", type=int, default=25)
+@click.option("--l2-norm-clip", type=float, default=4.0)
 def run(devices, epochs, local_epochs, clients_per_round, l2_norm_clip):
     # Setup
 
@@ -56,6 +56,7 @@ def run(devices, epochs, local_epochs, clients_per_round, l2_norm_clip):
         batch_size=32,
         epochs=local_epochs,
         metrics=["accuracy"],
+        optimizer="Adam",
         local_privacy=privacy_params,
     )
     splits = create_mnist_train_data_loader_configs(n_devices=devices, n_shards=200)
