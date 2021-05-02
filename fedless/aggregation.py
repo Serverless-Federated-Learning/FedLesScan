@@ -130,3 +130,40 @@ class FedAvgAggregator(ParameterAggregator):
             client_cardinalities.append(cardinality)
 
         return self._aggregate(client_parameters, client_cardinalities)
+
+
+class StreamFedAvgAggregator(FedAvgAggregator):
+    def aggregate(
+        self,
+        client_results: Iterator[ClientResult],
+        default_cardinality: Optional[float] = None,
+    ) -> Parameters:
+
+        curr_global_params: Parameters = None
+        curr_sum_weights = 0
+        for client_result in client_results:
+            params = deserialize_parameters(client_result.parameters)
+            cardinality = client_result.cardinality
+
+            # Check if cardinality is valid and handle accordingly
+            if cardinality in [
+                tf.data.UNKNOWN_CARDINALITY,
+                tf.data.INFINITE_CARDINALITY,
+            ]:
+                if not default_cardinality:
+                    raise UnknownCardinalityError(
+                        f"Cardinality for client result invalid. "
+                    )
+                else:
+                    cardinality = default_cardinality
+
+            if curr_global_params is None:
+                curr_global_params = params
+                curr_sum_weights = cardinality
+            else:
+                curr_global_params = self._aggregate(
+                    [curr_global_params, params], [curr_sum_weights, cardinality]
+                )
+                curr_sum_weights += cardinality
+
+        return curr_global_params
