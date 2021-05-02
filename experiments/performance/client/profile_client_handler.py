@@ -14,6 +14,7 @@ from fedless.models import (
     SerializedParameters,
     WeightsSerializerConfig,
     NpzWeightsSerializerConfig,
+    LocalDifferentialPrivacyParams,
 )
 from fedless.serialization import Base64StringConverter
 from fedless.serialization import NpzWeightsSerializer, serialize_model
@@ -58,7 +59,14 @@ if __name__ == "__main__":
         result = default_handler(
             data_config=data,
             model_config=model,
-            hyperparams=Hyperparams(batch_size=32, epochs=2, metrics=["accuracy"]),
+            hyperparams=Hyperparams(
+                batch_size=32,
+                epochs=2,
+                metrics=["accuracy"],
+                local_privacy=LocalDifferentialPrivacyParams(
+                    l2_norm_clip=2.0, noise_multiplier=1.0, num_microbatches=1
+                ),
+            ),
         )
     profiler.disable()
     (
