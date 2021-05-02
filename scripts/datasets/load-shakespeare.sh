@@ -30,6 +30,7 @@ if [ ! -d venv ]; then
     python3 -m virtualenv venv
 fi
 
+# shellcheck disable=SC1091
 source venv/bin/activate
 cd leaf
 python3 -m pip install --upgrade pip

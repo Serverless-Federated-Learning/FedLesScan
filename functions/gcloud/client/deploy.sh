@@ -9,13 +9,17 @@ fi
 
 COMMIT_HASH=$(git rev-parse HEAD)
 
-# shellcheck disable=SC2140
-gcloud functions deploy http \
-  --runtime python38 \
-  --trigger-http \
-  --allow-unauthenticated \
-  --memory=2048MB \
-  --timeout=300s \
-  --max-instances 50 \
-  --set-build-env-vars GIT_COMMIT_IDENTIFIER="@$COMMIT_HASH",GITHUB_AUTH_TOKEN="$GITHUB_AUTH_TOKEN"
-
+for i in {1..5}; do
+  function_name="http-${i}"
+  echo "Deploying function $function_name"
+  # shellcheck disable=SC2140
+  gcloud functions deploy "$function_name" \
+    --runtime python38 \
+    --trigger-http \
+    --entry-point="http" \
+    --allow-unauthenticated \
+    --memory=2048MB \
+    --timeout=300s \
+    --max-instances 50 \
+    --set-build-env-vars GIT_COMMIT_IDENTIFIER="@$COMMIT_HASH",GITHUB_AUTH_TOKEN="$GITHUB_AUTH_TOKEN" &
+done
