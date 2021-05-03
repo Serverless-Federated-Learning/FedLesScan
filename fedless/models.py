@@ -360,6 +360,7 @@ class InvokerParams(BaseModel):
     round_id: int
     client_id: str
     database: MongodbConnectionConfig
+    http_headers: Optional[Dict] = None
 
 
 class ClientInvocationParams(BaseModel):

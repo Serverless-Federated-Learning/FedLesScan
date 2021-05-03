@@ -60,6 +60,7 @@ from fedless.serialization import (
     serialize_model,
 )
 from fedless.data import DatasetLoaderBuilder
+from fedless.auth import CognitoClient
 
 
 class FedkeeperFunctions(pydantic.BaseModel):
@@ -80,11 +81,21 @@ class FedkeeperClientsConfig(pydantic.BaseModel):
     hyperparams: Optional[Hyperparams]
 
 
+class CognitoConfig(pydantic.BaseModel):
+    user_pool_id: str
+    region_name: str
+    auth_endpoint: str
+    invoker_client_id: str
+    invoker_client_secret: str
+    required_scopes: List[str] = ["client-functions/invoke"]
+
+
 class ClusterConfig(pydantic.BaseModel):
     database: MongodbConnectionConfig
     clients: FedkeeperClientsConfig
     providers: Dict[str, FaaSProviderConfig]
     fedkeeper: FedkeeperFunctions
+    cognito: Optional[CognitoConfig]
 
 
 # Helper functions to create dataset shards / model
@@ -244,6 +255,20 @@ class FedkeeperStrategy(FederatedLearningStrategy):
             password=config.database.password,
         )
         self.client_timing_infos = []
+        self.cognito_auth_token: str = None
+
+    def fetch_cognito_auth_token(self) -> str:
+        if not self.config.cognito:
+            raise ValueError(f"No cognito configuration given")
+        cognito = CognitoClient(user_pool_id=self.config.cognito.user_pool_id,
+                                region_name=self.config.cognito.region_name)
+        self.cognito_auth_token = cognito.fetch_token_for_client(
+            auth_endpoint=self.config.cognito.auth_endpoint,
+            client_id=self.config.cognito.invoker_client_id,
+            client_secret=self.config.cognito.invoker_client_secret,
+            required_scopes=self.config.cognito.required_scopes,
+        )
+        return self.cognito_auth_token
 
     def _init_clients(
             self,
@@ -376,12 +401,14 @@ class FedkeeperStrategy(FederatedLearningStrategy):
     async def _invoke_clients(self, clients_in_round, round_id, session_id):
         print(f"Running round {round_id} with {len(clients_in_round)} clients")
         client_tasks = []
+        http_headers = {"Authorization": f"Bearer {self.fetch_cognito_auth_token()}"} if self.config.cognito else {}
         for client in clients_in_round:
             invoker_params = InvokerParams(
                 session_id=session_id,
                 round_id=round_id,
                 client_id=client.client_id,
                 database=self.config.database,
+                http_headers=http_headers
             )
 
             async def g(params, invoker):
@@ -428,7 +455,6 @@ class FedkeeperStrategy(FederatedLearningStrategy):
 
         with (out_dir / f"config_{session_id}.yaml").open("w") as f:
             yaml.dump(self.config.dict(), f)
-
 
         client_configs = list(client_config_dao.load_all(session_id=session_id))
         print(f"Found {len(client_configs)} registered clients for this session")
@@ -549,6 +575,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
 
             print(f"Global accuracy: {global_accuracy}, Global Loss: {global_loss}")
             f"Starting new round {aggregator_result.new_round_id}"
+
 
 @click.command()
 @click.option(

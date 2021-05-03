@@ -35,4 +35,4 @@ functions:
           authorizer:
             name: jwtAuthorizer
             scopes:
-              - client-0/invoke
+              - client-functions/invoke
