@@ -7,7 +7,7 @@ import pandas as pd
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
-from multiprocessing import Pool
+from multiprocessing import Pool, set_start_method
 import random
 
 import click
@@ -187,4 +187,5 @@ def run(devices, epochs, local_epochs, local_batch_size, clients_per_round, l2_n
         )
 
 if __name__ == "__main__":
+    set_start_method('spawn', force=True)
     run()
