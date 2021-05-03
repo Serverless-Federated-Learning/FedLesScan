@@ -1,5 +1,7 @@
 import os
 import time
+from collections import defaultdict
+from typing import Iterator, Tuple
 
 import pandas as pd
 
@@ -27,7 +29,8 @@ from fedless.models import (
     SerializedParameters,
     WeightsSerializerConfig,
     NpzWeightsSerializerConfig,
-    LocalDifferentialPrivacyParams,
+    LocalDifferentialPrivacyParams, ClientResult,
+    EpsDelta
 )
 from fedless.serialization import (
     serialize_model,
@@ -36,34 +39,55 @@ from fedless.serialization import (
 )
 
 
+class NaiveAccounter:
+
+    def __init__(self):
+        self._client_guarantees = defaultdict(list)
+        self._current_guarantees = dict()
+
+    def update(self, results: Iterator[Tuple[MNISTConfig, EpsDelta]]):
+        for data_config, guarantees in results:
+
+            print(data_config, guarantees)
+            key = data_config.json()
+            self._client_guarantees[key].append(guarantees)
+
+            if not key in self._current_guarantees:
+                self._current_guarantees[key] = (guarantees.eps, guarantees.delta)
+            else:
+                eps, delta = self._current_guarantees[key]
+                if delta != guarantees.delta:
+                    print("Warning, eps is wrong!")
+                self._current_guarantees[key] = (guarantees.eps + eps, guarantees.delta)
+            print(key, self._current_guarantees[key])
+
+
 @click.command()
 @click.option("--devices", type=int, default=100)
 @click.option("--epochs", type=int, default=100)
-@click.option("--local-epochs", type=int, default=10)
-@click.option("--clients-per-round", type=int, default=25)
+@click.option("--local-epochs", type=int, default=2)
+@click.option("--local-batch-size", type=int, default=128)
+@click.option("--clients-per-round", type=int, default=2)
 @click.option("--l2-norm-clip", type=float, default=4.0)
-def run(devices, epochs, local_epochs, clients_per_round, l2_norm_clip):
+@click.option("--noise-multiplier", type=float, default=1.0)
+@click.option("--local-dp/--no-local-dp", type=bool, default=True)
+def run(devices, epochs, local_epochs, local_batch_size, clients_per_round, l2_norm_clip, noise_multiplier, local_dp):
     # Setup
-
     privacy_params = (
         LocalDifferentialPrivacyParams(
-            l2_norm_clip=l2_norm_clip, noise_multiplier=1.0, num_microbatches=8
+            l2_norm_clip=l2_norm_clip, noise_multiplier=noise_multiplier, num_microbatches=1
         )
-        if l2_norm_clip != 0.0
+        if l2_norm_clip != 0.0 and noise_multiplier != 0.0 and local_dp
         else None
     )
     hyperparams = Hyperparams(
-        batch_size=32,
+        batch_size=local_batch_size,
         epochs=local_epochs,
         metrics=["accuracy"],
         optimizer="Adam",
         local_privacy=privacy_params,
     )
-    splits = create_mnist_train_data_loader_configs(n_devices=devices, n_shards=200)
-    data_configs = [
-        DatasetLoaderConfig(type="mnist", params=MNISTConfig(indices=client_idx_list))
-        for client_idx_list in splits
-    ]
+    data_configs = list(create_mnist_train_data_loader_configs(n_devices=devices, n_shards=200))
     test_config = DatasetLoaderConfig(type="mnist", params=MNISTConfig(split="test"))
     test_set = DatasetLoaderBuilder.from_config(test_config).load()
     model = create_mnist_cnn()
@@ -80,6 +104,8 @@ def run(devices, epochs, local_epochs, clients_per_round, l2_norm_clip):
     round_results = []
     test_accuracy = -1.0
     epoch = 0
+    accounter = NaiveAccounter()
+    start_time = time.time()
     while test_accuracy < 0.95 and epoch < epochs:
         model_loader = ModelLoaderConfig(
             type="simple",
@@ -117,6 +143,9 @@ def run(devices, epochs, local_epochs, clients_per_round, l2_norm_clip):
         # for result in results:
         #    print(result.history)
 
+        if local_dp:
+            accounter.update(zip(data_configs_for_round, map(lambda result: result.privacy_guarantees, results)))
+
         new_parameters = FedAvgAggregator().aggregate(results)
         new_parameters_bytes = NpzWeightsSerializer().serialize(new_parameters)
         new_parameters_string = Base64StringConverter.to_str(new_parameters_bytes)
@@ -153,9 +182,9 @@ def run(devices, epochs, local_epochs, clients_per_round, l2_norm_clip):
         )
 
         pd.DataFrame.from_records(round_results).to_csv(
-            f"results_{devices}_{epochs}_{local_epochs}_{clients_per_round}.csv"
+            f"results_{devices}_{epochs}_{local_epochs}_{local_batch_size}"
+            f"_{clients_per_round}_{l2_norm_clip}_{noise_multiplier}_{local_dp}_{start_time}.csv"
         )
-
 
 if __name__ == "__main__":
     run()
