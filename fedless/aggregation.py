@@ -55,7 +55,7 @@ def default_aggregation_handler(
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
 
-        previous_results = list(
+        previous_results: List[ClientResult] = list(
             result_dao.load_results_for_round(session_id=session_id, round_id=round_id)
         )
 
@@ -78,8 +78,16 @@ def default_aggregation_handler(
             session_id=session_id, round_id=new_round_id, params=serialized_params
         )
 
+        test_results = [
+            result.test_metrics
+            for result in previous_results
+            if result.test_metrics is not None
+        ]
+
         return AggregatorFunctionResult(
-            new_round_id=new_round_id, num_clients=len(previous_results)
+            new_round_id=new_round_id,
+            num_clients=len(previous_results),
+            test_results=test_results or None,
         )
     except (SerializationError, PersistenceError) as e:
         raise AggregationError(e) from e

@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Union, Dict, List
+from typing import Optional, Union, Dict, List, Tuple
 from urllib import parse
 
 import numpy as np
@@ -383,6 +383,7 @@ class AggregatorFunctionParams(BaseModel):
 class AggregatorFunctionResult(BaseModel):
     new_round_id: int
     num_clients: int
+    test_results: Optional[List[TestMetrics]]
 
 
 class EvaluatorParams(BaseModel):
