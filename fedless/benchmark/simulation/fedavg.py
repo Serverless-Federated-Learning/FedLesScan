@@ -29,8 +29,9 @@ from fedless.models import (
     SerializedParameters,
     WeightsSerializerConfig,
     NpzWeightsSerializerConfig,
-    LocalDifferentialPrivacyParams, ClientResult,
-    EpsDelta
+    LocalDifferentialPrivacyParams,
+    ClientResult,
+    EpsDelta,
 )
 from fedless.serialization import (
     serialize_model,
@@ -40,7 +41,6 @@ from fedless.serialization import (
 
 
 class NaiveAccounter:
-
     def __init__(self):
         self._client_guarantees = defaultdict(list)
         self._current_guarantees = dict()
@@ -71,11 +71,22 @@ class NaiveAccounter:
 @click.option("--l2-norm-clip", type=float, default=4.0)
 @click.option("--noise-multiplier", type=float, default=1.0)
 @click.option("--local-dp/--no-local-dp", type=bool, default=True)
-def run(devices, epochs, local_epochs, local_batch_size, clients_per_round, l2_norm_clip, noise_multiplier, local_dp):
+def run(
+    devices,
+    epochs,
+    local_epochs,
+    local_batch_size,
+    clients_per_round,
+    l2_norm_clip,
+    noise_multiplier,
+    local_dp,
+):
     # Setup
     privacy_params = (
         LocalDifferentialPrivacyParams(
-            l2_norm_clip=l2_norm_clip, noise_multiplier=noise_multiplier, num_microbatches=1
+            l2_norm_clip=l2_norm_clip,
+            noise_multiplier=noise_multiplier,
+            num_microbatches=1,
         )
         if l2_norm_clip != 0.0 and noise_multiplier != 0.0 and local_dp
         else None
@@ -87,7 +98,9 @@ def run(devices, epochs, local_epochs, local_batch_size, clients_per_round, l2_n
         optimizer="Adam",
         local_privacy=privacy_params,
     )
-    data_configs = list(create_mnist_train_data_loader_configs(n_devices=devices, n_shards=200))
+    data_configs = list(
+        create_mnist_train_data_loader_configs(n_devices=devices, n_shards=200)
+    )
     test_config = DatasetLoaderConfig(type="mnist", params=MNISTConfig(split="test"))
     test_set = DatasetLoaderBuilder.from_config(test_config).load()
     model = create_mnist_cnn()
@@ -144,7 +157,12 @@ def run(devices, epochs, local_epochs, local_batch_size, clients_per_round, l2_n
         #    print(result.history)
 
         if local_dp:
-            accounter.update(zip(data_configs_for_round, map(lambda result: result.privacy_guarantees, results)))
+            accounter.update(
+                zip(
+                    data_configs_for_round,
+                    map(lambda result: result.privacy_guarantees, results),
+                )
+            )
 
         new_parameters = FedAvgAggregator().aggregate(results)
         new_parameters_bytes = NpzWeightsSerializer().serialize(new_parameters)
@@ -186,6 +204,7 @@ def run(devices, epochs, local_epochs, local_batch_size, clients_per_round, l2_n
             f"_{clients_per_round}_{l2_norm_clip}_{noise_multiplier}_{local_dp}_{start_time}.csv"
         )
 
+
 if __name__ == "__main__":
-    set_start_method('spawn', force=True)
+    set_start_method("spawn", force=True)
     run()

@@ -50,7 +50,7 @@ def function_invoker_handler(
     round_id: int,
     client_id: str,
     database: MongodbConnectionConfig,
-    http_headers: Optional[Dict] = None
+    http_headers: Optional[Dict] = None,
 ) -> InvocationResult:
     db = pymongo.MongoClient(
         host=database.host,

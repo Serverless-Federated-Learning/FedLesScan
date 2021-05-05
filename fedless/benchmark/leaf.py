@@ -36,10 +36,10 @@ def create_femnist_cnn(num_classes: int = 62, small: bool = False):
 
 
 def create_shakespeare_lstm(
-        units: int = 256,
-        vocab_size: int = 82,
-        sequence_length: int = 80,
-        embedding_size: int = 8,
+    units: int = 256,
+    vocab_size: int = 82,
+    sequence_length: int = 80,
+    embedding_size: int = 8,
 ):
     model = keras.Sequential()
     keras.Input(shape=(sequence_length, vocab_size))
@@ -57,7 +57,7 @@ def create_shakespeare_lstm(
 
 
 def split_shakespear_source_by_users(
-        url: str, http_params: Optional[Dict] = None
+    url: str, http_params: Optional[Dict] = None
 ) -> Iterable[LEAFConfig]:
     loader = LEAF(dataset=LeafDataset.SHAKESPEARE, location=url)
     loader.load()
@@ -71,7 +71,5 @@ def split_shakespear_source_by_users(
         )
 
 
-def split_source_by_users(
-        source_urls: List[LEAFConfig]
-):
+def split_source_by_users(source_urls: List[LEAFConfig]):
     return source_urls

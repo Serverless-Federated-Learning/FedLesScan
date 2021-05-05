@@ -102,7 +102,7 @@ class ClusterConfig(pydantic.BaseModel):
 
 
 def create_mnist_train_data_loader_configs(
-        n_devices: int, n_shards: int
+    n_devices: int, n_shards: int
 ) -> Iterator[DatasetLoaderConfig]:
     if n_shards % n_devices != 0:
         raise ValueError(
@@ -119,8 +119,8 @@ def create_mnist_train_data_loader_configs(
 
     for client_idx in range(n_devices):
         client_shards = sorted_labels_idx_shards[
-                        client_idx * shards_per_device: (client_idx + 1) * shards_per_device
-                        ]
+            client_idx * shards_per_device : (client_idx + 1) * shards_per_device
+        ]
         indices = np.concatenate(client_shards)
         # noinspection PydanticTypeChecker,PyTypeChecker
         yield DatasetLoaderConfig(
@@ -173,12 +173,12 @@ async def get_deployment_manager(cluster_provider) -> FaaSProvider:
 
 class FederatedLearningStrategy:
     def __init__(
-            self,
-            model: keras.Model,
-            client_data_configs: List[
-                Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]
-            ],
-            test_data_config: Optional[DatasetLoaderConfig] = None,
+        self,
+        model: keras.Model,
+        client_data_configs: List[
+            Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]
+        ],
+        test_data_config: Optional[DatasetLoaderConfig] = None,
     ):
         self.model = model
         self.test_data_config = test_data_config
@@ -203,7 +203,7 @@ class FederatedLearningStrategy:
         return eval_dict
 
     def evaluate_clients(
-            self, metrics: Iterator[TestMetrics], metric_names: List[str] = None
+        self, metrics: Iterator[TestMetrics], metric_names: List[str] = None
     ) -> Dict:
 
         if metric_names is None:
@@ -229,13 +229,13 @@ class FederatedLearningStrategy:
 
 class FedkeeperStrategy(FederatedLearningStrategy):
     def __init__(
-            self,
-            model: keras.Model,
-            client_data_configs: List[
-                Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]
-            ],
-            config: ClusterConfig,
-            test_data: Optional[DatasetLoaderConfig] = None,
+        self,
+        model: keras.Model,
+        client_data_configs: List[
+            Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]
+        ],
+        config: ClusterConfig,
+        test_data: Optional[DatasetLoaderConfig] = None,
     ):
         super(FedkeeperStrategy, self).__init__(
             model=model,
@@ -260,8 +260,10 @@ class FedkeeperStrategy(FederatedLearningStrategy):
     def fetch_cognito_auth_token(self) -> str:
         if not self.config.cognito:
             raise ValueError(f"No cognito configuration given")
-        cognito = CognitoClient(user_pool_id=self.config.cognito.user_pool_id,
-                                region_name=self.config.cognito.region_name)
+        cognito = CognitoClient(
+            user_pool_id=self.config.cognito.user_pool_id,
+            region_name=self.config.cognito.region_name,
+        )
         self.cognito_auth_token = cognito.fetch_token_for_client(
             auth_endpoint=self.config.cognito.auth_endpoint,
             client_id=self.config.cognito.invoker_client_id,
@@ -271,8 +273,8 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         return self.cognito_auth_token
 
     def _init_clients(
-            self,
-            session_id: str,
+        self,
+        session_id: str,
     ):
         client_config_dao = ClientConfigDao(db=self.mongo_client)
 
@@ -384,7 +386,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
             function_config=function,
             data=params.dict(),
             session=retry_session(backoff_factor=1.0, retries=5),
-            timeout=60
+            timeout=60,
         )
         print(f"Invoker received result from client {params.client_id}: {result}")
         self.client_timing_infos.append(
@@ -401,14 +403,18 @@ class FedkeeperStrategy(FederatedLearningStrategy):
     async def _invoke_clients(self, clients_in_round, round_id, session_id):
         print(f"Running round {round_id} with {len(clients_in_round)} clients")
         client_tasks = []
-        http_headers = {"Authorization": f"Bearer {self.fetch_cognito_auth_token()}"} if self.config.cognito else {}
+        http_headers = (
+            {"Authorization": f"Bearer {self.fetch_cognito_auth_token()}"}
+            if self.config.cognito
+            else {}
+        )
         for client in clients_in_round:
             invoker_params = InvokerParams(
                 session_id=session_id,
                 round_id=round_id,
                 client_id=client.client_id,
                 database=self.config.database,
-                http_headers=http_headers
+                http_headers=http_headers,
             )
 
             async def g(params, invoker):
@@ -421,12 +427,12 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         return client_tasks
 
     async def run(
-            self,
-            clients_per_round: int,
-            allowed_stragglers: int,
-            out_dir: Path,
-            session_id: Optional[str] = None,
-            accuracy_threshold: float = 0.99,
+        self,
+        clients_per_round: int,
+        allowed_stragglers: int,
+        out_dir: Path,
+        session_id: Optional[str] = None,
+        accuracy_threshold: float = 0.99,
     ):
         urllib3.disable_warnings()
         await self.deploy()
@@ -469,9 +475,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
                 client_configs, min(clients_per_round, len(client_configs))
             )
             try:
-                await self._invoke_clients(
-                    clients_in_round, round_id, session_id
-                )
+                await self._invoke_clients(clients_in_round, round_id, session_id)
             except InvocationTimeOut as e:
                 print(e)
             clients_finished_time = time.time()
@@ -553,7 +557,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
                     "round_id": round_id,
                     "round_seconds": time.time() - round_start_time,
                     "clients_finished_seconds": (
-                            clients_finished_time - round_start_time
+                        clients_finished_time - round_start_time
                     ),
                     "aggregator_seconds": aggregator_end_time - aggregator_start_time,
                     "num_clients_round": len(clients_in_round),
@@ -590,12 +594,12 @@ class FedkeeperStrategy(FederatedLearningStrategy):
 @click.option("--accuracy-threshold", type=float, default=0.99)
 @click.option("--log-dir", type=click.Path(), default=None)
 def run(
-        config: str,
-        session_id: str,
-        clients_per_round: int,
-        allowed_stragglers: int,
-        accuracy_threshold: float = 0.99,
-        log_dir: str = None,
+    config: str,
+    session_id: str,
+    clients_per_round: int,
+    allowed_stragglers: int,
+    accuracy_threshold: float = 0.99,
+    log_dir: str = None,
 ):
     config_path = Path(config).parent
     config: ClusterConfig = parse_yaml_file(config, model=ClusterConfig)

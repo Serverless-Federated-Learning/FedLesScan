@@ -7,8 +7,12 @@ import click
 from fedless.benchmark.common import parse_yaml_file
 from fedless.models import DatasetLoaderConfig, MNISTConfig
 
-from fedless.benchmark.fedkeeper import FedkeeperStrategy, create_mnist_cnn, create_mnist_train_data_loader_configs, \
-    ClusterConfig
+from fedless.benchmark.fedkeeper import (
+    FedkeeperStrategy,
+    create_mnist_cnn,
+    create_mnist_train_data_loader_configs,
+    ClusterConfig,
+)
 
 
 @click.command()
@@ -23,17 +27,23 @@ from fedless.benchmark.fedkeeper import FedkeeperStrategy, create_mnist_cnn, cre
 @click.option("--allowed-stragglers", type=int, default=5)
 @click.option("--accuracy-threshold", type=float, default=0.99)
 @click.option("--log-dir", type=click.Path(), default=None)
-def run(config: str,
-        n_clients: int,
-        clients_per_round: int,
-        allowed_stragglers: int,
-        accuracy_threshold: float,
-        log_dir: str):
+def run(
+    config: str,
+    n_clients: int,
+    clients_per_round: int,
+    allowed_stragglers: int,
+    accuracy_threshold: float,
+    log_dir: str,
+):
     config_path = Path(config).parent
     config: ClusterConfig = parse_yaml_file(config, model=ClusterConfig)
 
     model = create_mnist_cnn()
-    client_data_configs = list(create_mnist_train_data_loader_configs(n_devices=n_clients, n_shards=n_clients * 2))
+    client_data_configs = list(
+        create_mnist_train_data_loader_configs(
+            n_devices=n_clients, n_shards=n_clients * 2
+        )
+    )
 
     # Create log directory
     log_dir = Path(log_dir) if log_dir else config_path / "logs"
@@ -43,7 +53,7 @@ def run(config: str,
         config=config,
         model=model,
         client_data_configs=client_data_configs,
-        test_data=DatasetLoaderConfig(type="mnist", params=MNISTConfig(split="test"))
+        test_data=DatasetLoaderConfig(type="mnist", params=MNISTConfig(split="test")),
     )
 
     asyncio.run(
@@ -54,6 +64,7 @@ def run(config: str,
             out_dir=log_dir,
         )
     )
+
 
 if __name__ == "__main__":
     run()
