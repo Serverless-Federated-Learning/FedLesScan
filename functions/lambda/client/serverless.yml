@@ -33,3 +33,5 @@ functions:
           method: post
           integration: lambda-proxy
           private: true
+
+# WARNING: DO NOT PUT ANYTHING HERE OR BELOW FOR DEPLOYMENT SCRIPT TO WORK

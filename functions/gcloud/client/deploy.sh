@@ -9,7 +9,7 @@ fi
 
 COMMIT_HASH=$(git rev-parse HEAD)
 
-for i in {1..5}; do
+for i in {1..50}; do
   function_name="http-${i}"
   echo "Deploying function $function_name"
   # shellcheck disable=SC2140
@@ -22,4 +22,8 @@ for i in {1..5}; do
     --timeout=300s \
     --max-instances 50 \
     --set-build-env-vars GIT_COMMIT_IDENTIFIER="@$COMMIT_HASH",GITHUB_AUTH_TOKEN="$GITHUB_AUTH_TOKEN" &
+  if [ "$i" -gt 20 ]
+  then
+    sleep 5
+  fi
 done
