@@ -386,7 +386,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
             function_config=function,
             data=params.dict(),
             session=retry_session(backoff_factor=1.0, retries=5),
-            timeout=60,
+            timeout=500,
         )
         print(f"Invoker received result from client {params.client_id}: {result}")
         self.client_timing_infos.append(

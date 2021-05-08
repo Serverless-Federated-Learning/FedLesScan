@@ -186,7 +186,7 @@ class ApiGatewayLambdaFunctionConfig(BaseModel):
     """Lambda function deployed via Api Gateway. All requests time out after 30 seconds due to fixed limit"""
 
     type: str = Field("lambda", const=True)
-    apigateway: AnyUrl
+    apigateway: str
     api_key: Optional[str]
 
 
@@ -194,7 +194,7 @@ class GCloudFunctionConfig(BaseModel):
     """Google cloud function"""
 
     type: str = Field("gcloud", const=True)
-    url: AnyUrl
+    url: str
 
 
 class FunctionInvocationConfig(BaseModel):
