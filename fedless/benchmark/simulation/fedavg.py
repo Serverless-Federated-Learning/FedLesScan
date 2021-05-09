@@ -31,7 +31,7 @@ from fedless.models import (
     NpzWeightsSerializerConfig,
     LocalDifferentialPrivacyParams,
     ClientResult,
-    EpsDelta,
+    LocalPrivacyGuarantees,
 )
 from fedless.serialization import (
     serialize_model,
@@ -45,7 +45,7 @@ class NaiveAccounter:
         self._client_guarantees = defaultdict(list)
         self._current_guarantees = dict()
 
-    def update(self, results: Iterator[Tuple[MNISTConfig, EpsDelta]]):
+    def update(self, results: Iterator[Tuple[MNISTConfig, LocalPrivacyGuarantees]]):
         for data_config, guarantees in results:
 
             print(data_config, guarantees)

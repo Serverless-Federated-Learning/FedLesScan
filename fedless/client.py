@@ -1,14 +1,17 @@
+import math
 from typing import Optional
 
 import tensorflow.keras as keras
+from absl import app
 from tensorflow.python.keras.callbacks import History
 from tensorflow_privacy import (
     DPKerasAdamOptimizer,
     DPKerasAdagradOptimizer,
     DPKerasSGDOptimizer,
+    compute_rdp,
 )
 from tensorflow_privacy.privacy.analysis.compute_dp_sgd_privacy_lib import (
-    compute_dp_sgd_privacy,
+    apply_dp_sgd_analysis,
 )
 
 from fedless.data import (
@@ -23,7 +26,7 @@ from fedless.models import (
     ClientResult,
     SerializedParameters,
     TestMetrics,
-    EpsDelta,
+    LocalPrivacyGuarantees,
 )
 from fedless.serialization import (
     ModelLoadError,
@@ -127,7 +130,7 @@ def run(
         train_cardinality = dataset.cardinality()
         val_dataset = None
 
-    privacy_guarantees: Optional[EpsDelta] = None
+    privacy_guarantees: Optional[LocalPrivacyGuarantees] = None
     if hyperparams.local_privacy:
         privacy_params = hyperparams.local_privacy
         opt_config = optimizer.get_config()
@@ -159,14 +162,29 @@ def run(
             )
 
         delta = 1.0 / (int(train_cardinality) ** 1.1)
-        eps, opt_order = compute_dp_sgd_privacy(
-            n=train_cardinality,
-            batch_size=hyperparams.batch_size,
-            noise_multiplier=privacy_params.noise_multiplier,
-            epochs=hyperparams.epochs,
-            delta=delta,
+        q = hyperparams.batch_size / train_cardinality  # q - the sampling ratio.
+        if q > 1:
+            raise app.UsageError("n must be larger than the batch size.")
+        orders = (
+            [1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 3.0, 3.5, 4.0, 4.5]
+            + list(range(5, 64))
+            + [128, 256, 512]
         )
-        privacy_guarantees = EpsDelta(eps=eps, delta=delta)
+        steps = int(
+            math.ceil(hyperparams.epochs * train_cardinality / hyperparams.batch_size)
+        )
+        eps, opt_order = apply_dp_sgd_analysis(
+            q, privacy_params.noise_multiplier, steps, orders, delta
+        )
+        rdp = compute_rdp(
+            q,
+            noise_multiplier=privacy_params.noise_multiplier,
+            steps=steps,
+            orders=orders,
+        )
+        privacy_guarantees = LocalPrivacyGuarantees(
+            eps=eps, delta=delta, rdp=rdp.tolist(), orders=orders, steps=steps
+        )
 
         # Manually set loss' reduction method to None to support per-example loss calculation
         # Required to enable different microbatch sizes

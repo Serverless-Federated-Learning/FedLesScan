@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Union, Dict, List, Tuple
+from typing import Optional, Union, Dict, List, Tuple, Any
 from urllib import parse
 
 import numpy as np
@@ -271,9 +271,12 @@ class SerializedParameters(BaseModel):
     string_format: BinaryStringFormat = BinaryStringFormat.BASE64
 
 
-class EpsDelta(BaseModel):
+class LocalPrivacyGuarantees(BaseModel):
     eps: float
     delta: float
+    rdp: Optional[List]
+    orders: Optional[List]
+    steps: Optional[int]
 
 
 class ClientResult(BaseModel):
@@ -288,7 +291,7 @@ class ClientResult(BaseModel):
         "(e.g. when the dataset source is a file). "
         "Source: https://www.tensorflow.org/api_docs/python/tf/data/Dataset#cardinality"
     )
-    privacy_guarantees: Optional[EpsDelta]
+    privacy_guarantees: Optional[LocalPrivacyGuarantees]
 
 
 class ClientResultStorageObject(BaseModel):

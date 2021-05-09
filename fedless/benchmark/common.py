@@ -19,7 +19,10 @@ def parse_yaml_file(path, model: Optional[Type[pydantic.BaseModel]] = None):
     except (KeyError, ValidationError) as e:
         raise click.ClickException(str(e))
 
+
 _pool = ThreadPoolExecutor(max_workers=200)
+
+
 def run_in_executor(f):
     @functools.wraps(f)
     def inner(*args, **kwargs):
