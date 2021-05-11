@@ -12,6 +12,7 @@ data:
             root /data/www;
         }
         location /data/ {
+            autoindex on;
             alias /datasets/;
         }
       }

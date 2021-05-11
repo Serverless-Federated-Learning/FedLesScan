@@ -40,4 +40,4 @@ cd data/femnist
 # From https://github.com/TalwalkarLab/leaf/blob/0d30b4d18c36551ee54e0076915b0c49c5dd9cd6/paper_experiments/femnist.sh
 split_seed="1549786796"
 sampling_seed="1549786595"
-./preprocess.sh -s niid --sf 0.05 -k 100 -t sample --smplseed ${sampling_seed} --spltseed ${split_seed}
+./preprocess.sh -s niid --sf 0.05 -k 100 -t sample --smplseed ${sampling_seed} --spltseed ${split_seed} --nochecksum
