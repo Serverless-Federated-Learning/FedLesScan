@@ -23,8 +23,7 @@ fi
 fi
 
 if [ ! -d leaf ]; then
-    git clone https://github.com/TalwalkarLab/leaf.git
-    git checkout 0d30b4d18c36551ee54e0076915b0c49c5dd9cd6
+    git clone https://github.com/andreas-grafberger/leaf.git
 fi
 if [ ! -d venv ]; then
     python3 -m pip install virtualenv
