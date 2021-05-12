@@ -3,7 +3,7 @@ import json
 from functools import reduce
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Union, Dict, Iterator, List, Optional
+from typing import Union, Dict, Iterator, List, Optional, Tuple
 
 import requests
 import tensorflow as tf
@@ -52,6 +52,7 @@ class LEAF(DatasetLoader):
         dataset: LeafDataset,
         location: Union[AnyHttpUrl, Path],
         http_params: Dict = None,
+        user_indices: Optional[List[int]] = None,
     ):
         """
         Create dataset loader for the specified source
@@ -63,8 +64,10 @@ class LEAF(DatasetLoader):
         self.dataset = dataset
         self.source = location
         self.http_params = http_params
+        self.user_indices = user_indices
+        self._users = []
 
-        if dataset != LeafDataset.FEMNIST:
+        if dataset not in [LeafDataset.FEMNIST, LeafDataset.SHAKESPEARE]:
             raise NotImplementedError()
 
     def _iter_dataset_files(self) -> Iterator[Union[AnyHttpUrl, Path]]:
@@ -77,23 +80,45 @@ class LEAF(DatasetLoader):
         else:
             yield self.source
 
-    @staticmethod
-    def _convert_dict_to_dataset(file_content: Dict) -> tf.data.Dataset:
+    @property
+    def users(self):
+        return self._users
+
+    def _convert_dict_to_dataset(
+        self, file_content: Dict, user_indices: List[int] = None
+    ) -> tf.data.Dataset:
         try:
             users = file_content["users"]
             user_data = file_content["user_data"]
-            for user in users:
-                data_for_user = user_data[user]
-                yield tf.data.Dataset.from_tensor_slices(
-                    (data_for_user["x"], data_for_user["y"])
-                )
+            self._users = users
+            for i, user in enumerate(users):
+                if not user_indices or i in user_indices:
+                    yield tf.data.Dataset.from_tensor_slices(
+                        self._process_user_data(user_data[user])
+                    )
         except (KeyError, TypeError, ValueError) as e:
             raise DatasetFormatError(e) from e
+
+    def _process_user_data(self, user_data: Dict) -> Tuple:
+        if self.dataset == LeafDataset.SHAKESPEARE:
+            vocabulary = "\n !\"&'(),-.0123456789:;>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[]abcdefghijklmnopqrstuvwxyz}"
+            vectorizer = tf.keras.layers.experimental.preprocessing.TextVectorization(
+                standardize=None,
+                split=tf.strings.bytes_split,
+                vocabulary=[c for c in vocabulary],
+            )
+            return vectorizer(tf.convert_to_tensor(user_data["x"])), vectorizer(
+                tf.convert_to_tensor(user_data["y"])
+            )
+
+        return user_data["x"], user_data["y"]
 
     def _process_all_sources(self) -> Iterator[tf.data.Dataset]:
         for source in self._iter_dataset_files():
             file_content: Dict = self._read_source(source)
-            for dataset in self._convert_dict_to_dataset(file_content):
+            for dataset in self._convert_dict_to_dataset(
+                file_content, user_indices=self.user_indices
+            ):
                 yield dataset
 
     def _read_source(self, source: Union[AnyHttpUrl, Path]) -> Dict:
@@ -179,6 +204,7 @@ class DatasetLoaderBuilder:
                 dataset=params.dataset,
                 location=params.location,
                 http_params=params.http_params,
+                user_indices=params.user_indices,
             )
         elif config.type == "mnist":
             params: MNISTConfig = config.params

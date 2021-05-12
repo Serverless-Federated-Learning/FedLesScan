@@ -50,6 +50,7 @@ def function_invoker_handler(
     round_id: int,
     client_id: str,
     database: MongodbConnectionConfig,
+    http_headers: Optional[Dict] = None,
 ) -> InvocationResult:
     db = pymongo.MongoClient(
         host=database.host,
@@ -91,6 +92,7 @@ def function_invoker_handler(
 
         # Call client
         session = retry_session(backoff_factor=1.0)
+        session.headers = http_headers or {}
         client_result = invoke_sync(
             function_config=client_config.function,
             data=client_params.dict(),

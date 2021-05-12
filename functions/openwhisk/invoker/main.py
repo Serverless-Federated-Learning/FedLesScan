@@ -17,4 +17,5 @@ def main(request):
         round_id=config.round_id,
         client_id=config.client_id,
         database=config.database,
+        http_headers=config.http_headers,
     )

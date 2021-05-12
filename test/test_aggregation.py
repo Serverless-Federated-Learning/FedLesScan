@@ -4,7 +4,11 @@ import pytest
 import numpy as np
 import tensorflow as tf
 
-from fedless.aggregation import FedAvgAggregator, UnknownCardinalityError
+from fedless.aggregation import (
+    FedAvgAggregator,
+    UnknownCardinalityError,
+    StreamFedAvgAggregator,
+)
 from fedless.models import (
     ClientResult,
     NpzWeightsSerializerConfig,
@@ -104,6 +108,14 @@ def test_fedavg_recovers_on_invalid_cardinality(
     final_params = FedAvgAggregator().aggregate(
         client_results=dummy_client_results, default_cardinality=1.0
     )
+    assert all(
+        [np.allclose(a, b) for a, b in zip_longest(final_params, dummy_expected_result)]
+    )
+
+
+def test_streamfedavg_aggregate_function(dummy_client_results, dummy_expected_result):
+    aggregator = StreamFedAvgAggregator()
+    final_params = aggregator.aggregate(client_results=dummy_client_results)
     assert all(
         [np.allclose(a, b) for a, b in zip_longest(final_params, dummy_expected_result)]
     )

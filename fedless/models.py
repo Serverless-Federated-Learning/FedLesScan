@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Union, Dict, List
+from typing import Optional, Union, Dict, List, Tuple, Any
 from urllib import parse
 
 import numpy as np
@@ -104,6 +104,12 @@ class LeafDataset(str, Enum):
     SENT140 = "sent140"
 
 
+class LocalDifferentialPrivacyParams(BaseModel):
+    l2_norm_clip: float
+    noise_multiplier: float
+    num_microbatches: int
+
+
 class Hyperparams(BaseModel):
     """Parameters for training and some data processing"""
 
@@ -115,14 +121,16 @@ class Hyperparams(BaseModel):
         description="Optimizer, either string with name of optimizer or "
         "a config dictionary retrieved via tf.keras.optimizers.serialize. ",
     )
-    loss: Optional[str] = Field(
+    loss: Optional[Union[str, Dict]] = Field(
         default=None,
-        description="Name of loss function, see https://www.tensorflow.org/api_docs/python/tf/keras/losses",
+        description="Name of loss function, see https://www.tensorflow.org/api_docs/python/tf/keras/losses, or "
+        "a config dictionary retrieved via tf.keras.losses.serialize. ",
     )
     metrics: Optional[List[str]] = Field(
         default=None,
         description="List of metrics to be evaluated by the model",
     )
+    local_privacy: Optional[LocalDifferentialPrivacyParams]
 
 
 class LEAFConfig(BaseModel):
@@ -132,6 +140,7 @@ class LEAFConfig(BaseModel):
     dataset: LeafDataset
     location: Union[AnyHttpUrl, Path]
     http_params: Dict = None
+    user_indices: Optional[List[int]] = None
 
 
 class MNISTConfig(BaseModel):
@@ -177,7 +186,7 @@ class ApiGatewayLambdaFunctionConfig(BaseModel):
     """Lambda function deployed via Api Gateway. All requests time out after 30 seconds due to fixed limit"""
 
     type: str = Field("lambda", const=True)
-    apigateway: AnyUrl
+    apigateway: str
     api_key: Optional[str]
 
 
@@ -185,7 +194,7 @@ class GCloudFunctionConfig(BaseModel):
     """Google cloud function"""
 
     type: str = Field("gcloud", const=True)
-    url: AnyUrl
+    url: str
 
 
 class FunctionInvocationConfig(BaseModel):
@@ -262,6 +271,14 @@ class SerializedParameters(BaseModel):
     string_format: BinaryStringFormat = BinaryStringFormat.BASE64
 
 
+class LocalPrivacyGuarantees(BaseModel):
+    eps: float
+    delta: float
+    rdp: Optional[List]
+    orders: Optional[List]
+    steps: Optional[int]
+
+
 class ClientResult(BaseModel):
     """Result of client function execution"""
 
@@ -274,6 +291,7 @@ class ClientResult(BaseModel):
         "(e.g. when the dataset source is a file). "
         "Source: https://www.tensorflow.org/api_docs/python/tf/data/Dataset#cardinality"
     )
+    privacy_guarantees: Optional[LocalPrivacyGuarantees]
 
 
 class ClientResultStorageObject(BaseModel):
@@ -345,6 +363,7 @@ class InvokerParams(BaseModel):
     round_id: int
     client_id: str
     database: MongodbConnectionConfig
+    http_headers: Optional[Dict] = None
 
 
 class ClientInvocationParams(BaseModel):
@@ -368,6 +387,7 @@ class AggregatorFunctionParams(BaseModel):
 class AggregatorFunctionResult(BaseModel):
     new_round_id: int
     num_clients: int
+    test_results: Optional[List[TestMetrics]]
 
 
 class EvaluatorParams(BaseModel):

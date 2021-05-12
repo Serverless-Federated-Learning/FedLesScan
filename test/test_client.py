@@ -34,12 +34,7 @@ def test_default_handler_calls_run_correctly(
     with patch("fedless.client.run") as mock_run:
         # noinspection PyTypeChecker
         default_handler(
-            None,
-            None,
-            hyperparams,
-            None,
-            weights_serializer,
-            string_serializer,
+            None, None, hyperparams, None, weights_serializer, string_serializer, True
         )
         mock_run.assert_called_with(
             data_loader=data_loader,
@@ -48,6 +43,7 @@ def test_default_handler_calls_run_correctly(
             hyperparams=hyperparams,
             weights_serializer=weights_serializer,
             string_serializer=string_serializer,
+            verbose=True,
         )
 
 
@@ -155,7 +151,9 @@ def test_run_overwrites_hyperparameters(
         )
 
         mocked_compile.assert_called_with(
-            optimizer=optimizer, loss=loss, metrics=metrics
+            optimizer=optimizer,
+            loss=tf.keras.losses.get(loss),
+            metrics=metrics,
         )
 
 

@@ -55,7 +55,7 @@ def default_aggregation_handler(
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
 
-        previous_results = list(
+        previous_results: List[ClientResult] = list(
             result_dao.load_results_for_round(session_id=session_id, round_id=round_id)
         )
 
@@ -78,8 +78,16 @@ def default_aggregation_handler(
             session_id=session_id, round_id=new_round_id, params=serialized_params
         )
 
+        test_results = [
+            result.test_metrics
+            for result in previous_results
+            if result.test_metrics is not None
+        ]
+
         return AggregatorFunctionResult(
-            new_round_id=new_round_id, num_clients=len(previous_results)
+            new_round_id=new_round_id,
+            num_clients=len(previous_results),
+            test_results=test_results or None,
         )
     except (SerializationError, PersistenceError) as e:
         raise AggregationError(e) from e
@@ -130,3 +138,40 @@ class FedAvgAggregator(ParameterAggregator):
             client_cardinalities.append(cardinality)
 
         return self._aggregate(client_parameters, client_cardinalities)
+
+
+class StreamFedAvgAggregator(FedAvgAggregator):
+    def aggregate(
+        self,
+        client_results: Iterator[ClientResult],
+        default_cardinality: Optional[float] = None,
+    ) -> Parameters:
+
+        curr_global_params: Parameters = None
+        curr_sum_weights = 0
+        for client_result in client_results:
+            params = deserialize_parameters(client_result.parameters)
+            cardinality = client_result.cardinality
+
+            # Check if cardinality is valid and handle accordingly
+            if cardinality in [
+                tf.data.UNKNOWN_CARDINALITY,
+                tf.data.INFINITE_CARDINALITY,
+            ]:
+                if not default_cardinality:
+                    raise UnknownCardinalityError(
+                        f"Cardinality for client result invalid. "
+                    )
+                else:
+                    cardinality = default_cardinality
+
+            if curr_global_params is None:
+                curr_global_params = params
+                curr_sum_weights = cardinality
+            else:
+                curr_global_params = self._aggregate(
+                    [curr_global_params, params], [curr_sum_weights, cardinality]
+                )
+                curr_sum_weights += cardinality
+
+        return curr_global_params

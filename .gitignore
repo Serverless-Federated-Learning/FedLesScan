@@ -183,3 +183,5 @@ $RECYCLE.BIN/
 
 # Project specific
 playground
+*.prof
+out

@@ -1,5 +1,18 @@
+import math
+from typing import Optional
+
 import tensorflow.keras as keras
+from absl import app
 from tensorflow.python.keras.callbacks import History
+from tensorflow_privacy import (
+    DPKerasAdamOptimizer,
+    DPKerasAdagradOptimizer,
+    DPKerasSGDOptimizer,
+    compute_rdp,
+)
+from tensorflow_privacy.privacy.analysis.compute_dp_sgd_privacy_lib import (
+    apply_dp_sgd_analysis,
+)
 
 from fedless.data import (
     DatasetLoader,
@@ -13,6 +26,7 @@ from fedless.models import (
     ClientResult,
     SerializedParameters,
     TestMetrics,
+    LocalPrivacyGuarantees,
 )
 from fedless.serialization import (
     ModelLoadError,
@@ -37,6 +51,7 @@ def default_handler(
     test_data_config: DatasetLoaderConfig = None,
     weights_serializer: WeightsSerializer = NpzWeightsSerializer(),
     string_serializer: StringSerializer = Base64StringConverter(),
+    verbose: bool = True,
 ) -> ClientResult:
     """
     Basic handler that only requires data and model loader configs plus hyperparams.
@@ -57,6 +72,7 @@ def default_handler(
             weights_serializer=weights_serializer,
             string_serializer=string_serializer,
             test_data_loader=test_data_loader,
+            verbose=verbose,
         )
     except (
         NotImplementedError,
@@ -77,6 +93,7 @@ def run(
     string_serializer: StringSerializer,
     validation_split: float = None,
     test_data_loader: DatasetLoader = None,
+    verbose: bool = True,
 ) -> ClientResult:
     """
     Loads model and data, trains the model and returns serialized parameters wrapped as :class:`ClientResult`
@@ -89,7 +106,7 @@ def run(
     model = model_loader.load()
 
     # Set configured optimizer if specified
-    loss = hyperparams.loss or model.loss
+    loss = keras.losses.get(hyperparams.loss) if hyperparams.loss else model.loss
     optimizer = (
         keras.optimizers.get(hyperparams.optimizer)
         if hyperparams.optimizer
@@ -98,7 +115,6 @@ def run(
     metrics = (
         hyperparams.metrics or model.compiled_metrics.metrics
     )  # compiled_metrics are explicitly defined by the user
-    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
     # Batch data, necessary or model fitting will fail
     if validation_split:
@@ -114,6 +130,85 @@ def run(
         train_cardinality = dataset.cardinality()
         val_dataset = None
 
+    privacy_guarantees: Optional[LocalPrivacyGuarantees] = None
+    if hyperparams.local_privacy:
+        privacy_params = hyperparams.local_privacy
+        opt_config = optimizer.get_config()
+        opt_name = opt_config.get("name", "unknown")
+        if opt_name == "Adam":
+            optimizer = DPKerasAdamOptimizer(
+                l2_norm_clip=privacy_params.l2_norm_clip,
+                noise_multiplier=privacy_params.noise_multiplier,
+                num_microbatches=privacy_params.num_microbatches,
+                **opt_config,
+            )
+        elif opt_name == "Adagrad":
+            optimizer = DPKerasAdagradOptimizer(
+                l2_norm_clip=privacy_params.l2_norm_clip,
+                noise_multiplier=privacy_params.noise_multiplier,
+                num_microbatches=privacy_params.num_microbatches,
+                **opt_config,
+            )
+        elif opt_name == "SGD":
+            optimizer = DPKerasSGDOptimizer(
+                l2_norm_clip=privacy_params.l2_norm_clip,
+                noise_multiplier=privacy_params.noise_multiplier,
+                num_microbatches=privacy_params.num_microbatches,
+                **opt_config,
+            )
+        else:
+            raise ValueError(
+                f"No DP variant for optimizer {opt_name} found in TF Privacy..."
+            )
+
+        delta = 1.0 / (int(train_cardinality) ** 1.1)
+        q = hyperparams.batch_size / train_cardinality  # q - the sampling ratio.
+        if q > 1:
+            raise app.UsageError("n must be larger than the batch size.")
+        orders = (
+            [1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 3.0, 3.5, 4.0, 4.5]
+            + list(range(5, 64))
+            + [128, 256, 512]
+        )
+        steps = int(
+            math.ceil(hyperparams.epochs * train_cardinality / hyperparams.batch_size)
+        )
+        eps, opt_order = apply_dp_sgd_analysis(
+            q, privacy_params.noise_multiplier, steps, orders, delta
+        )
+        rdp = compute_rdp(
+            q,
+            noise_multiplier=privacy_params.noise_multiplier,
+            steps=steps,
+            orders=orders,
+        )
+        privacy_guarantees = LocalPrivacyGuarantees(
+            eps=eps, delta=delta, rdp=rdp.tolist(), orders=orders, steps=steps
+        )
+
+        # Manually set loss' reduction method to None to support per-example loss calculation
+        # Required to enable different microbatch sizes
+        loss_serialized = keras.losses.serialize(keras.losses.get(loss))
+        loss_name = (
+            loss_serialized
+            if isinstance(loss_serialized, str)
+            else loss_serialized.get("config", dict()).get("name", "unknown")
+        )
+        if loss_name == "sparse_categorical_crossentropy":
+            loss = keras.losses.SparseCategoricalCrossentropy(
+                reduction=keras.losses.Reduction.NONE
+            )
+        elif loss_name == "categorical_crossentropy":
+            loss = keras.losses.CategoricalCrossentropy(
+                reduction=keras.losses.Reduction.NONE
+            )
+        elif loss_name == "mean_squared_error":
+            loss = keras.losses.MeanSquaredError(reduction=keras.losses.Reduction.NONE)
+        else:
+            raise ValueError(f"Unkown loss type {loss_name}")
+
+    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+
     # Train Model
     # RuntimeError, ValueError
     history: History = model.fit(
@@ -121,6 +216,7 @@ def run(
         epochs=hyperparams.epochs,
         shuffle=hyperparams.shuffle_data,
         validation_data=val_dataset,
+        verbose=verbose,
     )
 
     test_metrics = None
@@ -146,4 +242,5 @@ def run(
         history=history.history,
         test_metrics=test_metrics,
         cardinality=train_cardinality,
+        privacy_guarantees=privacy_guarantees,
     )

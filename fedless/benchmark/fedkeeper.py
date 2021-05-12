@@ -1,5 +1,7 @@
 import os
 
+import yaml
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
 import time
@@ -8,7 +10,7 @@ import random
 import asyncio
 from pathlib import Path
 from sys import getsizeof
-from typing import Iterator, List, Optional, Dict
+from typing import Iterator, List, Optional, Dict, Union, Tuple
 
 import click
 import numpy as np
@@ -16,6 +18,7 @@ import pydantic
 import pymongo
 import urllib3
 import pandas as pd
+import tensorflow as tf
 from pydantic import ValidationError
 from tensorflow import keras
 
@@ -27,7 +30,6 @@ from fedless.models import (
     FaaSProviderConfig,
     FunctionDeploymentConfig,
     ClientConfig,
-    MNISTConfig,
     DatasetLoaderConfig,
     EvaluatorParams,
     EvaluatorResult,
@@ -37,10 +39,13 @@ from fedless.models import (
     SerializedParameters,
     WeightsSerializerConfig,
     NpzWeightsSerializerConfig,
+    MNISTConfig,
+    Parameters,
+    TestMetrics,
 )
 
 # Model Definitions for Config files
-from fedless.invocation import invoke_sync, retry_session
+from fedless.invocation import invoke_sync, retry_session, InvocationTimeOut
 from fedless.persistence import (
     ClientConfigDao,
     ClientResultDao,
@@ -54,6 +59,8 @@ from fedless.serialization import (
     Base64StringConverter,
     serialize_model,
 )
+from fedless.data import DatasetLoaderBuilder
+from fedless.auth import CognitoClient
 
 
 class FedkeeperFunctions(pydantic.BaseModel):
@@ -74,11 +81,21 @@ class FedkeeperClientsConfig(pydantic.BaseModel):
     hyperparams: Optional[Hyperparams]
 
 
+class CognitoConfig(pydantic.BaseModel):
+    user_pool_id: str
+    region_name: str
+    auth_endpoint: str
+    invoker_client_id: str
+    invoker_client_secret: str
+    required_scopes: List[str] = ["client-functions/invoke"]
+
+
 class ClusterConfig(pydantic.BaseModel):
     database: MongodbConnectionConfig
     clients: FedkeeperClientsConfig
     providers: Dict[str, FaaSProviderConfig]
     fedkeeper: FedkeeperFunctions
+    cognito: Optional[CognitoConfig]
 
 
 # Helper functions to create dataset shards / model
@@ -86,7 +103,7 @@ class ClusterConfig(pydantic.BaseModel):
 
 def create_mnist_train_data_loader_configs(
     n_devices: int, n_shards: int
-) -> Iterator[List[int]]:
+) -> Iterator[DatasetLoaderConfig]:
     if n_shards % n_devices != 0:
         raise ValueError(
             f"Can not equally distribute {n_shards} dataset shards among {n_devices} devices..."
@@ -105,13 +122,16 @@ def create_mnist_train_data_loader_configs(
             client_idx * shards_per_device : (client_idx + 1) * shards_per_device
         ]
         indices = np.concatenate(client_shards)
-        yield indices.tolist()
+        # noinspection PydanticTypeChecker,PyTypeChecker
+        yield DatasetLoaderConfig(
+            type="mnist", params=MNISTConfig(indices=indices.tolist())
+        )
 
 
 def create_mnist_cnn(num_classes=10):
     model = keras.models.Sequential(
         [
-            keras.layers.Input((28 * 28,)),
+            keras.layers.Input((28, 28)),
             keras.layers.Reshape((28, 28, 1)),
             keras.layers.Conv2D(
                 32,
@@ -151,10 +171,82 @@ async def get_deployment_manager(cluster_provider) -> FaaSProvider:
         )
 
 
-class FedkeeperStrategy:
-    def __init__(self, config: ClusterConfig, separate_invokers: bool = False):
+class FederatedLearningStrategy:
+    def __init__(
+        self,
+        model: keras.Model,
+        client_data_configs: List[
+            Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]
+        ],
+        test_data_config: Optional[DatasetLoaderConfig] = None,
+    ):
+        self.model = model
+        self.test_data_config = test_data_config
+        self._test_data: tf.data.Dataset
+        self.client_data_configs = client_data_configs
+
+    @property
+    def cached_test_data(self) -> tf.data.Dataset:
+        if self.test_data_config is None:
+            raise ValueError(f"No global test dataset provided...")
+        if not self._test_data:
+            self._test_data = DatasetLoaderBuilder.from_config(
+                self.test_data_config
+            ).load()
+        return self._test_data
+
+    def evaluate_global(self, parameters: Parameters, batch_size: int = 32) -> Dict:
+        self.model.set_weights(parameters)
+        eval_dict = self.model.evaluate(
+            self.cached_test_data.batch(batch_size), return_dict=True
+        )
+        return eval_dict
+
+    def evaluate_clients(
+        self, metrics: Iterator[TestMetrics], metric_names: List[str] = None
+    ) -> Dict:
+
+        if metric_names is None:
+            metric_names = ["loss"]
+
+        cardinalities, metrics = zip(
+            *((metric.cardinality, metric.metrics) for metric in metrics)
+        )
+        result_dict = {}
+        for metric_name in metric_names:
+            values = [metric[metric_name] for metric in metrics]
+            mean = np.average(values, weights=cardinalities)
+            result_dict.update(
+                {
+                    f"mean_{metric_name}": mean,
+                    f"all_{metric_name}": values,
+                    f"median_{metric_name}": np.median(values),
+                }
+            )
+
+        return result_dict
+
+
+class FedkeeperStrategy(FederatedLearningStrategy):
+    def __init__(
+        self,
+        model: keras.Model,
+        client_data_configs: List[
+            Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]
+        ],
+        config: ClusterConfig,
+        test_data: Optional[DatasetLoaderConfig] = None,
+    ):
+        super(FedkeeperStrategy, self).__init__(
+            model=model,
+            client_data_configs=client_data_configs,
+            test_data_config=test_data,
+        )
+
         self.config = config
-        self.separate_invokers = separate_invokers
+        self.evaluator_function: FunctionInvocationConfig = None
+        self.aggregator_function: FunctionInvocationConfig = None
+        self.invoker_function: FunctionInvocationConfig = None
 
         self.mongo_client = pymongo.MongoClient(
             host=config.database.host,
@@ -162,8 +254,23 @@ class FedkeeperStrategy:
             username=config.database.username,
             password=config.database.password,
         )
-
         self.client_timing_infos = []
+        self.cognito_auth_token: str = None
+
+    def fetch_cognito_auth_token(self) -> str:
+        if not self.config.cognito:
+            raise ValueError(f"No cognito configuration given")
+        cognito = CognitoClient(
+            user_pool_id=self.config.cognito.user_pool_id,
+            region_name=self.config.cognito.region_name,
+        )
+        self.cognito_auth_token = cognito.fetch_token_for_client(
+            auth_endpoint=self.config.cognito.auth_endpoint,
+            client_id=self.config.cognito.invoker_client_id,
+            client_secret=self.config.cognito.invoker_client_secret,
+            required_scopes=self.config.cognito.required_scopes,
+        )
+        return self.cognito_auth_token
 
     def _init_clients(
         self,
@@ -174,24 +281,29 @@ class FedkeeperStrategy:
         clients = self.config.clients
         default_hyperparams = clients.hyperparams
         n_clients = sum(function.replicas for function in clients.functions)
-        client_idx_lists = create_mnist_train_data_loader_configs(
-            n_devices=n_clients, n_shards=200
-        )
+        if n_clients != len(self.client_data_configs):
+            raise ValueError(
+                f"Found {n_clients} client functions but {len(self.client_data_configs)} "
+                f"client data configs. Numbers must match"
+            )
         print(
             f"{n_clients} found in total. Generating dataset shards and client configurations..."
         )
+        client_data_config_iterator = iter(self.client_data_configs)
         for client in clients.functions:
             for client_replica_idx in range(client.replicas):
-                data_config = DatasetLoaderConfig(
-                    type="mnist", params=MNISTConfig(indices=next(client_idx_lists))
-                )
                 client_hyperparams = client.hyperparams or default_hyperparams
                 client_id = str(uuid.uuid4())
+                data_config = next(client_data_config_iterator)
+                test_config = None
+                if isinstance(data_config, tuple):
+                    data_config, test_config = data_config
                 client_config = ClientConfig(
                     session_id=session_id,
                     client_id=client_id,
                     function=client.function,
                     data=data_config,
+                    test_data=test_config,
                     hyperparams=client_hyperparams,
                 )
 
@@ -202,15 +314,13 @@ class FedkeeperStrategy:
                 client_config_dao.save(client_config)
 
     def _init_model(self, session_id: str):
-        model = create_mnist_cnn()
-
         parameters_dao = ParameterDao(db=self.mongo_client)
         models_dao = ModelDao(db=self.mongo_client)
 
-        weight_bytes = NpzWeightsSerializer().serialize(model.get_weights())
+        weight_bytes = NpzWeightsSerializer().serialize(self.model.get_weights())
         weight_string = Base64StringConverter.to_str(weight_bytes)
 
-        serialized_model = serialize_model(model)
+        serialized_model = serialize_model(self.model)
         params = SerializedParameters(
             blob=weight_string,
             serializer=WeightsSerializerConfig(
@@ -249,24 +359,23 @@ class FedkeeperStrategy:
 
         print("Successfully deployed evaluator and aggregator")
 
-        # Deploy invoker(s)
-        if not self.separate_invokers:
-            await deployment_manager.deploy(invoker.params),
-        else:
-            n_clients = sum(
-                function.replicas for function in self.config.clients.functions
-            )
-            print(
-                f"{n_clients} client functions found in total, creating one invoker for each"
-            )
-            invoker_configs = []
-            for i in range(n_clients):
-                invoker_config = invoker.params.copy()
-                invoker_config.name = f"{invoker_config.name}_{i}"
-                invoker_configs.append(invoker_config)
-            await asyncio.gather(
-                *(deployment_manager.deploy(inv_conf) for inv_conf in invoker_configs)
-            )
+        # Deploy invoker
+        await deployment_manager.deploy(invoker.params),
+
+        cluster_provider: FaaSProviderConfig = self.config.providers[
+            self.config.fedkeeper.provider
+        ]
+        deployment_manager = await get_deployment_manager(cluster_provider)
+
+        self.evaluator_function = await deployment_manager.to_invocation_config(
+            self.config.fedkeeper.evaluator.params
+        )
+        self.aggregator_function = await deployment_manager.to_invocation_config(
+            self.config.fedkeeper.aggregator.params
+        )
+        self.invoker_function = await deployment_manager.to_invocation_config(
+            self.config.fedkeeper.invoker.params
+        )
         print("Successfully deployed invoker function(s)")
 
     @run_in_executor
@@ -277,6 +386,7 @@ class FedkeeperStrategy:
             function_config=function,
             data=params.dict(),
             session=retry_session(backoff_factor=1.0, retries=5),
+            timeout=500,
         )
         print(f"Invoker received result from client {params.client_id}: {result}")
         self.client_timing_infos.append(
@@ -290,21 +400,27 @@ class FedkeeperStrategy:
         )
         return result
 
-    async def _invoke_clients(self, clients_in_round, round_id, session_id, invoker):
+    async def _invoke_clients(self, clients_in_round, round_id, session_id):
         print(f"Running round {round_id} with {len(clients_in_round)} clients")
         client_tasks = []
+        http_headers = (
+            {"Authorization": f"Bearer {self.fetch_cognito_auth_token()}"}
+            if self.config.cognito
+            else {}
+        )
         for client in clients_in_round:
             invoker_params = InvokerParams(
                 session_id=session_id,
                 round_id=round_id,
                 client_id=client.client_id,
                 database=self.config.database,
+                http_headers=http_headers,
             )
 
             async def g(params, invoker):
                 return await self._call_invoker(params, invoker)
 
-            task = asyncio.create_task(g(invoker_params, invoker))
+            task = asyncio.create_task(g(invoker_params, self.invoker_function))
 
             client_tasks.append(task)
         await asyncio.wait(client_tasks)
@@ -319,21 +435,7 @@ class FedkeeperStrategy:
         accuracy_threshold: float = 0.99,
     ):
         urllib3.disable_warnings()
-
-        cluster_provider: FaaSProviderConfig = self.config.providers[
-            self.config.fedkeeper.provider
-        ]
-        deployment_manager = await get_deployment_manager(cluster_provider)
-
-        evaluator_function = await deployment_manager.to_invocation_config(
-            self.config.fedkeeper.evaluator.params
-        )
-        aggregator_function = await deployment_manager.to_invocation_config(
-            self.config.fedkeeper.aggregator.params
-        )
-        invoker_function = await deployment_manager.to_invocation_config(
-            self.config.fedkeeper.invoker.params
-        )
+        await self.deploy()
 
         client_config_dao = ClientConfigDao(db=self.mongo_client)
         client_result_dao = ClientResultDao(db=self.mongo_client)
@@ -357,6 +459,9 @@ class FedkeeperStrategy:
             f"Starting or resuming training for session {session_id} and round {round_id}"
         )
 
+        with (out_dir / f"config_{session_id}.yaml").open("w") as f:
+            yaml.dump(self.config.dict(), f)
+
         client_configs = list(client_config_dao.load_all(session_id=session_id))
         print(f"Found {len(client_configs)} registered clients for this session")
 
@@ -369,10 +474,10 @@ class FedkeeperStrategy:
             clients_in_round = random.sample(
                 client_configs, min(clients_per_round, len(client_configs))
             )
-
-            await self._invoke_clients(
-                clients_in_round, round_id, session_id, invoker_function
-            )
+            try:
+                await self._invoke_clients(clients_in_round, round_id, session_id)
+            except InvocationTimeOut as e:
+                print(e)
             clients_finished_time = time.time()
             n_successful = client_result_dao.count_results_for_round(
                 session_id=session_id, round_id=round_id
@@ -392,7 +497,7 @@ class FedkeeperStrategy:
             )
             aggregator_start_time = time.time()
             aggregator_result = invoke_sync(
-                aggregator_function,
+                self.aggregator_function,
                 data=aggregator_params.dict(),
                 session=retry_session(backoff_factor=1.0, retries=5),
             )
@@ -409,25 +514,42 @@ class FedkeeperStrategy:
             )
             round_id = aggregator_result.new_round_id
 
-            print(f"Invoking evaluation function...")
-            evaluator_params = EvaluatorParams(
-                session_id=session_id,
-                round_id=round_id,
-                database=self.config.database,
-                test_data=DatasetLoaderConfig(
-                    type="mnist", params=MNISTConfig(split="test")
-                ),
-            )
-            evaluator_start_time = time.time()
-            evaluator_result_dict = invoke_sync(
-                evaluator_function,
-                data=evaluator_params.dict(),
-                session=retry_session(backoff_factor=1.0),
-            )
-            evaluator_end_time = time.time()
-            evaluator_result = EvaluatorResult.parse_obj(evaluator_result_dict)
-            global_accuracy = evaluator_result.metrics.metrics.get("accuracy", None)
-            global_loss = evaluator_result.metrics.metrics.get("loss", None)
+            eval_infos = {}
+            global_accuracy = None
+            global_loss = None
+            if aggregator_result.test_results:
+                print(f"Computing test statistics from clients...")
+                eval_dict = self.evaluate_clients(
+                    metrics=aggregator_result.test_results,
+                    metric_names=["loss", "accuracy"],
+                )
+                print(eval_dict)
+                global_loss = eval_dict["mean_loss"]
+                global_accuracy = eval_dict["mean_accuracy"]
+                eval_infos.update(eval_dict)
+            if self.test_data_config:
+                print(f"Invoking evaluation function...")
+                evaluator_params = EvaluatorParams(
+                    session_id=session_id,
+                    round_id=round_id,
+                    database=self.config.database,
+                    test_data=self.test_data_config,
+                )
+                evaluator_start_time = time.time()
+                evaluator_result_dict = invoke_sync(
+                    self.evaluator_function,
+                    data=evaluator_params.dict(),
+                    session=retry_session(backoff_factor=1.0),
+                )
+                evaluator_end_time = time.time()
+                evaluator_result = EvaluatorResult.parse_obj(evaluator_result_dict)
+                global_accuracy = evaluator_result.metrics.metrics.get("accuracy", None)
+                global_loss = evaluator_result.metrics.metrics.get("loss", None)
+                eval_infos.update(
+                    {
+                        "evaluator_seconds": evaluator_end_time - evaluator_start_time,
+                    }
+                )
 
             log_metrics.append(
                 {
@@ -438,10 +560,10 @@ class FedkeeperStrategy:
                         clients_finished_time - round_start_time
                     ),
                     "aggregator_seconds": aggregator_end_time - aggregator_start_time,
-                    "evaluator_seconds": evaluator_end_time - evaluator_start_time,
                     "num_clients_round": len(clients_in_round),
                     "global_test_accuracy": global_accuracy,
                     "global_test_loss": global_loss,
+                    **eval_infos,
                 }
             )
             pd.DataFrame.from_records(self.client_timing_infos).to_csv(
@@ -455,19 +577,11 @@ class FedkeeperStrategy:
                 should_abort = True
                 print(f"Reached target test accuracy after {round_id} rounds!")
 
-            print(
-                f"Evaluator returned {evaluator_result}"
-                f"Global accuracy: {global_accuracy}"
-            )
+            print(f"Global accuracy: {global_accuracy}, Global Loss: {global_loss}")
             f"Starting new round {aggregator_result.new_round_id}"
 
 
-@click.group()
-def cli():
-    pass
-
-
-@cli.command()
+@click.command()
 @click.option(
     "--config",
     help="cluster config file",
@@ -479,7 +593,6 @@ def cli():
 @click.option("--allowed-stragglers", type=int, default=0)
 @click.option("--accuracy-threshold", type=float, default=0.99)
 @click.option("--log-dir", type=click.Path(), default=None)
-@click.option("--separate-invokers", type=bool, default=False)
 def run(
     config: str,
     session_id: str,
@@ -487,11 +600,10 @@ def run(
     allowed_stragglers: int,
     accuracy_threshold: float = 0.99,
     log_dir: str = None,
-    separate_invokers: bool = False,
 ):
     config_path = Path(config).parent
     config: ClusterConfig = parse_yaml_file(config, model=ClusterConfig)
-    fedkeeper = FedkeeperStrategy(config=config, separate_invokers=separate_invokers)
+    fedkeeper = FedkeeperStrategy(config=config)
 
     # Create log directory
     log_dir = Path(log_dir) if log_dir else config_path / "logs"
@@ -509,20 +621,5 @@ def run(
     )
 
 
-@cli.command()
-@click.option(
-    "--config",
-    help="cluster config file",
-    type=click.Path(),
-    required=True,
-)
-@click.option("--separate-invokers", type=bool, default=False)
-def deploy(config: str, separate_invokers: bool):
-    config: ClusterConfig = parse_yaml_file(config, model=ClusterConfig)
-
-    fedkeeper = FedkeeperStrategy(config=config, separate_invokers=separate_invokers)
-    asyncio.run(fedkeeper.deploy())
-
-
 if __name__ == "__main__":
-    cli()
+    run()

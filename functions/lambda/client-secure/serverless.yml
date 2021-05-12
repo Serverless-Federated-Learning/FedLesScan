@@ -1,4 +1,4 @@
-service: client-jwt-authorizer
+service: client-secure
 
 frameworkVersion: '2'
 
@@ -16,12 +16,12 @@ provider:
         path: .
   httpApi:
     authorizers:
-      # JWT authorizers to back HTTP API endpoints
+      # WARNING: DO NOT PUT ANYTHING HERE OR BELOW FOR DEPLOYMENT SCRIPT TO WORK
       jwtAuthorizer:
         identitySource: $request.header.Authorization
-        issuerUrl: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_8wToSTlPj
+        issuerUrl: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_Ay4jDCguX
         audience:
-          - 6dms4nuf6g34sn8r6ri4365pn0
+          - 16q863gk2kggfen78uf5aa2o23
 
 functions:
   hello:
@@ -35,4 +35,4 @@ functions:
           authorizer:
             name: jwtAuthorizer
             scopes:
-              - client-0/invoke
+              - client-functions/invoke
