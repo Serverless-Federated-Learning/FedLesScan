@@ -22,8 +22,9 @@ for i in {1..50}; do
     --timeout=300s \
     --max-instances 50 \
     --set-build-env-vars GIT_COMMIT_IDENTIFIER="@$COMMIT_HASH",GITHUB_AUTH_TOKEN="$GITHUB_AUTH_TOKEN" &
-  if [ "$i" -gt 20 ]
+  if [ "$i" -eq 25 ]
   then
-    sleep 5
+    echo "Sleeping for 20 minutes to wait for previous builds to finish"
+    sleep 1200
   fi
 done
