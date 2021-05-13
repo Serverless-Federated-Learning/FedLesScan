@@ -539,7 +539,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
                 evaluator_result_dict = invoke_sync(
                     self.evaluator_function,
                     data=evaluator_params.dict(),
-                    session=retry_session(backoff_factor=1.0),
+                    session=retry_session(backoff_factor=1.0, retries=5),
                 )
                 evaluator_end_time = time.time()
                 evaluator_result = EvaluatorResult.parse_obj(evaluator_result_dict)
