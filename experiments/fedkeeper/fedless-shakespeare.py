@@ -6,18 +6,12 @@ from pathlib import Path
 import click
 
 from fedless.benchmark.common import parse_yaml_file
-from fedless.models import DatasetLoaderConfig, MNISTConfig
-
-from fedless.benchmark.fedkeeper import (
-    FedkeeperStrategy,
-    create_mnist_cnn,
-    create_mnist_train_data_loader_configs,
-    ClusterConfig,
-)
+from fedless.benchmark.fedkeeper_indep import FedlessStrategy, ClusterConfig
 from fedless.benchmark.leaf import (
     create_shakespeare_lstm,
     split_shakespear_source_by_users,
 )
+from fedless.models import DatasetLoaderConfig
 
 
 @click.command()
@@ -65,7 +59,7 @@ def run(
     log_dir = Path(log_dir) if log_dir else config_path / "logs"
     log_dir.mkdir(exist_ok=True)
 
-    fedkeeper = FedkeeperStrategy(
+    fedkeeper = FedlessStrategy(
         config=config,
         model=model,
         client_data_configs=client_data_configs,
