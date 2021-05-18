@@ -185,8 +185,10 @@ clients:
   hyperparams:
     epochs: 1
     batch_size: 128
+    metrics:
+      - accuracy
     optimizer:
-      class_name: "SGD
+      class_name: SGD
       config:
         name: SGD
         learning_rate: 0.8
