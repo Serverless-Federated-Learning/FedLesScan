@@ -183,12 +183,12 @@ clients:
           url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-30
         type: gcloud
   hyperparams:
-    epochs: 10
-    batch_size: 10
+    epochs: 1
+    batch_size: 128
     optimizer:
-      class_name: "Adam"
+      class_name: "SGD
       config:
-        name: "Adam"
-        learning_rate: 0.001
+        name: SGD
+        learning_rate: 0.8
 
 
