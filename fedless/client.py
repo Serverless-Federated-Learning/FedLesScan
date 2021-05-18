@@ -1,6 +1,7 @@
 import math
 from typing import Optional
 
+import pymongo
 import tensorflow.keras as keras
 from absl import app
 from tensorflow.python.keras.callbacks import History
@@ -27,6 +28,10 @@ from fedless.models import (
     SerializedParameters,
     TestMetrics,
     LocalPrivacyGuarantees,
+    MongodbConnectionConfig,
+    SimpleModelLoaderConfig,
+    ClientInvocationParams,
+    InvocationResult,
 )
 from fedless.serialization import (
     ModelLoadError,
@@ -38,10 +43,113 @@ from fedless.serialization import (
     Base64StringConverter,
     SerializationError,
 )
+from fedless.persistence import (
+    PersistenceError,
+    ClientConfigDao,
+    ModelDao,
+    ParameterDao,
+    ClientResultDao,
+)
 
 
 class ClientError(Exception):
     """Error in client code"""
+
+
+def fedless_mongodb_handler(
+    session_id: str,
+    round_id: int,
+    client_id: str,
+    database: MongodbConnectionConfig,
+):
+    """
+    Basic handler that only requires data and model loader configs plus hyperparams.
+    Uses Npz weight serializer + Base64 encoding by default
+    :raises ClientError if something failed during execution
+    """
+    db = pymongo.MongoClient(
+        host=database.host,
+        port=database.port,
+        username=database.username,
+        password=database.password,
+    )
+
+    try:
+        # Create daos to access database
+        config_dao = ClientConfigDao(db=db)
+        model_dao = ModelDao(db=db)
+        parameter_dao = ParameterDao(db=db)
+        results_dao = ClientResultDao(db=db)
+
+        # Load model and latest weights
+        model = model_dao.load(session_id=session_id)
+        latest_params = parameter_dao.load_latest(session_id)
+        model = ModelLoaderConfig(
+            type="simple",
+            params=SimpleModelLoaderConfig(
+                params=latest_params,
+                model=model.model_json,
+                compiled=True,
+                optimizer=model.optimizer,
+                loss=model.loss,
+                metrics=model.metrics,
+            ),
+        )
+
+        # Load client configuration and prepare call statements
+        client_config = config_dao.load(id=client_id)
+        client_params = ClientInvocationParams(
+            data=client_config.data,
+            model=model,
+            hyperparams=client_config.hyperparams,
+            test_data=client_config.test_data,
+        )
+
+        data_loader = DatasetLoaderBuilder.from_config(client_params.data)
+        model_loader = ModelLoaderBuilder.from_config(client_params.model)
+        test_data_loader = (
+            DatasetLoaderBuilder.from_config(client_params.test_data)
+            if client_params.test_data
+            else None
+        )
+        weights_serializer: WeightsSerializer = NpzWeightsSerializer()
+        string_serializer: StringSerializer = Base64StringConverter()
+        verbose: bool = True
+        client_result = run(
+            data_loader=data_loader,
+            model_loader=model_loader,
+            hyperparams=client_params.hyperparams,
+            weights_serializer=weights_serializer,
+            string_serializer=string_serializer,
+            test_data_loader=test_data_loader,
+            verbose=verbose,
+        )
+
+        results_dao.save(
+            session_id=session_id,
+            round_id=round_id,
+            client_id=client_id,
+            result=client_result,
+        )
+
+        return InvocationResult(
+            session_id=session_id,
+            round_id=round_id,
+            client_id=client_id,
+        )
+
+    except (
+        NotImplementedError,
+        DatasetNotLoadedError,
+        ModelLoadError,
+        RuntimeError,
+        ValueError,
+        SerializationError,
+        PersistenceError,
+    ) as e:
+        raise ClientError(e) from e
+    finally:
+        db.close()
 
 
 def default_handler(
