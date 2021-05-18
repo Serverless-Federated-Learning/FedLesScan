@@ -1,0 +1,194 @@
+database:
+  host: '138.246.235.163'
+
+providers:
+  lrz-1:
+    type: openwhisk
+    params:
+      apihost: 138.246.233.207:31001
+      auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+
+fedkeeper:
+  provider: lrz-1
+
+  evaluator:
+    type: openwhisk
+    params:
+      name: evaluator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/evaluator/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 2048
+      timeout: 60000
+
+  aggregator:
+    type: openwhisk
+    params:
+      name: aggregator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/aggregator/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 2024
+      timeout: 60000
+
+
+clients:
+  functions:
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-1
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-2
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-3
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-4
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-5
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-6
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-7
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-8
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-9
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-10
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-11
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-12
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-13
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-14
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-15
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-16
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-17
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-18
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-19
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-20
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-21
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-22
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-23
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-24
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-25
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-26
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-27
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-28
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-29
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-30
+        type: gcloud
+  hyperparams:
+    epochs: 10
+    batch_size: 10
+    optimizer:
+      class_name: "Adam"
+      config:
+        name: "Adam"
+        learning_rate: 0.001
+
+
