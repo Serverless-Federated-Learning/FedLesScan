@@ -1,3 +1,4 @@
+import logging
 import os
 
 from pydantic import ValidationError
@@ -14,6 +15,7 @@ from fedless.auth import (
 from fedless.models import InvokerParams
 from fedless.providers import gcloud_http_error_handler
 
+logging.basicConfig(level=logging.DEBUG)
 cached_public_keys = None
 
 

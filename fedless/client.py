@@ -1,4 +1,6 @@
 import math
+import logging
+import sys
 from typing import Optional
 
 import pymongo
@@ -51,6 +53,8 @@ from fedless.persistence import (
     ClientResultDao,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class ClientError(Exception):
     """Error in client code"""
@@ -67,6 +71,9 @@ def fedless_mongodb_handler(
     Uses Npz weight serializer + Base64 encoding by default
     :raises ClientError if something failed during execution
     """
+    logger.info(
+        f"handler called for session_id={session_id} round_id={round_id} client_id={client_id}"
+    )
     db = pymongo.MongoClient(
         host=database.host,
         port=database.port,
@@ -81,6 +88,7 @@ def fedless_mongodb_handler(
         parameter_dao = ParameterDao(db=db)
         results_dao = ClientResultDao(db=db)
 
+        logger.debug(f"Loading model from database")
         # Load model and latest weights
         model = model_dao.load(session_id=session_id)
         latest_params = parameter_dao.load_latest(session_id)
@@ -94,6 +102,9 @@ def fedless_mongodb_handler(
                 loss=model.loss,
                 metrics=model.metrics,
             ),
+        )
+        logger.debug(
+            f"Model successfully loaded from database. Serialized parameters: {sys.getsizeof(latest_params.blob)} bytes"
         )
 
         # Load client configuration and prepare call statements
@@ -115,6 +126,7 @@ def fedless_mongodb_handler(
         weights_serializer: WeightsSerializer = NpzWeightsSerializer()
         string_serializer: StringSerializer = Base64StringConverter()
         verbose: bool = True
+        logger.debug(f"Successfully loaded configs and model")
         client_result = run(
             data_loader=data_loader,
             model_loader=model_loader,
@@ -125,12 +137,14 @@ def fedless_mongodb_handler(
             verbose=verbose,
         )
 
+        logger.debug(f"Storing client results in database. Starting now...")
         results_dao.save(
             session_id=session_id,
             round_id=round_id,
             client_id=client_id,
             result=client_result,
         )
+        logger.debug(f"Finished writing to database")
 
         return InvocationResult(
             session_id=session_id,
@@ -166,6 +180,9 @@ def default_handler(
     Uses Npz weight serializer + Base64 encoding by default
     :raises ClientError if something failed during execution
     """
+    logger.info(
+        f"handler called with data_config={str(data_config)} and hyperparams={str(hyperparams)}"
+    )
     data_loader = DatasetLoaderBuilder.from_config(data_config)
     model_loader = ModelLoaderBuilder.from_config(model_config)
     test_data_loader = (
@@ -210,7 +227,9 @@ def run(
      ValueError if input data is invalid or shape does not match the one expected by the model, SerializationError
     """
     # Load data and model
+    logger.debug(f"Loading dataset...")
     dataset = data_loader.load()
+    logger.debug(f"Finished loading dataset. Loading model...")
     model = model_loader.load()
 
     # Set configured optimizer if specified
@@ -233,6 +252,10 @@ def run(
         train_dataset = train_dataset.batch(hyperparams.batch_size)
         val_dataset = val_dataset.batch(hyperparams.batch_size)
         train_cardinality = train_validation_split_idx
+        logger.debug(
+            f"Split train set into training set of size {train_cardinality} "
+            f"and validation set of size {cardinality - train_cardinality}"
+        )
     else:
         train_dataset = dataset.batch(hyperparams.batch_size)
         train_cardinality = dataset.cardinality()
@@ -240,6 +263,9 @@ def run(
 
     privacy_guarantees: Optional[LocalPrivacyGuarantees] = None
     if hyperparams.local_privacy:
+        logger.debug(
+            f"Creating LDP variant of {str(hyperparams.optimizer)} with parameters {hyperparams.local_privacy}"
+        )
         privacy_params = hyperparams.local_privacy
         opt_config = optimizer.get_config()
         opt_name = opt_config.get("name", "unknown")
@@ -293,6 +319,7 @@ def run(
         privacy_guarantees = LocalPrivacyGuarantees(
             eps=eps, delta=delta, rdp=rdp.tolist(), orders=orders, steps=steps
         )
+        f"Calculated privacy guarantees: {str(privacy_guarantees)}"
 
         # Manually set loss' reduction method to None to support per-example loss calculation
         # Required to enable different microbatch sizes
@@ -315,8 +342,10 @@ def run(
         else:
             raise ValueError(f"Unkown loss type {loss_name}")
 
+    logger.debug(f"Compiling model")
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
+    logger.debug(f"Running training")
     # Train Model
     # RuntimeError, ValueError
     history: History = model.fit(
@@ -329,17 +358,24 @@ def run(
 
     test_metrics = None
     if test_data_loader:
+        logger.debug(f"Test data loader found, loading it now...")
         test_dataset = test_data_loader.load()
+        logger.debug(f"Running evaluation for updated model")
         metrics = model.evaluate(
             test_dataset.batch(hyperparams.batch_size), return_dict=True
         )
         test_metrics = TestMetrics(
             cardinality=test_dataset.cardinality(), metrics=metrics
         )
+        logger.debug(f"Test Metrics: {str(test_metrics)}")
 
     # serialization error
+    logger.debug(f"Serializing model parameters")
     weights_bytes = weights_serializer.serialize(model.get_weights())
     weights_string = string_serializer.to_str(weights_bytes)
+    logger.debug(
+        f"Finished serializing model parameters of size {sys.getsizeof(weights_string)} bytes"
+    )
 
     return ClientResult(
         parameters=SerializedParameters(

@@ -1,3 +1,5 @@
+import logging
+
 from pydantic import ValidationError
 
 from fedless.client import (
@@ -6,6 +8,8 @@ from fedless.client import (
 )
 from fedless.models import InvokerParams
 from fedless.providers import lambda_proxy_handler
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 @lambda_proxy_handler(caught_exceptions=(ValidationError, ClientError))

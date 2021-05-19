@@ -1,8 +1,12 @@
+import logging
+
 from pydantic import ValidationError
 
 from fedless.evaluation import default_evaluation_handler, EvaluationError
 from fedless.models import EvaluatorParams
 from fedless.providers import openwhisk_action_handler
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 @openwhisk_action_handler((ValidationError, EvaluationError))

@@ -1,9 +1,6 @@
 import os
 import time
-from collections import defaultdict
-from typing import Iterator, Tuple
 
-import pandas as pd
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
@@ -11,6 +8,7 @@ from multiprocessing import Pool, set_start_method
 import random
 
 import click
+import pandas as pd
 
 from fedless.data import DatasetLoaderBuilder
 from fedless.aggregation import FedAvgAggregator
@@ -30,36 +28,12 @@ from fedless.models import (
     WeightsSerializerConfig,
     NpzWeightsSerializerConfig,
     LocalDifferentialPrivacyParams,
-    ClientResult,
-    LocalPrivacyGuarantees,
 )
 from fedless.serialization import (
     serialize_model,
     NpzWeightsSerializer,
     Base64StringConverter,
 )
-
-
-class NaiveAccounter:
-    def __init__(self):
-        self._client_guarantees = defaultdict(list)
-        self._current_guarantees = dict()
-
-    def update(self, results: Iterator[Tuple[MNISTConfig, LocalPrivacyGuarantees]]):
-        for data_config, guarantees in results:
-
-            print(data_config, guarantees)
-            key = data_config.json()
-            self._client_guarantees[key].append(guarantees)
-
-            if not key in self._current_guarantees:
-                self._current_guarantees[key] = (guarantees.eps, guarantees.delta)
-            else:
-                eps, delta = self._current_guarantees[key]
-                if delta != guarantees.delta:
-                    print("Warning, eps is wrong!")
-                self._current_guarantees[key] = (guarantees.eps + eps, guarantees.delta)
-            print(key, self._current_guarantees[key])
 
 
 @click.command()
@@ -107,7 +81,7 @@ def run(
     serialized_model = serialize_model(model)
     weight_bytes = NpzWeightsSerializer().serialize(model.get_weights())
     weight_string = Base64StringConverter.to_str(weight_bytes)
-    params = SerializedParameters(
+    global_params = SerializedParameters(
         blob=weight_string,
         serializer=WeightsSerializerConfig(
             type="npz", params=NpzWeightsSerializerConfig()
@@ -117,13 +91,12 @@ def run(
     round_results = []
     test_accuracy = -1.0
     epoch = 0
-    accounter = NaiveAccounter()
     start_time = time.time()
     while test_accuracy < 0.95 and epoch < epochs:
         model_loader = ModelLoaderConfig(
             type="simple",
             params=SimpleModelLoaderConfig(
-                params=params,
+                params=global_params,
                 model=serialized_model.model_json,
                 compiled=True,
                 optimizer=serialized_model.optimizer,
@@ -153,21 +126,11 @@ def run(
         with Pool() as p:
             results = p.starmap(default_handler, invocation_params)
         clients_finished_time = time.time()
-        # for result in results:
-        #    print(result.history)
-
-        if local_dp:
-            accounter.update(
-                zip(
-                    data_configs_for_round,
-                    map(lambda result: result.privacy_guarantees, results),
-                )
-            )
 
         new_parameters = FedAvgAggregator().aggregate(results)
         new_parameters_bytes = NpzWeightsSerializer().serialize(new_parameters)
         new_parameters_string = Base64StringConverter.to_str(new_parameters_bytes)
-        params = SerializedParameters(
+        global_params = SerializedParameters(
             blob=new_parameters_string,
             serializer=WeightsSerializerConfig(
                 type="npz", params=NpzWeightsSerializerConfig()
