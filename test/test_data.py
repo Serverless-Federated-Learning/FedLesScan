@@ -12,6 +12,7 @@ from fedless.data import (
     DatasetNotLoadedError,
     DatasetFormatError,
     DatasetLoaderBuilder,
+    _clear_cache,
 )
 from fedless.models import LEAFConfig, DatasetLoaderConfig, LeafDataset
 from .common import resource_folder_path, get_error_function
@@ -203,6 +204,7 @@ def test_leaf_femnist_loads_only_specified_user():
 
 @patch("tensorflow.data.Dataset.concatenate")
 def test_leaf_femnist_throws_error_when_concatenation_fails(concat_mock):
+    _clear_cache()
     concat_mock.side_effect = get_error_function(TypeError)
 
     with pytest.raises(DatasetNotLoadedError):
