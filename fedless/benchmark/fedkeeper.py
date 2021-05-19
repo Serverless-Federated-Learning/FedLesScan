@@ -393,9 +393,13 @@ class FedkeeperStrategy(FederatedLearningStrategy):
             {
                 "client_id": params.client_id,
                 "session_id": params.session_id,
+                "seconds": time.time() - start_time,
+                "config": function.json(),
                 "round_id": params.round_id,
                 "cardinality": result.get("cardinality", None),
-                "seconds": time.time() - start_time,
+                "privacy_guarantees": result.get("privacy_guarantees", None),
+                "history": result.get("history:", None),
+                "test_metrics": result.get("test_metrics", None),
             }
         )
         return result

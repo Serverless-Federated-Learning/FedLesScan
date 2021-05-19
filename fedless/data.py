@@ -68,6 +68,11 @@ class LRU(OrderedDict):
 __cache = LRU(maxsize=10)
 
 
+def _clear_cache():
+    global __cache
+    __cache = LRU(maxsize=10)
+
+
 def cache(func):
     @wraps(func)
     def f(self, *args, **kwargs):

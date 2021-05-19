@@ -11,7 +11,7 @@ from fedless.benchmark.leaf import (
     create_shakespeare_lstm,
     split_shakespear_source_by_users,
 )
-from fedless.models import DatasetLoaderConfig
+from fedless.models import DatasetLoaderConfig, LEAFConfig
 
 
 @click.command()
@@ -38,17 +38,37 @@ def run(
     config: ClusterConfig = parse_yaml_file(config, model=ClusterConfig)
 
     model = create_shakespeare_lstm()
+    # client_train_data_configs = [
+    #    DatasetLoaderConfig(type="leaf", params=params)
+    #    for params in split_shakespear_source_by_users(
+    #        "https://thesis-datasets.s3.eu-central-1.amazonaws.com/all_data_niid_05_keep_64_train_9.json"
+    #    )
+    # ]
+    # client_test_data_configs = [
+    #    DatasetLoaderConfig(type="leaf", params=params)
+    #    for params in split_shakespear_source_by_users(
+    #        "https://thesis-datasets.s3.eu-central-1.amazonaws.com/all_data_niid_05_keep_64_test_9.json"
+    #    )
+    # ]
     client_train_data_configs = [
-        DatasetLoaderConfig(type="leaf", params=params)
-        for params in split_shakespear_source_by_users(
-            "https://thesis-datasets.s3.eu-central-1.amazonaws.com/all_data_niid_05_keep_64_train_9.json"
+        DatasetLoaderConfig(
+            type="leaf",
+            params=LEAFConfig(
+                dataset="shakespeare",
+                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/train/user_{i}_all_data_niid_05_keep_64_train_9.json",
+            ),
         )
+        for i in range(30)
     ]
     client_test_data_configs = [
-        DatasetLoaderConfig(type="leaf", params=params)
-        for params in split_shakespear_source_by_users(
-            "https://thesis-datasets.s3.eu-central-1.amazonaws.com/all_data_niid_05_keep_64_test_9.json"
+        DatasetLoaderConfig(
+            type="leaf",
+            params=LEAFConfig(
+                dataset="shakespeare",
+                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/test/user_{i}_all_data_niid_05_keep_64_test_9.json",
+            ),
         )
+        for i in range(30)
     ]
 
     client_data_configs = list(
