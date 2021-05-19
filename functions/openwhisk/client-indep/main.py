@@ -1,16 +1,11 @@
-import logging
 from pydantic import ValidationError
 
 from fedless.client import (
-    default_handler,
+    fedless_mongodb_handler,
     ClientError,
 )
-from fedless.models import ClientInvocationParams
+from fedless.models import InvokerParams
 from fedless.providers import openwhisk_action_handler
-
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
 
 
 @openwhisk_action_handler((ValidationError, ClientError))
@@ -21,11 +16,11 @@ def main(request):
     for return object conversion and error handling
     :return Response dictionary containing http response
     """
-    config = ClientInvocationParams.parse_obj(request["body"])
+    config = InvokerParams.parse_obj(request["body"])
 
-    return default_handler(
-        data_config=config.data,
-        model_config=config.model,
-        hyperparams=config.hyperparams,
-        test_data_config=config.test_data,
+    return fedless_mongodb_handler(
+        session_id=config.session_id,
+        round_id=config.round_id,
+        client_id=config.client_id,
+        database=config.database,
     )
