@@ -1,0 +1,5 @@
+# Do not include azure-functions-worker as it may conflict with the Azure Functions platform
+
+azure-functions
+git+https://${GITHUB_AUTH_TOKEN}:x-oauth-basic@github.com/andreas-grafberger/thesis-code@development#egg=fedless
+
