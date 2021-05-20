@@ -197,6 +197,13 @@ class GCloudFunctionConfig(BaseModel):
     url: str
 
 
+class AzureFunctionHTTPConfig(BaseModel):
+    """Azure function"""
+
+    type: str = Field("azure", const=True)
+    trigger_url: str
+
+
 class FunctionInvocationConfig(BaseModel):
     """Necessary information to invoke a function"""
 
@@ -206,6 +213,7 @@ class FunctionInvocationConfig(BaseModel):
         ApiGatewayLambdaFunctionConfig,
         GCloudFunctionConfig,
         OpenwhiskWebActionConfig,
+        AzureFunctionHTTPConfig,
     ]
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
