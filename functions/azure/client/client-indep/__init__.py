@@ -1,26 +1,22 @@
 import logging
 
-import azure.functions as func
+import azure.functions
+from pydantic import ValidationError
+
+from fedless.providers import azure_handler
+from fedless.models import InvokerParams
+from fedless.client import fedless_mongodb_handler, ClientError
+
+logging.basicConfig(level=logging.DEBUG)
 
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info("Python HTTP trigger function processed a request.")
+@azure_handler(caught_exceptions=(ValidationError, ValueError, ClientError))
+def main(req: azure.functions.HttpRequest):
+    params = InvokerParams.parse_obj(req.get_json())
 
-    name = req.params.get("name")
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get("name")
-
-    if name:
-        return func.HttpResponse(
-            f"Hello, {name}. This HTTP triggered function executed successfully."
-        )
-    else:
-        return func.HttpResponse(
-            "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-            status_code=200,
-        )
+    return fedless_mongodb_handler(
+        session_id=params.session_id,
+        round_id=params.round_id,
+        client_id=params.client_id,
+        database=params.database,
+    )

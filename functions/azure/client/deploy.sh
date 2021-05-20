@@ -27,3 +27,6 @@ az functionapp create \
   --storage-account "$storage_name" \
   --os-type linux
 func azure functionapp publish "$app_name"
+az functionapp config appsettings set --name "$app_name" \
+  --resource-group "$resource_group_name" \
+  --settings COGNITO_USER_POOL_REGION="$COGNITO_USER_POOL_REGION" COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" COGNITO_INVOKER_CLIENT_ID="$COGNITO_INVOKER_CLIENT_ID" COGNITO_REQUIRED_SCOPE="client-functions/invoke"
