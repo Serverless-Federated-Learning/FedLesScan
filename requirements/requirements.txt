@@ -13,3 +13,4 @@ matplotlib~=3.3.4
 python-jose[cryptography]~=3.2.0
 boto3~=1.17.39
 tensorflow_privacy@git+https://github.com/tensorflow/privacy.git@755ed26671f5567ba1519a4e80078eded7a6299b#egg=tensorflow_privacy
+azure-functions~=1.7.0

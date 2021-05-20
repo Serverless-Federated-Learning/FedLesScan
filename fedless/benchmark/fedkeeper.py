@@ -1,6 +1,7 @@
 import os
 
 import yaml
+from requests import Session
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
@@ -379,13 +380,18 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         print("Successfully deployed invoker function(s)")
 
     @run_in_executor
-    def _call_invoker(self, params: InvokerParams, function: FunctionInvocationConfig):
+    def _call_invoker(
+        self,
+        params: InvokerParams,
+        function: FunctionInvocationConfig,
+        session: Optional[Session] = None,
+    ):
         start_time = time.time()
         print(f"Client {params.client_id} invoked for round {params.round_id}")
         result = invoke_sync(
             function_config=function,
             data=params.dict(),
-            session=retry_session(backoff_factor=1.0, retries=5),
+            session=retry_session(backoff_factor=1.0, retries=5, session=session),
             timeout=500,
         )
         print(f"Invoker received result from client {params.client_id}: {result}")
@@ -583,47 +589,3 @@ class FedkeeperStrategy(FederatedLearningStrategy):
 
             print(f"Global accuracy: {global_accuracy}, Global Loss: {global_loss}")
             f"Starting new round {aggregator_result.new_round_id}"
-
-
-@click.command()
-@click.option(
-    "--config",
-    help="cluster config file",
-    type=click.Path(),
-    required=True,
-)
-@click.option("--session-id", type=str)
-@click.option("--clients-per-round", type=int, default=10)
-@click.option("--allowed-stragglers", type=int, default=0)
-@click.option("--accuracy-threshold", type=float, default=0.99)
-@click.option("--log-dir", type=click.Path(), default=None)
-def run(
-    config: str,
-    session_id: str,
-    clients_per_round: int,
-    allowed_stragglers: int,
-    accuracy_threshold: float = 0.99,
-    log_dir: str = None,
-):
-    config_path = Path(config).parent
-    config: ClusterConfig = parse_yaml_file(config, model=ClusterConfig)
-    fedkeeper = FedkeeperStrategy(config=config)
-
-    # Create log directory
-    log_dir = Path(log_dir) if log_dir else config_path / "logs"
-    log_dir.mkdir(exist_ok=True)
-
-    # Run experiments
-    asyncio.run(
-        fedkeeper.run(
-            clients_per_round=clients_per_round,
-            allowed_stragglers=allowed_stragglers,
-            accuracy_threshold=accuracy_threshold,
-            out_dir=log_dir,
-            session_id=session_id,
-        )
-    )
-
-
-if __name__ == "__main__":
-    run()

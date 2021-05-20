@@ -19,6 +19,7 @@ from fedless.models import (
     SimpleModelLoaderConfig,
     GCloudFunctionConfig,
     OpenwhiskWebActionConfig,
+    AzureFunctionHTTPConfig,
 )
 from fedless.persistence import (
     ClientConfigDao,
@@ -165,6 +166,11 @@ def invoke_sync(
         params: GCloudFunctionConfig = function_config.params
         return invoke_http_function_sync(
             url=params.url, data=data, session=session, timeout=timeout
+        )
+    elif function_config.type == "azure":
+        params: AzureFunctionHTTPConfig = function_config.params
+        return invoke_http_function_sync(
+            url=params.trigger_url, data=data, session=session, timeout=timeout
         )
     else:
         raise NotImplementedError(

@@ -38,18 +38,6 @@ def run(
     config: ClusterConfig = parse_yaml_file(config, model=ClusterConfig)
 
     model = create_shakespeare_lstm()
-    # client_train_data_configs = [
-    #    DatasetLoaderConfig(type="leaf", params=params)
-    #    for params in split_shakespear_source_by_users(
-    #        "https://thesis-datasets.s3.eu-central-1.amazonaws.com/all_data_niid_05_keep_64_train_9.json"
-    #    )
-    # ]
-    # client_test_data_configs = [
-    #    DatasetLoaderConfig(type="leaf", params=params)
-    #    for params in split_shakespear_source_by_users(
-    #        "https://thesis-datasets.s3.eu-central-1.amazonaws.com/all_data_niid_05_keep_64_test_9.json"
-    #    )
-    # ]
     client_train_data_configs = [
         DatasetLoaderConfig(
             type="leaf",
@@ -76,7 +64,12 @@ def run(
     )
 
     # Create log directory
-    log_dir = Path(log_dir) if log_dir else config_path / "logs"
+    log_dir = (
+        Path(log_dir)
+        if log_dir
+        else config_path
+        / f"logs_fedless_shakespeare_{n_clients}_{clients_per_round}_{allowed_stragglers}_{accuracy_threshold}"
+    )
     log_dir.mkdir(exist_ok=True)
 
     fedkeeper = FedlessStrategy(
