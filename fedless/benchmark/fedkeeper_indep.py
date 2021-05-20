@@ -1,11 +1,12 @@
 import os
 from typing import Optional, Dict
 
+import asyncio
 import pydantic
+from requests import Session
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
-import asyncio
 
 from fedless.models import (
     FunctionDeploymentConfig,
@@ -72,7 +73,8 @@ class FedlessStrategy(FedkeeperStrategy):
     async def _invoke_clients(self, clients_in_round, round_id, session_id):
         print(f"Running round {round_id} with {len(clients_in_round)} clients")
         client_tasks = []
-        http_headers = (
+        session = Session()
+        session.headers = (
             {"Authorization": f"Bearer {self.fetch_cognito_auth_token()}"}
             if self.config.cognito
             else {}
@@ -86,7 +88,7 @@ class FedlessStrategy(FedkeeperStrategy):
             )
 
             async def g(params, invoker):
-                return await self._call_invoker(params, invoker)
+                return await self._call_invoker(params, invoker, session=session)
 
             task = asyncio.create_task(g(invoker_params, client.function))
 

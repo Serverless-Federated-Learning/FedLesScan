@@ -45,7 +45,12 @@ def run(
     )
 
     # Create log directory
-    log_dir = Path(log_dir) if log_dir else config_path / "logs"
+    log_dir = (
+        Path(log_dir)
+        if log_dir
+        else config_path
+        / f"logs_fedless_mnist_{n_clients}_{clients_per_round}_{allowed_stragglers}_{accuracy_threshold}"
+    )
     log_dir.mkdir(exist_ok=True)
 
     fedkeeper = FedlessStrategy(
