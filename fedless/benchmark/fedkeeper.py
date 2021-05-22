@@ -1,4 +1,5 @@
 import os
+from itertools import cycle
 
 import yaml
 from requests import Session
@@ -282,37 +283,41 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         clients = self.config.clients
         default_hyperparams = clients.hyperparams
         n_clients = sum(function.replicas for function in clients.functions)
-        if n_clients != len(self.client_data_configs):
-            raise ValueError(
-                f"Found {n_clients} client functions but {len(self.client_data_configs)} "
-                f"client data configs. Numbers must match"
-            )
+        # if n_clients != len(self.client_data_configs):
+        #    raise ValueError(
+        #        f"Found {n_clients} client functions but {len(self.client_data_configs)} "
+        #        f"client data configs. Numbers must match"
+        #    )
         print(
-            f"{n_clients} found in total. Generating dataset shards and client configurations..."
+            f"{n_clients} clents and {len(self.client_data_configs)}f ound in total. Generating dataset shards and client configurations..."
         )
         client_data_config_iterator = iter(self.client_data_configs)
-        for client in clients.functions:
-            for client_replica_idx in range(client.replicas):
-                client_hyperparams = client.hyperparams or default_hyperparams
-                client_id = str(uuid.uuid4())
-                data_config = next(client_data_config_iterator)
-                test_config = None
-                if isinstance(data_config, tuple):
-                    data_config, test_config = data_config
-                client_config = ClientConfig(
-                    session_id=session_id,
-                    client_id=client_id,
-                    function=client.function,
-                    data=data_config,
-                    test_data=test_config,
-                    hyperparams=client_hyperparams,
-                )
+        client_function_iterator = cycle(clients.functions)
+        sum_clients = 0
+        for data_config in client_data_config_iterator:
+            client = next(client_function_iterator)
+            client_hyperparams = client.hyperparams or default_hyperparams
+            client_id = str(uuid.uuid4())
+            # data_config = next(client_data_config_iterator)
+            test_config = None
+            if isinstance(data_config, tuple):
+                data_config, test_config = data_config
+            client_config = ClientConfig(
+                session_id=session_id,
+                client_id=client_id,
+                function=client.function,
+                data=data_config,
+                test_data=test_config,
+                hyperparams=client_hyperparams,
+            )
 
-                print(
-                    f"Initializing client configurations with new id {client_id} of type "
-                    f"{client.function.type} and {client.replicas} replicas"
-                )
-                client_config_dao.save(client_config)
+            print(
+                f"Initializing client configurations with new id {client_id} of type "
+                f"{client.function.type} and data {data_config}"
+            )
+            client_config_dao.save(client_config)
+            sum_clients += 1
+        print(f"{sum_clients} clients configured in total...")
 
     def _init_model(self, session_id: str):
         parameters_dao = ParameterDao(db=self.mongo_client)
