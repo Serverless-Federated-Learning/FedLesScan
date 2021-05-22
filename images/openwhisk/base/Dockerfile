@@ -6,3 +6,4 @@ RUN pip install tensorflow==2.4
 # Install fedless from built wheel
 COPY ./dist/fedless*.whl .
 RUN pip install fedless*.whl
+RUN pip uninstall -y tensorflow && pip install intel-tensorflow-avx512==2.4
