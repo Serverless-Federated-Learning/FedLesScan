@@ -14,5 +14,8 @@ python setup.py bdist_wheel
 # Building image
 echo "Build and Push Image"
 docker build -f ./images/openwhisk/base/Dockerfile -t fedless-openwhisk  .
+docker build -f ./images/openwhisk/base/AVX512.Dockerfile -t fedless-openwhisk-avx512  .
 docker tag fedless-openwhisk andreasgrafberger/fedless-openwhisk:latest
+docker tag fedless-openwhisk-avx512 andreasgrafberger/fedless-openwhisk:avx512
 docker push andreasgrafberger/fedless-openwhisk:latest
+docker push andreasgrafberger/fedless-openwhisk:avx512

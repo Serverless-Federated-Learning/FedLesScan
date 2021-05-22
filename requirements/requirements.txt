@@ -1,10 +1,10 @@
 pydantic==1.7.4
-tensorflow>=2.4,<2.5
+tensorflow>=2.4
 numpy==1.19.5
 requests>=2.25,<2.30
 twine==3.3.0
 PyYAML~=5.4.1
-h5py==2.10.0
+h5py
 pymongo~=3.11.3
 backoff~=1.10.0
 click~=7.1.2

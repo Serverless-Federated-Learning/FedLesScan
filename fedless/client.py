@@ -71,7 +71,7 @@ def fedless_mongodb_handler(
     Uses Npz weight serializer + Base64 encoding by default
     :raises ClientError if something failed during execution
     """
-    if logger.level == logging.DEBUG:
+    if logging.root.level == logging.DEBUG:
         # https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
         import tensorflow as tf
 
