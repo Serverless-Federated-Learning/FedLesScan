@@ -71,17 +71,17 @@ def fedless_mongodb_handler(
     Uses Npz weight serializer + Base64 encoding by default
     :raises ClientError if something failed during execution
     """
-    if logging.root.level == logging.DEBUG:
-        # https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
-        import tensorflow as tf
-
-        major_version = int(tf.__version__.split(".")[0])
-        if major_version >= 2:
-            from tensorflow.python import _pywrap_util_port
-
-            logger.debug(f"MKL enabled: {_pywrap_util_port.IsMklEnabled()}")
-        else:
-            logger.debug(f"MKL enabled: {tf.pywrap_tensorflow.IsMklEnabled()}")
+    # if logging.root.level == logging.DEBUG:
+    #    # https://software.intel.com/content/www/us/en/develop/articles/intel-optimization-for-tensorflow-installation-guide.html
+    #    import tensorflow as tf
+    #
+    #    major_version = int(tf.__version__.split(".")[0])
+    #    if major_version >= 2:
+    #        from tensorflow.python import _pywrap_util_port
+    #
+    #        logger.debug(f"MKL enabled: {_pywrap_util_port.IsMklEnabled()}")
+    #    else:
+    #        logger.debug(f"MKL enabled: {tf.pywrap_tensorflow.IsMklEnabled()}")
 
     logger.info(
         f"handler called for session_id={session_id} round_id={round_id} client_id={client_id}"
