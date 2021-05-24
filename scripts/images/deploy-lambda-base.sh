@@ -16,6 +16,3 @@ echo "Build and Push Image"
 docker build -f ./images/lambda/base/Dockerfile -t fedless-lambda-git  .
 docker tag fedless-lambda-git andreasgrafberger/fedless:lambda
 docker push andreasgrafberger/fedless:lambda
-docker build -f ./images/lambda/base/AVX512.Dockerfile -t fedless-lambda-avx512-git  .
-docker tag fedless-lambda-avx512-git andreasgrafberger/fedless:lambda-avx512
-docker push andreasgrafberger/fedless:lambda-avx512
