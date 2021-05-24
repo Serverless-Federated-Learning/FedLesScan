@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 @click.command()
 @click.option("--out", type=click.Path(), required=True)
-def run(out):
+def start(out):
     start_time_ns = time.time_ns()
     # cProfile.run()
     profiler = cProfile.Profile()
