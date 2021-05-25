@@ -487,7 +487,11 @@ class ModelDao(MongoDbDao):
     def load(self, session_id: str) -> SerializedModel:
         try:
             obj_dict = self._collection.find_one(filter={"session_id": session_id})
-            obj_dict = obj_dict["model"]
+            obj_dict = (
+                obj_dict["model"]
+                if obj_dict is not None and "model" in obj_dict
+                else None
+            )
 
             if obj_dict is None:
                 raise DocumentNotLoadedException(f"Client with id {id} not found")
