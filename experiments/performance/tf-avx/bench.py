@@ -33,13 +33,14 @@ if __name__ == "__main__":
     # session = retry_session(session=session, retries=1)
 
     timings = defaultdict(list)
-    n_rounds = 10
+    n_rounds = 5
     for url in [
-        "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-tf4-avx-1",
-        "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-tf4-vanilla-1",
+        # "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-tf4-avx-1",
+        # "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-tf4-vanilla-1",
+        "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-4gb-1",
         "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-tf5-axx-enabled-1",
-        "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-tf5-axx-disabled-1",
-        "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-tf4-avx512-1",
+        # "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-tf5-axx-disabled-1",
+        # "https://europe-west3-thesis-303614.cloudfunctions.net/http-indep-secure-tf4-avx512-1",
     ]:
         for i in range(n_rounds):
             start_time = time.time()
