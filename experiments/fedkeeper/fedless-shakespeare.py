@@ -9,7 +9,6 @@ from fedless.benchmark.common import parse_yaml_file
 from fedless.benchmark.fedkeeper_indep import FedlessStrategy, ClusterConfig
 from fedless.benchmark.leaf import (
     create_shakespeare_lstm,
-    split_shakespear_source_by_users,
 )
 from fedless.models import DatasetLoaderConfig, LEAFConfig
 
@@ -43,20 +42,20 @@ def run(
             type="leaf",
             params=LEAFConfig(
                 dataset="shakespeare",
-                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/train/user_{i}_all_data_niid_05_keep_64_train_9.json",
+                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/data/train/user_{i}_all_data_niid_5_keep_64_train_9.json",
             ),
         )
-        for i in range(30)
+        for i in range(n_clients)
     ]
     client_test_data_configs = [
         DatasetLoaderConfig(
             type="leaf",
             params=LEAFConfig(
                 dataset="shakespeare",
-                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/test/user_{i}_all_data_niid_05_keep_64_test_9.json",
+                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/data/test/user_{i}_all_data_niid_5_keep_64_test_9.json",
             ),
         )
-        for i in range(30)
+        for i in range(n_clients)
     ]
 
     client_data_configs = list(

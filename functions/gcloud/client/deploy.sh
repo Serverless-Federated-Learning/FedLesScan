@@ -25,6 +25,7 @@ for i in {1..50}; do
     --timeout=540s \
     --region europe-west3 \
     --max-instances 50 \
+    --set-env-vars TF_ENABLE_ONEDNN_OPTS=1 \
     --set-build-env-vars GIT_COMMIT_IDENTIFIER="@$COMMIT_HASH",GITHUB_AUTH_TOKEN="$GITHUB_AUTH_TOKEN" &
   if [ $((i % 25)) -eq 0 ]; then
     echo "Waiting for previous functions to finish deployment"

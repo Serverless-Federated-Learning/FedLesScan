@@ -1,5 +1,5 @@
-import math
 import logging
+import math
 import sys
 from typing import Optional
 
@@ -8,9 +8,9 @@ import tensorflow.keras as keras
 from absl import app
 from tensorflow.python.keras.callbacks import History
 from tensorflow_privacy import (
-    DPKerasAdamOptimizer,
-    DPKerasAdagradOptimizer,
-    DPKerasSGDOptimizer,
+    VectorizedDPKerasAdamOptimizer,
+    VectorizedDPKerasAdagradOptimizer,
+    VectorizedDPKerasSGDOptimizer,
     compute_rdp,
 )
 from tensorflow_privacy.privacy.analysis.compute_dp_sgd_privacy_lib import (
@@ -35,6 +35,13 @@ from fedless.models import (
     ClientInvocationParams,
     InvocationResult,
 )
+from fedless.persistence import (
+    PersistenceError,
+    ClientConfigDao,
+    ModelDao,
+    ParameterDao,
+    ClientResultDao,
+)
 from fedless.serialization import (
     ModelLoadError,
     ModelLoader,
@@ -44,13 +51,6 @@ from fedless.serialization import (
     NpzWeightsSerializer,
     Base64StringConverter,
     SerializationError,
-)
-from fedless.persistence import (
-    PersistenceError,
-    ClientConfigDao,
-    ModelDao,
-    ParameterDao,
-    ClientResultDao,
 )
 
 logger = logging.getLogger(__name__)
@@ -71,6 +71,7 @@ def fedless_mongodb_handler(
     Uses Npz weight serializer + Base64 encoding by default
     :raises ClientError if something failed during execution
     """
+
     logger.info(
         f"handler called for session_id={session_id} round_id={round_id} client_id={client_id}"
     )
@@ -270,21 +271,21 @@ def run(
         opt_config = optimizer.get_config()
         opt_name = opt_config.get("name", "unknown")
         if opt_name == "Adam":
-            optimizer = DPKerasAdamOptimizer(
+            optimizer = VectorizedDPKerasAdamOptimizer(
                 l2_norm_clip=privacy_params.l2_norm_clip,
                 noise_multiplier=privacy_params.noise_multiplier,
                 num_microbatches=privacy_params.num_microbatches,
                 **opt_config,
             )
         elif opt_name == "Adagrad":
-            optimizer = DPKerasAdagradOptimizer(
+            optimizer = VectorizedDPKerasAdagradOptimizer(
                 l2_norm_clip=privacy_params.l2_norm_clip,
                 noise_multiplier=privacy_params.noise_multiplier,
                 num_microbatches=privacy_params.num_microbatches,
                 **opt_config,
             )
         elif opt_name == "SGD":
-            optimizer = DPKerasSGDOptimizer(
+            optimizer = VectorizedDPKerasSGDOptimizer(
                 l2_norm_clip=privacy_params.l2_norm_clip,
                 noise_multiplier=privacy_params.noise_multiplier,
                 num_microbatches=privacy_params.num_microbatches,

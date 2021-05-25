@@ -16,3 +16,4 @@ echo "Build and Push Image"
 docker build -f ./images/openwhisk/base/Dockerfile -t fedless-openwhisk  .
 docker tag fedless-openwhisk andreasgrafberger/fedless-openwhisk:latest
 docker push andreasgrafberger/fedless-openwhisk:latest
+
