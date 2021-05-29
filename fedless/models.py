@@ -390,6 +390,7 @@ class AggregatorFunctionParams(BaseModel):
     serializer: WeightsSerializerConfig = WeightsSerializerConfig(
         type="npz", params=NpzWeightsSerializerConfig(compressed=True)
     )
+    online: bool = False
 
 
 class AggregatorFunctionResult(BaseModel):

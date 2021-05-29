@@ -18,4 +18,5 @@ def main(request):
         round_id=config.round_id,
         database=config.database,
         serializer=config.serializer,
+        online=config.online,
     )
