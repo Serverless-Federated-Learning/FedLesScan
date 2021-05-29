@@ -9,6 +9,7 @@ from json.decoder import JSONDecodeError
 from typing import Dict, Callable, Union, Tuple, List, Iterable
 
 import pydantic
+import azure.functions
 from pydantic import BaseModel
 
 from fedless.models import (
@@ -69,6 +70,48 @@ def create_gcloud_http_user_error_response(
         status,
         {"Content-Type": "application/json"},
     )
+
+
+def create_azure_success_response(
+    body: str, status: int = 200
+) -> azure.functions.HttpResponse:
+    return azure.functions.HttpResponse(
+        body=body, status_code=status, headers={"Content-Type": "application/json"}
+    )
+
+
+def create_azure_user_error_response(
+    exception: Exception, status: int = 400
+) -> azure.functions.HttpResponse:
+    return azure.functions.HttpResponse(
+        body=json.dumps(format_exception_for_user(exception)),
+        status_code=status,
+        headers={"Content-Type": "application/json"},
+    )
+
+
+def azure_handler(
+    caught_exceptions: Iterable[Exception],
+) -> Callable[[Callable], Callable]:
+    """Azure function compatible decorator to parse input, catch certain exceptions and respond to them with 400 errors."""
+
+    def decorator(func):
+        def patched_func(req: azure.functions.HttpRequest):
+            try:
+                # try:
+                #     body = req.get_json()
+                # except ValueError as e:
+                #     return create_azure_user_error_response(e)
+                result: Union[pydantic.BaseModel, str] = func(req)
+                if isinstance(result, str):
+                    return create_azure_success_response(result)
+                return create_azure_success_response(result.json())
+            except tuple(caught_exceptions) as e:
+                return create_azure_user_error_response(e)
+
+        return patched_func
+
+    return decorator
 
 
 def lambda_proxy_handler(

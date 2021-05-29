@@ -6,18 +6,11 @@ from pathlib import Path
 import click
 
 from fedless.benchmark.common import parse_yaml_file
-from fedless.models import DatasetLoaderConfig, MNISTConfig
-
-from fedless.benchmark.fedkeeper import (
-    FedkeeperStrategy,
-    create_mnist_cnn,
-    create_mnist_train_data_loader_configs,
-    ClusterConfig,
-)
+from fedless.benchmark.fedkeeper_indep import FedlessStrategy, ClusterConfig
 from fedless.benchmark.leaf import (
     create_shakespeare_lstm,
-    split_shakespear_source_by_users,
 )
+from fedless.models import DatasetLoaderConfig, LEAFConfig
 
 
 @click.command()
@@ -45,16 +38,24 @@ def run(
 
     model = create_shakespeare_lstm()
     client_train_data_configs = [
-        DatasetLoaderConfig(type="leaf", params=params)
-        for params in split_shakespear_source_by_users(
-            "https://thesis-datasets.s3.eu-central-1.amazonaws.com/all_data_niid_05_keep_64_train_9.json"
+        DatasetLoaderConfig(
+            type="leaf",
+            params=LEAFConfig(
+                dataset="shakespeare",
+                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/data/train/user_{i}_all_data_niid_5_keep_64_train_9.json",
+            ),
         )
+        for i in range(n_clients)
     ]
     client_test_data_configs = [
-        DatasetLoaderConfig(type="leaf", params=params)
-        for params in split_shakespear_source_by_users(
-            "https://thesis-datasets.s3.eu-central-1.amazonaws.com/all_data_niid_05_keep_64_test_9.json"
+        DatasetLoaderConfig(
+            type="leaf",
+            params=LEAFConfig(
+                dataset="shakespeare",
+                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/data/test/user_{i}_all_data_niid_5_keep_64_test_9.json",
+            ),
         )
+        for i in range(n_clients)
     ]
 
     client_data_configs = list(
@@ -62,10 +63,15 @@ def run(
     )
 
     # Create log directory
-    log_dir = Path(log_dir) if log_dir else config_path / "logs"
+    log_dir = (
+        Path(log_dir)
+        if log_dir
+        else config_path
+        / f"logs_fedless_shakespeare_{n_clients}_{clients_per_round}_{allowed_stragglers}_{accuracy_threshold}"
+    )
     log_dir.mkdir(exist_ok=True)
 
-    fedkeeper = FedkeeperStrategy(
+    fedkeeper = FedlessStrategy(
         config=config,
         model=model,
         client_data_configs=client_data_configs,

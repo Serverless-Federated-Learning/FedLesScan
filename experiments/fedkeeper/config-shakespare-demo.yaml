@@ -1,0 +1,63 @@
+
+database:
+  host: '138.246.235.163'
+
+providers:
+  lrz-1:
+    type: openwhisk
+    params:
+      apihost: 138.246.233.67:31001
+      auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+
+fedkeeper:
+  provider: lrz-1
+
+  invoker:
+    type: openwhisk
+    params:
+      name: invoker
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/invoker/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 512
+      timeout: 60000
+
+  evaluator:
+    type: openwhisk
+    params:
+      name: evaluator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/evaluator/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 2048
+      timeout: 60000
+
+  aggregator:
+    type: openwhisk
+    params:
+      name: aggregator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/aggregator/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 2024
+      timeout: 60000
+
+
+clients:
+  functions:
+    - replicas: 40
+      function:
+        type: lambda
+        params:
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client
+          api_key: JfRCuksMO04XMWDEKGtob7Y5OTyWhyI34fM6QKF5
+
+  hyperparams:
+    epochs: 1
+    batch_size: 128
+    optimizer: sgd
+    metrics:
+      - accuracy
+    #  class_name: "Adam"
+    #  config:
+    #    name: "Adam"
+    #    learning_rate: 0.001
+
+

@@ -9,6 +9,13 @@ providers:
       apihost: 138.246.233.67:31001
       auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
 
+cognito:
+  user_pool_id: eu-west-1_Ay4jDCguX
+  region_name: eu-west-1
+  auth_endpoint: https://fedless-pool-2.auth.eu-west-1.amazoncognito.com/oauth2/token
+  invoker_client_id: 16q863gk2kggfen78uf5aa2o23
+  invoker_client_secret: fg7bq2dr4p1idovtcspn8ablf76bd3g9nu0d2o11ldl2bnbhqtl
+
 fedkeeper:
   provider: lrz-1
 

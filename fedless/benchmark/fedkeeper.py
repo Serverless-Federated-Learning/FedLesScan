@@ -1,6 +1,8 @@
 import os
+from itertools import cycle
 
 import yaml
+from requests import Session
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
@@ -281,37 +283,41 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         clients = self.config.clients
         default_hyperparams = clients.hyperparams
         n_clients = sum(function.replicas for function in clients.functions)
-        if n_clients != len(self.client_data_configs):
-            raise ValueError(
-                f"Found {n_clients} client functions but {len(self.client_data_configs)} "
-                f"client data configs. Numbers must match"
-            )
+        # if n_clients != len(self.client_data_configs):
+        #    raise ValueError(
+        #        f"Found {n_clients} client functions but {len(self.client_data_configs)} "
+        #        f"client data configs. Numbers must match"
+        #    )
         print(
-            f"{n_clients} found in total. Generating dataset shards and client configurations..."
+            f"{n_clients} clents and {len(self.client_data_configs)}f ound in total. Generating dataset shards and client configurations..."
         )
         client_data_config_iterator = iter(self.client_data_configs)
-        for client in clients.functions:
-            for client_replica_idx in range(client.replicas):
-                client_hyperparams = client.hyperparams or default_hyperparams
-                client_id = str(uuid.uuid4())
-                data_config = next(client_data_config_iterator)
-                test_config = None
-                if isinstance(data_config, tuple):
-                    data_config, test_config = data_config
-                client_config = ClientConfig(
-                    session_id=session_id,
-                    client_id=client_id,
-                    function=client.function,
-                    data=data_config,
-                    test_data=test_config,
-                    hyperparams=client_hyperparams,
-                )
+        client_function_iterator = cycle(clients.functions)
+        sum_clients = 0
+        for data_config in client_data_config_iterator:
+            client = next(client_function_iterator)
+            client_hyperparams = client.hyperparams or default_hyperparams
+            client_id = str(uuid.uuid4())
+            # data_config = next(client_data_config_iterator)
+            test_config = None
+            if isinstance(data_config, tuple):
+                data_config, test_config = data_config
+            client_config = ClientConfig(
+                session_id=session_id,
+                client_id=client_id,
+                function=client.function,
+                data=data_config,
+                test_data=test_config,
+                hyperparams=client_hyperparams,
+            )
 
-                print(
-                    f"Initializing client configurations with new id {client_id} of type "
-                    f"{client.function.type} and {client.replicas} replicas"
-                )
-                client_config_dao.save(client_config)
+            print(
+                f"Initializing client configurations with new id {client_id} of type "
+                f"{client.function.type} and data {data_config}"
+            )
+            client_config_dao.save(client_config)
+            sum_clients += 1
+        print(f"{sum_clients} clients configured in total...")
 
     def _init_model(self, session_id: str):
         parameters_dao = ParameterDao(db=self.mongo_client)
@@ -379,13 +385,18 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         print("Successfully deployed invoker function(s)")
 
     @run_in_executor
-    def _call_invoker(self, params: InvokerParams, function: FunctionInvocationConfig):
+    def _call_invoker(
+        self,
+        params: InvokerParams,
+        function: FunctionInvocationConfig,
+        session: Optional[Session] = None,
+    ):
         start_time = time.time()
         print(f"Client {params.client_id} invoked for round {params.round_id}")
         result = invoke_sync(
             function_config=function,
             data=params.dict(),
-            session=retry_session(backoff_factor=1.0, retries=5),
+            session=retry_session(backoff_factor=1.0, retries=5, session=session),
             timeout=500,
         )
         print(f"Invoker received result from client {params.client_id}: {result}")
@@ -393,9 +404,13 @@ class FedkeeperStrategy(FederatedLearningStrategy):
             {
                 "client_id": params.client_id,
                 "session_id": params.session_id,
+                "seconds": time.time() - start_time,
+                "config": function.json(),
                 "round_id": params.round_id,
                 "cardinality": result.get("cardinality", None),
-                "seconds": time.time() - start_time,
+                "privacy_guarantees": result.get("privacy_guarantees", None),
+                "history": result.get("history:", None),
+                "test_metrics": result.get("test_metrics", None),
             }
         )
         return result
@@ -539,7 +554,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
                 evaluator_result_dict = invoke_sync(
                     self.evaluator_function,
                     data=evaluator_params.dict(),
-                    session=retry_session(backoff_factor=1.0),
+                    session=retry_session(backoff_factor=1.0, retries=5),
                 )
                 evaluator_end_time = time.time()
                 evaluator_result = EvaluatorResult.parse_obj(evaluator_result_dict)
@@ -579,47 +594,3 @@ class FedkeeperStrategy(FederatedLearningStrategy):
 
             print(f"Global accuracy: {global_accuracy}, Global Loss: {global_loss}")
             f"Starting new round {aggregator_result.new_round_id}"
-
-
-@click.command()
-@click.option(
-    "--config",
-    help="cluster config file",
-    type=click.Path(),
-    required=True,
-)
-@click.option("--session-id", type=str)
-@click.option("--clients-per-round", type=int, default=10)
-@click.option("--allowed-stragglers", type=int, default=0)
-@click.option("--accuracy-threshold", type=float, default=0.99)
-@click.option("--log-dir", type=click.Path(), default=None)
-def run(
-    config: str,
-    session_id: str,
-    clients_per_round: int,
-    allowed_stragglers: int,
-    accuracy_threshold: float = 0.99,
-    log_dir: str = None,
-):
-    config_path = Path(config).parent
-    config: ClusterConfig = parse_yaml_file(config, model=ClusterConfig)
-    fedkeeper = FedkeeperStrategy(config=config)
-
-    # Create log directory
-    log_dir = Path(log_dir) if log_dir else config_path / "logs"
-    log_dir.mkdir(exist_ok=True)
-
-    # Run experiments
-    asyncio.run(
-        fedkeeper.run(
-            clients_per_round=clients_per_round,
-            allowed_stragglers=allowed_stragglers,
-            accuracy_threshold=accuracy_threshold,
-            out_dir=log_dir,
-            session_id=session_id,
-        )
-    )
-
-
-if __name__ == "__main__":
-    run()

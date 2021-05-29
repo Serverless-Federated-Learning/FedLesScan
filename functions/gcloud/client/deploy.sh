@@ -9,6 +9,9 @@ fi
 
 COMMIT_HASH=$(git rev-parse HEAD)
 
+trap "exit" INT TERM ERR
+trap "kill 0" EXIT
+
 for i in {1..50}; do
   function_name="http-${i}"
   echo "Deploying function $function_name"
@@ -19,11 +22,13 @@ for i in {1..50}; do
     --entry-point="http" \
     --allow-unauthenticated \
     --memory=2048MB \
-    --timeout=300s \
+    --timeout=540s \
+    --region europe-west3 \
     --max-instances 50 \
+    --set-env-vars TF_ENABLE_ONEDNN_OPTS=1 \
     --set-build-env-vars GIT_COMMIT_IDENTIFIER="@$COMMIT_HASH",GITHUB_AUTH_TOKEN="$GITHUB_AUTH_TOKEN" &
-  if [ "$i" -gt 20 ]
-  then
-    sleep 5
+  if [ $((i % 25)) -eq 0 ]; then
+    echo "Waiting for previous functions to finish deployment"
+    wait
   fi
 done

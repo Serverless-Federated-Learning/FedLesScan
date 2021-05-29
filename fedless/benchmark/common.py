@@ -1,5 +1,7 @@
 import asyncio
 import functools
+import os
+import logging
 from concurrent.futures import ThreadPoolExecutor
 from typing import Optional, Type
 
@@ -7,6 +9,27 @@ import click
 import pydantic
 import yaml
 from pydantic import ValidationError
+
+logger = logging.getLogger(__name__)
+
+
+def get_available_cores():
+    if hasattr(os, "sched_getaffinity"):
+        num_available_cores = len(os.sched_getaffinity(0))
+    else:
+        logger.debug(
+            "Method os.sched_getaffinity(0) not available, using os.cpu_count() instead "
+            "which can give wrong results. "
+        )
+        num_available_cores = os.cpu_count()
+    return num_available_cores
+
+
+MAX_THREAD_POOL_WORKERS = 500
+logger.debug(
+    f"Thread pool worker maximum set to {MAX_THREAD_POOL_WORKERS}, {get_available_cores()} available cores found"
+)
+_pool = ThreadPoolExecutor(max_workers=MAX_THREAD_POOL_WORKERS)
 
 
 def parse_yaml_file(path, model: Optional[Type[pydantic.BaseModel]] = None):
@@ -18,9 +41,6 @@ def parse_yaml_file(path, model: Optional[Type[pydantic.BaseModel]] = None):
         return model.parse_obj(file_dict)
     except (KeyError, ValidationError) as e:
         raise click.ClickException(str(e))
-
-
-_pool = ThreadPoolExecutor(max_workers=200)
 
 
 def run_in_executor(f):

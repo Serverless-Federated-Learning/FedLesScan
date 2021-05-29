@@ -107,7 +107,7 @@ class LeafDataset(str, Enum):
 class LocalDifferentialPrivacyParams(BaseModel):
     l2_norm_clip: float
     noise_multiplier: float
-    num_microbatches: int
+    num_microbatches: Optional[int]
 
 
 class Hyperparams(BaseModel):
@@ -197,6 +197,13 @@ class GCloudFunctionConfig(BaseModel):
     url: str
 
 
+class AzureFunctionHTTPConfig(BaseModel):
+    """Azure function"""
+
+    type: str = Field("azure", const=True)
+    trigger_url: str
+
+
 class FunctionInvocationConfig(BaseModel):
     """Necessary information to invoke a function"""
 
@@ -206,6 +213,7 @@ class FunctionInvocationConfig(BaseModel):
         ApiGatewayLambdaFunctionConfig,
         GCloudFunctionConfig,
         OpenwhiskWebActionConfig,
+        AzureFunctionHTTPConfig,
     ]
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
@@ -382,6 +390,7 @@ class AggregatorFunctionParams(BaseModel):
     serializer: WeightsSerializerConfig = WeightsSerializerConfig(
         type="npz", params=NpzWeightsSerializerConfig(compressed=True)
     )
+    online: bool = False
 
 
 class AggregatorFunctionResult(BaseModel):

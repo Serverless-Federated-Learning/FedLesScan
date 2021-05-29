@@ -18,6 +18,7 @@ from fedless.models import (
     DatasetLoaderConfig,
     PayloadModelLoaderConfig,
     ModelLoaderConfig,
+    LocalDifferentialPrivacyParams,
 )
 from fedless.providers import (
     lambda_proxy_handler,
@@ -70,6 +71,33 @@ def test_femnist_training_with_local_data(model_loader_config, data_loader_confi
         data_config=data_loader_config,
         model_config=model_loader_config,
         hyperparams=Hyperparams(batch_size=1, epochs=10, shuffle_data=False),
+    )
+    losses = result.history["loss"]
+    weights = deserialize_parameters(result.parameters)
+    assert isinstance(weights, list)
+    assert isinstance(weights[0], np.ndarray)
+    assert losses[0] > losses[-1]
+
+
+@pytest.mark.integ
+@pytest.mark.parametrize("num_microbatches", [None, 1, 2, 4, 8])
+def test_femnist_training_with_local_data_and_dp(
+    model_loader_config, data_loader_config, num_microbatches
+):
+    result = default_handler(
+        data_config=data_loader_config,
+        model_config=model_loader_config,
+        hyperparams=Hyperparams(
+            batch_size=8,
+            optimizer="SGD",
+            epochs=8,
+            shuffle_data=False,
+            local_privacy=LocalDifferentialPrivacyParams(
+                l2_norm_clip=1.0,
+                noise_multiplier=1.0,
+                num_microbatches=num_microbatches,
+            ),
+        ),
     )
     losses = result.history["loss"]
     weights = deserialize_parameters(result.parameters)

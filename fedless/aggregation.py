@@ -43,6 +43,7 @@ def default_aggregation_handler(
     round_id: int,
     database: MongodbConnectionConfig,
     serializer: WeightsSerializerConfig,
+    online: bool = False,
 ) -> AggregatorFunctionResult:
     mongo_client = pymongo.MongoClient(
         host=database.host,
@@ -55,8 +56,8 @@ def default_aggregation_handler(
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
 
-        previous_results: List[ClientResult] = list(
-            result_dao.load_results_for_round(session_id=session_id, round_id=round_id)
+        previous_results: Iterator[ClientResult] = result_dao.load_results_for_round(
+            session_id=session_id, round_id=round_id
         )
 
         if not previous_results:
@@ -64,7 +65,10 @@ def default_aggregation_handler(
                 f"Found no client results for session {session_id} and round {round_id}"
             )
 
-        new_parameters = FedAvgAggregator().aggregate(previous_results)
+        aggregator = FedAvgAggregator()
+        if online:
+            aggregator = StreamFedAvgAggregator()
+        new_parameters = aggregator.aggregate(previous_results)
         serialized_params_str = Base64StringConverter.to_str(
             WeightsSerializerBuilder.from_config(serializer).serialize(new_parameters)
         )
@@ -86,7 +90,9 @@ def default_aggregation_handler(
 
         return AggregatorFunctionResult(
             new_round_id=new_round_id,
-            num_clients=len(previous_results),
+            num_clients=result_dao.count_results_for_round(
+                session_id=session_id, round_id=round_id
+            ),
             test_results=test_results or None,
         )
     except (SerializationError, PersistenceError) as e:
