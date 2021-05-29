@@ -108,7 +108,7 @@ def test_run_batches_data(
             string_serializer=string_serializer,
             validation_split=0.0,
         )
-        mocked_batch.assert_called_with(hyperparams.batch_size)
+        mocked_batch.assert_called_with(hyperparams.batch_size, drop_remainder=False)
 
 
 @pytest.mark.parametrize(
