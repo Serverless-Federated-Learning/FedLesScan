@@ -245,12 +245,17 @@ def run(
     )  # compiled_metrics are explicitly defined by the user
 
     # Batch data, necessary or model fitting will fail
+    drop_remainder = bool(
+        hyperparams.local_privacy and hyperparams.local_privacy.num_microbatches
+    )  # if #samples % batchsize != 0, tf-privacy throws an error during training
     if validation_split:
         cardinality = float(dataset.cardinality())
         train_validation_split_idx = int(cardinality - cardinality * validation_split)
         train_dataset = dataset.take(train_validation_split_idx)
         val_dataset = dataset.skip(train_validation_split_idx)
-        train_dataset = train_dataset.batch(hyperparams.batch_size)
+        train_dataset = train_dataset.batch(
+            hyperparams.batch_size, drop_remainder=drop_remainder
+        )
         val_dataset = val_dataset.batch(hyperparams.batch_size)
         train_cardinality = train_validation_split_idx
         logger.debug(
@@ -258,7 +263,9 @@ def run(
             f"and validation set of size {cardinality - train_cardinality}"
         )
     else:
-        train_dataset = dataset.batch(hyperparams.batch_size)
+        train_dataset = dataset.batch(
+            hyperparams.batch_size, drop_remainder=drop_remainder
+        )
         train_cardinality = dataset.cardinality()
         val_dataset = None
 

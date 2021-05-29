@@ -1,7 +1,6 @@
 import os
 import time
 
-
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
 from multiprocessing import Pool, set_start_method
@@ -39,11 +38,12 @@ from fedless.serialization import (
 @click.command()
 @click.option("--devices", type=int, default=100)
 @click.option("--epochs", type=int, default=100)
-@click.option("--local-epochs", type=int, default=2)
-@click.option("--local-batch-size", type=int, default=128)
-@click.option("--clients-per-round", type=int, default=2)
+@click.option("--local-epochs", type=int, default=10)
+@click.option("--local-batch-size", type=int, default=10)
+@click.option("--clients-per-round", type=int, default=10)
 @click.option("--l2-norm-clip", type=float, default=4.0)
 @click.option("--noise-multiplier", type=float, default=1.0)
+@click.option("--num-microbatches", type=int, default=0)
 @click.option("--local-dp/--no-local-dp", type=bool, default=True)
 def run(
     devices,
@@ -53,6 +53,7 @@ def run(
     clients_per_round,
     l2_norm_clip,
     noise_multiplier,
+    num_microbatches,
     local_dp,
 ):
     # Setup
@@ -60,7 +61,7 @@ def run(
         LocalDifferentialPrivacyParams(
             l2_norm_clip=l2_norm_clip,
             noise_multiplier=noise_multiplier,
-            num_microbatches=1,
+            num_microbatches=num_microbatches or None,
         )
         if l2_norm_clip != 0.0 and noise_multiplier != 0.0 and local_dp
         else None
@@ -164,7 +165,7 @@ def run(
 
         pd.DataFrame.from_records(round_results).to_csv(
             f"results_{devices}_{epochs}_{local_epochs}_{local_batch_size}"
-            f"_{clients_per_round}_{l2_norm_clip}_{noise_multiplier}_{local_dp}_{start_time}.csv"
+            f"_{clients_per_round}_{l2_norm_clip}_{noise_multiplier}_{local_dp}_{num_microbatches}_{start_time}.csv"
         )
 
 
