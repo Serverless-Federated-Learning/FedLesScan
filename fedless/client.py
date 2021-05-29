@@ -8,9 +8,9 @@ import tensorflow.keras as keras
 from absl import app
 from tensorflow.python.keras.callbacks import History
 from tensorflow_privacy import (
-    VectorizedDPKerasAdamOptimizer,
-    VectorizedDPKerasAdagradOptimizer,
-    VectorizedDPKerasSGDOptimizer,
+    VectorizedDPKerasAdamOptimizer as DPKerasAdamOptimizer,
+    VectorizedDPKerasAdagradOptimizer as DPKerasAdagradOptimizer,
+    VectorizedDPKerasSGDOptimizer as DPKerasSGDOptimizer,
     compute_rdp,
 )
 from tensorflow_privacy.privacy.analysis.compute_dp_sgd_privacy_lib import (
@@ -271,21 +271,21 @@ def run(
         opt_config = optimizer.get_config()
         opt_name = opt_config.get("name", "unknown")
         if opt_name == "Adam":
-            optimizer = VectorizedDPKerasAdamOptimizer(
+            optimizer = DPKerasAdamOptimizer(
                 l2_norm_clip=privacy_params.l2_norm_clip,
                 noise_multiplier=privacy_params.noise_multiplier,
                 num_microbatches=privacy_params.num_microbatches,
                 **opt_config,
             )
         elif opt_name == "Adagrad":
-            optimizer = VectorizedDPKerasAdagradOptimizer(
+            optimizer = DPKerasAdagradOptimizer(
                 l2_norm_clip=privacy_params.l2_norm_clip,
                 noise_multiplier=privacy_params.noise_multiplier,
                 num_microbatches=privacy_params.num_microbatches,
                 **opt_config,
             )
         elif opt_name == "SGD":
-            optimizer = VectorizedDPKerasSGDOptimizer(
+            optimizer = DPKerasSGDOptimizer(
                 l2_norm_clip=privacy_params.l2_norm_clip,
                 noise_multiplier=privacy_params.noise_multiplier,
                 num_microbatches=privacy_params.num_microbatches,
