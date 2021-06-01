@@ -7,7 +7,12 @@ from fedless.data import DatasetLoaderBuilder
 
 
 class FedlessClient(fl.client.NumPyClient):
-    def __init__(self, model: tf.keras.Model, dataset: tf.data.Dataset, test_dataset: tf.data.Dataset):
+    def __init__(
+        self,
+        model: tf.keras.Model,
+        dataset: tf.data.Dataset,
+        test_dataset: tf.data.Dataset,
+    ):
         self.dataset = dataset
         self.test_dataset = test_dataset
         self.model = model
@@ -29,17 +34,16 @@ class FedlessClient(fl.client.NumPyClient):
 if __name__ == "__main__":
     model = create_shakespeare_lstm()
 
-    dataset_config = DatasetLoaderConfig(type="leaf", params=LEAFConfig(
-        dataset="shakespeare",
-        location="http://138.246.235.163:31715/data/leaf/data/shakespeare/data/test/user_0_all_data_niid_05_keep_64_test_9.json"
-    ))
+    dataset_config = DatasetLoaderConfig(
+        type="leaf",
+        params=LEAFConfig(
+            dataset="shakespeare",
+            location="http://138.246.235.163:31715/data/leaf/data/shakespeare/data/test/user_0_all_data_niid_05_keep_64_test_9.json",
+        ),
+    )
 
     train_set = DatasetLoaderBuilder.from_config(dataset_config).load()
     test_set = train_set
-    client = FedlessClient(
-        model=model,
-        dataset=train_set,
-        test_dataset=test_set
-    )
+    client = FedlessClient(model=model, dataset=train_set, test_dataset=test_set)
 
     fl.client.start_client("192.0.0.1", client)
