@@ -1,4 +1,5 @@
 FROM andreasgrafberger/fedless:flower
 
 COPY ./server.py server.py
-CMD ["python", "server.py"]
+ENTRYPOINT ["python", "server.py"]
+CMD ["--help"]
