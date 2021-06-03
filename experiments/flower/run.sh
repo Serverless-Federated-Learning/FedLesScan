@@ -68,7 +68,7 @@ for ssh_host in "${ssh_hosts[@]}"; do
 with $client_cpus cores each to it..."
 
   for ((i = 1; i <= num_potential_clients; i++)); do
-    run_cmd="docker run --rm -d --network host \
+    run_cmd="docker run --rm --network host \
 --cpus $client_cpus \
 --memory $client_memory \
 --memory-swap $client_memory \
@@ -83,7 +83,7 @@ andreasgrafberger/flower:client \
 --clients-total $num_clients_total"
     echo "($ssh_host) $run_cmd"
     # shellcheck disable=SC2029
-    ssh "$ssh_host" "$run_cmd"
+    ssh "$ssh_host" "nohup $run_cmd > fedless_${session_id}_$current_partition.out 2> fedless_${session_id}_$current_partition.err < /dev/null &"
     current_partition=$((current_partition + 1))
   done
 done

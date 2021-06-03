@@ -20,32 +20,31 @@ class FedlessClient(fl.client.NumPyClient):
         dataset: tf.data.Dataset,
         test_dataset: tf.data.Dataset,
         epochs: int,
+        batch_size: int,
     ):
         self.dataset = dataset
         self.test_dataset = test_dataset
         self.model = model
         self.epochs = epochs
+        self.batch_size = batch_size
 
     def get_parameters(self):
         return self.model.get_weights()
 
     def fit(self, parameters, config):
         self.model.set_weights(parameters)
-        self.model.fit(self.dataset, epochs=self.epochs)
-        return self.model.get_weights(), int(self.dataset.unbatch().cardinality()), {}
+        self.model.fit(self.dataset.batch(self.batch_size), epochs=self.epochs)
+        return self.model.get_weights(), int(self.dataset.cardinality()), {}
 
     def evaluate(self, parameters, config):
         self.model.set_weights(parameters)
-        loss, accuracy = self.model.evaluate(self.test_dataset)
-        print(loss, self.test_dataset.unbatch().cardinality(), {"accuracy": accuracy})
+        loss, accuracy = self.model.evaluate(self.test_dataset.batch(self.batch_size))
         print(
-            type(loss),
-            type(self.test_dataset.unbatch().cardinality()),
-            type({"accuracy": accuracy}),
+            f"Evaluating: {config}: {(loss, int(self.test_dataset.cardinality()), {'accuracy': accuracy})}"
         )
         return (
             loss,
-            int(self.test_dataset.unbatch().cardinality()),
+            int(self.test_dataset.cardinality()),
             {"accuracy": accuracy},
         )
 
@@ -118,9 +117,10 @@ def run(
 
     client = FedlessClient(
         model=model,
-        dataset=train_set.batch(batch_size),
-        test_dataset=test_set.batch(batch_size) if test_set else None,
+        dataset=train_set,
+        test_dataset=test_set,
         epochs=epochs,
+        batch_size=batch_size,
     )
 
     fl.client.start_numpy_client(server, client=client)

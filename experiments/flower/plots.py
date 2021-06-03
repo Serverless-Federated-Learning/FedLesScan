@@ -36,9 +36,16 @@ def run(file: Path, out: Optional[Path]):
     )
     df["round_duration"] = df["time"].diff()
 
+    # PLOT TIME
+    sns.set_style("whitegrid")
+
     fig, ax = plt.subplots(figsize=(10, 5))
     sns.lineplot(x="round", y="accuracy", ax=ax, data=df)
     fig.savefig(out / "accuracy.pdf")
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.barplot(x="round", y="round_duration", ax=ax, data=df)
+    fig.savefig(out / "timings.pdf")
 
 
 if __name__ == "__main__":
