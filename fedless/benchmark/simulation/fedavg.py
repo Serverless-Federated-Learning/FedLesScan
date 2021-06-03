@@ -1,6 +1,12 @@
 import os
 import time
 
+import numpy as np
+from keras.losses import sparse_categorical_crossentropy
+from tensorflow_privacy.privacy.membership_inference_attack.data_structures import (
+    AttackType,
+)
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
 from multiprocessing import Pool, set_start_method
@@ -35,16 +41,55 @@ from fedless.serialization import (
 )
 
 
+def simulate_mia(train, test, model):
+    from tensorflow_privacy.privacy.membership_inference_attack import (
+        membership_inference_attack,
+    )
+    from tensorflow_privacy.privacy.membership_inference_attack.data_structures import (
+        AttackInputData,
+    )
+
+    x_train = train.map(lambda x, y: x)
+    x_test = test.map(lambda x, y: x)
+    y_train = list(train.map(lambda x, y: y).as_numpy_iterator())
+    y_test = list(test.map(lambda x, y: y).as_numpy_iterator())
+    train_predict = model.predict(x_train.batch(128))
+    test_predict = model.predict(x_test.batch(128))
+    loss_train = sparse_categorical_crossentropy(y_train, train_predict).numpy()
+    loss_test = sparse_categorical_crossentropy(y_test, test_predict).numpy()
+    attacks_result = membership_inference_attack.run_attacks(
+        AttackInputData(
+            loss_train=loss_train,
+            loss_test=loss_test,
+            labels_train=np.asanyarray(y_train),
+            labels_test=np.asanyarray(y_test),
+        ),
+        attack_types=[
+            AttackType.THRESHOLD_ATTACK,
+            # AttackType.RANDOM_FOREST,
+            AttackType.LOGISTIC_REGRESSION,
+            # AttackType.MULTI_LAYERED_PERCEPTRON,
+        ],
+    )
+    print(attacks_result.summary())
+    results = attacks_result.get_result_with_max_attacker_advantage()
+    return {
+        "mia-auc": results.get_auc(),
+        "mia-attacker-advantage": results.get_attacker_advantage(),
+    }
+
+
 @click.command()
 @click.option("--devices", type=int, default=100)
-@click.option("--epochs", type=int, default=100)
+@click.option("--epochs", type=int, default=200)
 @click.option("--local-epochs", type=int, default=10)
 @click.option("--local-batch-size", type=int, default=10)
-@click.option("--clients-per-round", type=int, default=10)
-@click.option("--l2-norm-clip", type=float, default=4.0)
+@click.option("--clients-per-round", type=int, default=5)
+@click.option("--l2-norm-clip", type=float, default=1.0)
 @click.option("--noise-multiplier", type=float, default=1.0)
 @click.option("--num-microbatches", type=int, default=0)
-@click.option("--local-dp/--no-local-dp", type=bool, default=True)
+@click.option("--local-dp/--no-local-dp", type=bool, default=False)
+@click.option("--mia/--no-mia", type=bool, default=False)
 def run(
     devices,
     epochs,
@@ -55,6 +100,7 @@ def run(
     noise_multiplier,
     num_microbatches,
     local_dp,
+    mia,
 ):
     # Setup
     privacy_params = (
@@ -77,6 +123,7 @@ def run(
         create_mnist_train_data_loader_configs(n_devices=devices, n_shards=200)
     )
     test_config = DatasetLoaderConfig(type="mnist", params=MNISTConfig(split="test"))
+    mia_train_set = DatasetLoaderBuilder.from_config(data_configs[0]).load()
     test_set = DatasetLoaderBuilder.from_config(test_config).load()
     model = create_mnist_cnn()
     serialized_model = serialize_model(model)
@@ -140,6 +187,10 @@ def run(
 
         model.set_weights(new_parameters)
         test_eval = model.evaluate(test_set.batch(32), return_dict=True, verbose=False)
+
+        mia_results = simulate_mia(mia_train_set, test_set, model) if mia else {}
+        print(mia_results)
+
         test_accuracy = test_eval["accuracy"]
         epoch += 1
         print(f"Epoch {epoch}/{epochs}: {test_eval}")
@@ -160,6 +211,7 @@ def run(
                     for result in results
                     if result.privacy_guarantees
                 ],
+                **mia_results,
             }
         )
 

@@ -33,6 +33,15 @@ for num_microbatches in 1 8; do
     --local-dp --l2-norm-clip 1.0 --noise-multiplier 1.0 --num-microbatches "$num_microbatches"
 done
 
+# MIA Simulation
+python3 -m fedless.benchmark.simulation.fedavg --devices 100 --epochs "$num_dp_rounds" --local-epochs "$local_epochs" \
+  --local-batch-size "$local_batchsize" --clients-per-round "$clients_per_round" \
+  --local-dp --l2-norm-clip 1.0 --noise-multiplier 1.0 --num-microbatches 8 --mia
+
+python3 -m fedless.benchmark.simulation.fedavg --devices 100 --epochs "$num_dp_rounds" --local-epochs "$local_epochs" \
+  --local-batch-size "$local_batchsize" --clients-per-round "$clients_per_round" \
+  --no-local-dp --mia
+
 # Normal run
 python3 -m fedless.benchmark.simulation.fedavg --devices 100 --epochs "$num_normal_rounds" --local-epochs "$local_epochs" \
   --local-batch-size "$local_batchsize" --clients-per-round "$clients_per_round" \
