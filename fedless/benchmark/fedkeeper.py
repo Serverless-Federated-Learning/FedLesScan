@@ -114,7 +114,7 @@ def create_mnist_train_data_loader_configs(
     (_, y_train), (_, _) = keras.datasets.mnist.load_data()
     num_train_examples, *_ = y_train.shape
 
-    sorted_labels_idx = np.argsort(y_train)
+    sorted_labels_idx = np.argsort(y_train, kind="stable")
     sorted_labels_idx_shards = np.split(sorted_labels_idx, n_shards)
     shards_per_device = len(sorted_labels_idx_shards) // n_devices
     np.random.shuffle(sorted_labels_idx_shards)

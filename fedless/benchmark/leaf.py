@@ -6,7 +6,9 @@ from fedless.data import LEAF
 from fedless.models import LeafDataset, LEAFConfig
 
 
-def create_femnist_cnn(num_classes: int = 62, small: bool = False):
+def create_femnist_cnn(
+    num_classes: int = 62, small: bool = False
+) -> keras.models.Sequential:
     model = keras.Sequential()
     model.add(keras.layers.Input((28 * 28,)))
     model.add(keras.layers.Reshape((28, 28, 1)))
