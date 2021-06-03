@@ -73,25 +73,25 @@ def run(
         model = create_femnist_cnn()
         train_set = LEAF(
             dataset=LeafDataset.FEMNIST,
-            location=f"{FILE_SERVER}/data/leaf/data/shakespeare/data/data/"
-            f"train/user_{partition}_all_data_niid_5_keep_64_train_9.json",
+            location=f"{FILE_SERVER}/data/leaf/data/femnist/data/"
+            f"train/user_{partition}_train_9.json",
         ).load()
         test_set = LEAF(
             dataset=LeafDataset.FEMNIST,
-            location=f"{FILE_SERVER}/data/leaf/data/shakespeare/data/data/"
-            f"test/user_{partition}_all_data_niid_5_keep_64_test_9.json",
+            location=f"{FILE_SERVER}/data/leaf/data/femnist/data/"
+            f"test/user_{partition}_test_9.json",
         ).load()
     elif dataset.lower() == "shakespeare":
         model = create_shakespeare_lstm()
         train_set = LEAF(
             dataset=LeafDataset.SHAKESPEARE,
-            location=f"{FILE_SERVER}/data/leaf/data/shakespeare/data/data/"
-            f"train/user_{partition}_all_data_niid_5_keep_64_train_9.json",
+            location=f"{FILE_SERVER}/data/leaf/data/shakespeare/data/"
+            f"train/user_{partition}_train_9.json",
         ).load()
         test_set = LEAF(
             dataset=LeafDataset.SHAKESPEARE,
-            location=f"{FILE_SERVER}/data/leaf/data/shakespeare/data/data/"
-            f"test/user_{partition}_all_data_niid_5_keep_64_test_9.json",
+            location=f"{FILE_SERVER}/data/leaf/data/shakespeare/data/"
+            f"test/user_{partition}_test_9.json",
         ).load()
     elif dataset.lower() == "mnist":
         model = create_mnist_cnn()

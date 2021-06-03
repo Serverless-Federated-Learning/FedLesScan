@@ -42,7 +42,7 @@ def run(
             type="leaf",
             params=LEAFConfig(
                 dataset="shakespeare",
-                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/data/train/user_{i}_all_data_niid_5_keep_64_train_9.json",
+                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/train/user_{i}_train_9.json",
             ),
         )
         for i in range(n_clients)
@@ -52,7 +52,7 @@ def run(
             type="leaf",
             params=LEAFConfig(
                 dataset="shakespeare",
-                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/data/test/user_{i}_all_data_niid_5_keep_64_test_9.json",
+                location=f"http://138.246.235.163:31715/data/leaf/data/shakespeare/data/test/user_{i}_test_9.json",
             ),
         )
         for i in range(n_clients)
