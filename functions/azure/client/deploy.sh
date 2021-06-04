@@ -23,7 +23,7 @@ for i in {1..5}; do
     --name "$app_name" \
     --storage-account "$storage_name" \
     --os-type linux
-  sleep 2
+  sleep 5
   func azure functionapp publish "$app_name"
   az functionapp config appsettings set --name "$app_name" \
     --resource-group "$resource_group_name" \

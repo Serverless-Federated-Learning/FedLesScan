@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-for clients_in_round in 10; do
-  python3 fedless-leaf.py --config config-indep-gcloud-secure-femnist.yaml \
+for clients_in_round in 5; do
+  python3 fedless-leaf.py --config config-indep-openwhisk-femnist.yaml \
     --dataset "femnist" \
     --n-clients 15 \
     --clients-per-round $clients_in_round \

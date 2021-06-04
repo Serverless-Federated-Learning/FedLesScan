@@ -17,20 +17,20 @@ port="31532"
 server_address="138.246.233.67:$port"
 server_cpus=4 #"16"
 server_memory="32g"
-rounds=50
-min_num_clients=10
+rounds=200
+min_num_clients=15
 num_clients_total=100
 
 client_cpus=2.0
 client_memory="8g"
-dataset="mnist"
+dataset="femnist"
 batch_size=10
-epochs=10
+epochs=1
 optimizer="Adam"
 lr=0.001
 
 server_address='138.246.233.67:31532'
-declare -a ssh_hosts=("lrz-master" "lrz-4-master" "lrz-4-worker-1" "lrz-4-worker-2" "lrz-4-worker-3" "lrz-4-worker-4")
+declare -a ssh_hosts=("lrz-master" "lrz-4-master" "lrz-4-worker-1" "lrz-4-worker-2" "lrz-4-worker-3" "lrz-4-worker-4" "lrz-4-worker-5")
 
 echo "Removing running container if it exists..."
 ssh "$ssh_host" 'docker stop fl-server' ||

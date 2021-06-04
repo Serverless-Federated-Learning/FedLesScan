@@ -178,7 +178,7 @@ class OpenwhiskActionConfig(BaseModel):
 class OpenwhiskWebActionConfig(BaseModel):
     type: str = Field("openwhisk-web", const=True)
     self_signed_cert: bool = True
-    endpoint: AnyUrl
+    endpoint: str
     token: Optional[str]
 
 
