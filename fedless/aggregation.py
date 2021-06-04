@@ -1,5 +1,5 @@
 import abc
-from itertools import tee
+import logging
 from typing import Iterator, Optional, List, Tuple
 
 import numpy as np
@@ -22,6 +22,8 @@ from fedless.serialization import (
     SerializationError,
 )
 from fedless.persistence import ClientResultDao, ParameterDao, PersistenceError
+
+logger = logging.getLogger(__name__)
 
 
 class AggregationError(Exception):
@@ -53,11 +55,12 @@ def default_aggregation_handler(
         username=database.username,
         password=database.password,
     )
+    logger.info(f"Aggregator invoked for session {session_id} and round {round_id}")
     try:
 
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
-
+        logger.debug(f"Establishing database connection")
         previous_results: Iterator[ClientResult] = result_dao.load_results_for_round(
             session_id=session_id, round_id=round_id
         )
@@ -68,14 +71,21 @@ def default_aggregation_handler(
             )
         aggregator = FedAvgAggregator()
         if online:
+            logger.debug(f"Using online aggregation")
             aggregator = StreamFedAvgAggregator()
         else:
+            logger.debug(f"Loading results from database...")
             previous_results = (
                 list(previous_results)
                 if not isinstance(previous_results, list)
                 else previous_results
             )
+            logger.debug(f"Loading of {len(previous_results)} results finished")
+        logger.debug(f"Starting aggregation...")
         new_parameters, test_results = aggregator.aggregate(previous_results)
+        logger.debug(f"Aggregation finished")
+
+        logger.debug(f"Serializing model")
         serialized_params_str = Base64StringConverter.to_str(
             WeightsSerializerBuilder.from_config(serializer).serialize(new_parameters)
         )
@@ -85,9 +95,11 @@ def default_aggregation_handler(
         )
 
         new_round_id = round_id + 1
+        logger.debug(f"Saving model to database")
         parameter_dao.save(
             session_id=session_id, round_id=new_round_id, params=serialized_params
         )
+        logger.debug(f"Finished...")
 
         return AggregatorFunctionResult(
             new_round_id=new_round_id,

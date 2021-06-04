@@ -243,6 +243,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         ],
         config: ClusterConfig,
         test_data: Optional[DatasetLoaderConfig] = None,
+        aggregate_online: bool = False,
     ):
         super(FedkeeperStrategy, self).__init__(
             model=model,
@@ -254,6 +255,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         self.evaluator_function: FunctionInvocationConfig = None
         self.aggregator_function: FunctionInvocationConfig = None
         self.invoker_function: FunctionInvocationConfig = None
+        self.aggregate_online = aggregate_online
 
         self.mongo_client = pymongo.MongoClient(
             host=config.database.host,
@@ -517,7 +519,10 @@ class FedkeeperStrategy(FederatedLearningStrategy):
 
             print(f"Invoking aggregator")
             aggregator_params = AggregatorFunctionParams(
-                session_id=session_id, round_id=round_id, database=self.config.database
+                session_id=session_id,
+                round_id=round_id,
+                database=self.config.database,
+                online=self.aggregate_online,
             )
             aggregator_start_time = time.time()
             aggregator_result = invoke_sync(

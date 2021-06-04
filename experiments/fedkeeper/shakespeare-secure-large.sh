@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-python3 fedless-shakespeare.py --config config-indep-gcloud-secure-shakespeare.yaml \
-  --n-clients 355 \
-  --clients-per-round 100 \
-  --allowed-stragglers 50 \
-  --accuracy-threshold 0.5
+for clients_in_round in 50 100 300; do
+  python3 fedless-leaf.py --config config-indep-gcloud-secure-shakespeare.yaml \
+    --dataset "shakespeare" \
+    --n-clients 300 \
+    --clients-per-round $clients_in_round \
+    --allowed-stragglers $((clients_in_round / 2)) \
+    --accuracy-threshold 0.5
+done
