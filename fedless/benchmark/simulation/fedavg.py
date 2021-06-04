@@ -175,7 +175,7 @@ def run(
             results = p.starmap(default_handler, invocation_params)
         clients_finished_time = time.time()
 
-        new_parameters = FedAvgAggregator().aggregate(results)
+        new_parameters, _ = FedAvgAggregator().aggregate(results)
         new_parameters_bytes = NpzWeightsSerializer().serialize(new_parameters)
         new_parameters_string = Base64StringConverter.to_str(new_parameters_bytes)
         global_params = SerializedParameters(

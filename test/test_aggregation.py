@@ -87,7 +87,7 @@ def test_fedavg_aggregate_calculation(
 
 def test_fedavg_aggregate_function(dummy_client_results, dummy_expected_result):
     aggregator = FedAvgAggregator()
-    final_params = aggregator.aggregate(client_results=dummy_client_results)
+    final_params, _ = aggregator.aggregate(client_results=dummy_client_results)
     assert all(
         [np.allclose(a, b) for a, b in zip_longest(final_params, dummy_expected_result)]
     )
@@ -105,7 +105,7 @@ def test_fedavg_recovers_on_invalid_cardinality(
 ):
     dummy_client_results[0].cardinality = tf.data.INFINITE_CARDINALITY
 
-    final_params = FedAvgAggregator().aggregate(
+    final_params, _ = FedAvgAggregator().aggregate(
         client_results=dummy_client_results, default_cardinality=1.0
     )
     assert all(
@@ -115,7 +115,7 @@ def test_fedavg_recovers_on_invalid_cardinality(
 
 def test_streamfedavg_aggregate_function(dummy_client_results, dummy_expected_result):
     aggregator = StreamFedAvgAggregator()
-    final_params = aggregator.aggregate(client_results=dummy_client_results)
+    final_params, _ = aggregator.aggregate(client_results=dummy_client_results)
     assert all(
         [np.allclose(a, b) for a, b in zip_longest(final_params, dummy_expected_result)]
     )

@@ -1,5 +1,6 @@
 import abc
-from typing import Iterator, Optional, List
+from itertools import tee
+from typing import Iterator, Optional, List, Tuple
 
 import numpy as np
 import pymongo
@@ -12,6 +13,7 @@ from fedless.models import (
     WeightsSerializerConfig,
     AggregatorFunctionResult,
     SerializedParameters,
+    TestMetrics,
 )
 from fedless.serialization import (
     deserialize_parameters,
@@ -64,11 +66,16 @@ def default_aggregation_handler(
             raise InsufficientClientResults(
                 f"Found no client results for session {session_id} and round {round_id}"
             )
-
         aggregator = FedAvgAggregator()
         if online:
             aggregator = StreamFedAvgAggregator()
-        new_parameters = aggregator.aggregate(previous_results)
+        else:
+            previous_results = (
+                list(previous_results)
+                if not isinstance(previous_results, list)
+                else previous_results
+            )
+        new_parameters, test_results = aggregator.aggregate(previous_results)
         serialized_params_str = Base64StringConverter.to_str(
             WeightsSerializerBuilder.from_config(serializer).serialize(new_parameters)
         )
@@ -82,18 +89,12 @@ def default_aggregation_handler(
             session_id=session_id, round_id=new_round_id, params=serialized_params
         )
 
-        test_results = [
-            result.test_metrics
-            for result in previous_results
-            if result.test_metrics is not None
-        ]
-
         return AggregatorFunctionResult(
             new_round_id=new_round_id,
             num_clients=result_dao.count_results_for_round(
                 session_id=session_id, round_id=round_id
             ),
-            test_results=test_results or None,
+            test_results=test_results,
         )
     except (SerializationError, PersistenceError) as e:
         raise AggregationError(e) from e
@@ -103,7 +104,9 @@ def default_aggregation_handler(
 
 class ParameterAggregator(abc.ABC):
     @abc.abstractmethod
-    def aggregate(self, client_results: Iterator[ClientResult]) -> Parameters:
+    def aggregate(
+        self, client_results: Iterator[ClientResult]
+    ) -> Tuple[Parameters, Optional[List[TestMetrics]]]:
         pass
 
 
@@ -120,10 +123,11 @@ class FedAvgAggregator(ParameterAggregator):
         self,
         client_results: Iterator[ClientResult],
         default_cardinality: Optional[float] = None,
-    ) -> Parameters:
+    ) -> Tuple[Parameters, Optional[List[TestMetrics]]]:
 
         client_parameters: List[List[np.ndarray]] = []
         client_cardinalities: List[int] = []
+        client_metrics: List[TestMetrics] = []
         for client_result in client_results:
             params = deserialize_parameters(client_result.parameters)
             cardinality = client_result.cardinality
@@ -142,8 +146,13 @@ class FedAvgAggregator(ParameterAggregator):
 
             client_parameters.append(params)
             client_cardinalities.append(cardinality)
+            if client_result.test_metrics:
+                client_metrics.append(client_result.test_metrics)
 
-        return self._aggregate(client_parameters, client_cardinalities)
+        return (
+            self._aggregate(client_parameters, client_cardinalities),
+            client_metrics or None,
+        )
 
 
 class StreamFedAvgAggregator(FedAvgAggregator):
@@ -151,10 +160,11 @@ class StreamFedAvgAggregator(FedAvgAggregator):
         self,
         client_results: Iterator[ClientResult],
         default_cardinality: Optional[float] = None,
-    ) -> Parameters:
+    ) -> Tuple[Parameters, Optional[List[TestMetrics]]]:
 
         curr_global_params: Parameters = None
         curr_sum_weights = 0
+        client_metrics: List[TestMetrics] = []
         for client_result in client_results:
             params = deserialize_parameters(client_result.parameters)
             cardinality = client_result.cardinality
@@ -180,4 +190,7 @@ class StreamFedAvgAggregator(FedAvgAggregator):
                 )
                 curr_sum_weights += cardinality
 
-        return curr_global_params
+            if client_result.test_metrics:
+                client_metrics.append(client_result.test_metrics)
+
+        return curr_global_params, client_metrics or None

@@ -47,7 +47,12 @@ from fedless.models import (
 )
 
 # Model Definitions for Config files
-from fedless.invocation import invoke_sync, retry_session, InvocationTimeOut
+from fedless.invocation import (
+    invoke_sync,
+    retry_session,
+    InvocationTimeOut,
+    InvocationError,
+)
 from fedless.persistence import (
     ClientConfigDao,
     ClientResultDao,
@@ -225,7 +230,7 @@ class FederatedLearningStrategy:
                     f"median_{metric_name}": np.median(values),
                 }
             )
-
+        print(result_dict)
         return result_dict
 
 
@@ -393,12 +398,16 @@ class FedkeeperStrategy(FederatedLearningStrategy):
     ):
         start_time = time.time()
         print(f"Client {params.client_id} invoked for round {params.round_id}")
-        result = invoke_sync(
-            function_config=function,
-            data=params.dict(),
-            session=retry_session(backoff_factor=1.0, retries=5, session=session),
-            timeout=500,
-        )
+        try:
+            result = invoke_sync(
+                function_config=function,
+                data=params.dict(),
+                session=retry_session(backoff_factor=1.0, retries=1, session=session),
+                timeout=60,
+            )
+        except InvocationError as e:
+            print(f"Function {params.client_id} failed with {e}")
+            return
         print(f"Invoker received result from client {params.client_id}: {result}")
         self.client_timing_infos.append(
             {
@@ -523,7 +532,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
                 )
             except ValidationError as e:
                 raise Exception(f"Aggregator failed with {e}")
-
+            print(aggregator_result)
             print(
                 f"Aggregator combined result of {aggregator_result.num_clients} clients. "
             )
@@ -534,6 +543,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
             global_loss = None
             if aggregator_result.test_results:
                 print(f"Computing test statistics from clients...")
+                print(aggregator_result.test_results)
                 eval_dict = self.evaluate_clients(
                     metrics=aggregator_result.test_results,
                     metric_names=["loss", "accuracy"],
