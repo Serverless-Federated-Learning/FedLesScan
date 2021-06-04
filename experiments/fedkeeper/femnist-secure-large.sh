@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2043
 for clients_in_round in 10; do
   python3 fedless-leaf.py --config config-indep-gcloud-secure-femnist.yaml \
     --dataset "femnist" \
