@@ -86,9 +86,9 @@ def default_aggregation_handler(
         logger.debug(f"Aggregation finished")
 
         logger.debug(f"Serializing model")
-        serialized_params_str = Base64StringConverter.to_str(
-            WeightsSerializerBuilder.from_config(serializer).serialize(new_parameters)
-        )
+        serialized_params_str = WeightsSerializerBuilder.from_config(
+            serializer
+        ).serialize(new_parameters)
 
         serialized_params = SerializedParameters(
             blob=serialized_params_str, serializer=serializer

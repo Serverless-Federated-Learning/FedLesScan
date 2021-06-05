@@ -280,7 +280,7 @@ class WeightsSerializer(abc.ABC):
 class NpzWeightsSerializer(WeightsSerializer):
     """Serialize model parameters as numpy npz object"""
 
-    def __init__(self, compressed: bool = True):
+    def __init__(self, compressed: bool = False):
         self.compressed = compressed
 
     def get_config(self) -> WeightsSerializerConfig:

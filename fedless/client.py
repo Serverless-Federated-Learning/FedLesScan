@@ -48,8 +48,8 @@ from fedless.serialization import (
     ModelLoaderBuilder,
     WeightsSerializer,
     StringSerializer,
-    NpzWeightsSerializer,
     Base64StringConverter,
+    NpzWeightsSerializer,
     SerializationError,
 )
 
@@ -124,8 +124,9 @@ def fedless_mongodb_handler(
             if client_params.test_data
             else None
         )
-        weights_serializer: WeightsSerializer = NpzWeightsSerializer()
-        string_serializer: StringSerializer = Base64StringConverter()
+        weights_serializer: WeightsSerializer = NpzWeightsSerializer(
+            compress=client_config.compress_model
+        )
         verbose: bool = True
         logger.debug(f"Successfully loaded configs and model")
         client_result = run(
@@ -133,7 +134,7 @@ def fedless_mongodb_handler(
             model_loader=model_loader,
             hyperparams=client_params.hyperparams,
             weights_serializer=weights_serializer,
-            string_serializer=string_serializer,
+            string_serializer=None,
             test_data_loader=test_data_loader,
             verbose=verbose,
         )
@@ -173,7 +174,7 @@ def default_handler(
     hyperparams: Hyperparams,
     test_data_config: DatasetLoaderConfig = None,
     weights_serializer: WeightsSerializer = NpzWeightsSerializer(),
-    string_serializer: StringSerializer = Base64StringConverter(),
+    string_serializer: Optional[StringSerializer] = Base64StringConverter,
     verbose: bool = True,
 ) -> ClientResult:
     """
@@ -216,7 +217,7 @@ def run(
     model_loader: ModelLoader,
     hyperparams: Hyperparams,
     weights_serializer: WeightsSerializer,
-    string_serializer: StringSerializer,
+    string_serializer: Optional[StringSerializer] = None,
     validation_split: float = None,
     test_data_loader: DatasetLoader = None,
     verbose: bool = True,
@@ -379,15 +380,16 @@ def run(
 
     # serialization error
     logger.debug(f"Serializing model parameters")
-    weights_bytes = weights_serializer.serialize(model.get_weights())
-    weights_string = string_serializer.to_str(weights_bytes)
+    weights_serialized = weights_serializer.serialize(model.get_weights())
+    if string_serializer:
+        weights_serialized = string_serializer.to_str(weights_serialized)
     logger.debug(
-        f"Finished serializing model parameters of size {sys.getsizeof(weights_string)} bytes"
+        f"Finished serializing model parameters of size {sys.getsizeof(weights_serialized)} bytes"
     )
 
     return ClientResult(
         parameters=SerializedParameters(
-            blob=weights_string,
+            blob=weights_serialized,
             serializer=weights_serializer.get_config(),
             string_format=string_serializer.get_format(),
         ),

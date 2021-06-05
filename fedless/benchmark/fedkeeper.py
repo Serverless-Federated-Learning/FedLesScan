@@ -14,7 +14,6 @@ from pathlib import Path
 from sys import getsizeof
 from typing import Iterator, List, Optional, Dict, Union, Tuple
 
-import click
 import numpy as np
 import pydantic
 import pymongo
@@ -24,7 +23,7 @@ import tensorflow as tf
 from pydantic import ValidationError
 from tensorflow import keras
 
-from fedless.benchmark.common import parse_yaml_file, run_in_executor
+from fedless.benchmark.common import run_in_executor
 from fedless.models import (
     FunctionInvocationConfig,
     Hyperparams,
@@ -63,7 +62,6 @@ from fedless.persistence import (
 from fedless.providers import OpenwhiskCluster, FaaSProvider
 from fedless.serialization import (
     NpzWeightsSerializer,
-    Base64StringConverter,
     serialize_model,
 )
 from fedless.data import DatasetLoaderBuilder
@@ -244,6 +242,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         config: ClusterConfig,
         test_data: Optional[DatasetLoaderConfig] = None,
         aggregate_online: bool = False,
+        compress_model: bool = False,
     ):
         super(FedkeeperStrategy, self).__init__(
             model=model,
@@ -256,6 +255,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         self.aggregator_function: FunctionInvocationConfig = None
         self.invoker_function: FunctionInvocationConfig = None
         self.aggregate_online = aggregate_online
+        self.compress_model = compress_model
 
         self.mongo_client = pymongo.MongoClient(
             host=config.database.host,
@@ -330,18 +330,20 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         parameters_dao = ParameterDao(db=self.mongo_client)
         models_dao = ModelDao(db=self.mongo_client)
 
-        weight_bytes = NpzWeightsSerializer().serialize(self.model.get_weights())
-        weight_string = Base64StringConverter.to_str(weight_bytes)
+        weight_bytes = NpzWeightsSerializer(self.compress_model).serialize(
+            self.model.get_weights()
+        )
+        # weight_string = Base64StringConverter.to_str(weight_bytes)
 
         serialized_model = serialize_model(self.model)
         params = SerializedParameters(
-            blob=weight_string,
+            blob=weight_bytes,
             serializer=WeightsSerializerConfig(
                 type="npz", params=NpzWeightsSerializerConfig()
             ),
         )
         print(
-            f"Model loaded and successfully serialized. Total size is {getsizeof(weight_string) // 10 ** 6}MB. "
+            f"Model loaded and successfully serialized. Total size is {getsizeof(weight_bytes) // 10 ** 6}MB. "
             f"Saving initial parameters to database"
         )
 

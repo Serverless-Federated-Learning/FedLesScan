@@ -128,9 +128,9 @@ def run(
     model = create_mnist_cnn()
     serialized_model = serialize_model(model)
     weight_bytes = NpzWeightsSerializer().serialize(model.get_weights())
-    weight_string = Base64StringConverter.to_str(weight_bytes)
+    # weight_string = Base64StringConverter.to_str(weight_bytes)
     global_params = SerializedParameters(
-        blob=weight_string,
+        blob=weight_bytes,
         serializer=WeightsSerializerConfig(
             type="npz", params=NpzWeightsSerializerConfig()
         ),
@@ -176,12 +176,14 @@ def run(
         clients_finished_time = time.time()
 
         new_parameters, _ = FedAvgAggregator().aggregate(results)
-        new_parameters_bytes = NpzWeightsSerializer().serialize(new_parameters)
-        new_parameters_string = Base64StringConverter.to_str(new_parameters_bytes)
+        new_parameters_bytes = NpzWeightsSerializer(compressed=False).serialize(
+            new_parameters
+        )
+        # new_parameters_string = Base64StringConverter.to_str(new_parameters_bytes)
         global_params = SerializedParameters(
-            blob=new_parameters_string,
+            blob=new_parameters_bytes,
             serializer=WeightsSerializerConfig(
-                type="npz", params=NpzWeightsSerializerConfig()
+                type="npz", params=NpzWeightsSerializerConfig(compressed=False)
             ),
         )
 

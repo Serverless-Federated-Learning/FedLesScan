@@ -363,6 +363,7 @@ class ClientConfig(BaseModel):
     data: DatasetLoaderConfig
     hyperparams: Hyperparams
     test_data: Optional[DatasetLoaderConfig]
+    compress_model: bool = False
 
 
 class InvokerParams(BaseModel):
