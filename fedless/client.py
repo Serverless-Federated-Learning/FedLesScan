@@ -34,6 +34,7 @@ from fedless.models import (
     SimpleModelLoaderConfig,
     ClientInvocationParams,
     InvocationResult,
+    BinaryStringFormat,
 )
 from fedless.persistence import (
     PersistenceError,
@@ -391,7 +392,11 @@ def run(
         parameters=SerializedParameters(
             blob=weights_serialized,
             serializer=weights_serializer.get_config(),
-            string_format=string_serializer.get_format(),
+            string_format=(
+                string_serializer.get_format()
+                if string_serializer
+                else BinaryStringFormat.NONE
+            ),
         ),
         history=history.history,
         test_metrics=test_metrics,
