@@ -125,7 +125,7 @@ def fedless_mongodb_handler(
             else None
         )
         weights_serializer: WeightsSerializer = NpzWeightsSerializer(
-            compress=client_config.compress_model
+            compressed=client_config.compress_model
         )
         verbose: bool = True
         logger.debug(f"Successfully loaded configs and model")
