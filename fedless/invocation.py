@@ -20,7 +20,10 @@ from fedless.models import (
     GCloudFunctionConfig,
     OpenwhiskWebActionConfig,
     AzureFunctionHTTPConfig,
+    SerializedParameters,
+    BinaryStringFormat,
 )
+from fedless.serialization import Base64StringConverter
 from fedless.persistence import (
     ClientConfigDao,
     PersistenceError,
@@ -69,7 +72,10 @@ def function_invoker_handler(
 
         # Load model and latest weights
         model = model_dao.load(session_id=session_id)
-        latest_params = parameter_dao.load_latest(session_id)
+        latest_params: SerializedParameters = parameter_dao.load_latest(session_id)
+        if isinstance(latest_params.blob, bytes):
+            latest_params.blob = Base64StringConverter.to_str(latest_params.blob)
+            latest_params.string_format = BinaryStringFormat.BASE64
         model = ModelLoaderConfig(
             type="simple",
             params=SimpleModelLoaderConfig(
