@@ -81,6 +81,8 @@ def deserialize_parameters(serialized_params: SerializedParameters) -> Parameter
 
     if serialized_params.string_format == BinaryStringFormat.BASE64:
         blob_bytes = Base64StringConverter.from_str(serialized_params.blob)
+    elif serialized_params.string_format == BinaryStringFormat.NONE:
+        blob_bytes = serialized_params.blob
     else:
         raise SerializationError(
             f"Binary string format {serialized_params.string_format} not known"
@@ -341,7 +343,7 @@ class PayloadModelLoader(ModelLoader):
     Not advisable for large models.
     """
 
-    def __init__(self, payload: str, serializer: ModelSerializer):
+    def __init__(self, payload: Union[str, bytes], serializer: ModelSerializer):
         self.payload = payload
         self.serializer = serializer
 
@@ -358,7 +360,10 @@ class PayloadModelLoader(ModelLoader):
         :raises ModelLoadError if payload is invalid or other error occurred during deserialization
         """
         try:
-            raw_bytes = Base64StringConverter.from_str(self.payload)
+            if isinstance(self.payload, str):
+                raw_bytes = Base64StringConverter.from_str(self.payload)
+            else:
+                raw_bytes = self.payload
             return self.serializer.deserialize(raw_bytes)
         except SerializationError as e:
             raise ModelLoadError("Model could not be deserialized") from e

@@ -1,7 +1,7 @@
-import json
 from contextlib import AbstractContextManager
-from typing import Any, Union, Callable, Iterator, List
+from typing import Any, Union, Callable, Iterator
 
+import bson
 import pymongo
 from gridfs import GridFS
 from gridfs.errors import GridFSError
@@ -143,7 +143,7 @@ class ClientResultDao(MongoDbDao):
                 f"Force overwrite with overwrite=True"
             )
         try:
-            file_id = self._gridfs.put(json.dumps(result), encoding="utf-8")
+            file_id = self._gridfs.put(bson.encode(result))
             self._collection.replace_one(
                 {
                     "session_id": session_id,
@@ -195,7 +195,7 @@ class ClientResultDao(MongoDbDao):
                 f"and round {round_id} not found."
             )
         try:
-            return ClientResult.parse_raw(results_file.read())
+            return ClientResult.parse_obj(bson.decode(results_file.read()))
         finally:
             results_file.close()
 
@@ -232,7 +232,7 @@ class ClientResultDao(MongoDbDao):
                     f"and round {round_id} not found."
                 )
             try:
-                yield ClientResult.parse_raw(results_file.read())
+                yield ClientResult.parse_obj(bson.decode(results_file.read()))
             finally:
                 results_file.close()
 
@@ -346,7 +346,7 @@ class ParameterDao(MongoDbDao):
                 f"Force overwrite with overwrite=True"
             )
         try:
-            file_id = self._gridfs.put(params.json(), encoding="utf-8")
+            file_id = self._gridfs.put(bson.encode(params.dict()), encoding="utf-8")
             self._collection.replace_one(
                 {"session_id": session_id, "round_id": round_id},
                 {
@@ -386,7 +386,7 @@ class ParameterDao(MongoDbDao):
                 f"GridFS file with parameters for session {session_id} and round {round_id} not found"
             )
         try:
-            return SerializedParameters.parse_raw(parameter_file.read())
+            return SerializedParameters.parse_obj(bson.decode(parameter_file.read()))
         finally:
             parameter_file.close()
 
@@ -420,7 +420,7 @@ class ParameterDao(MongoDbDao):
                 f"GridFS file with parameters for session {session_id} not found"
             )
         try:
-            return SerializedParameters.parse_raw(parameter_file.read())
+            return SerializedParameters.parse_obj(bson.decode(parameter_file.read()))
         finally:
             parameter_file.close()
 

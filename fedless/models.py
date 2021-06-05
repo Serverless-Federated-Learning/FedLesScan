@@ -90,6 +90,7 @@ class NpzWeightsSerializerConfig(BaseModel):
 
 class BinaryStringFormat(str, Enum):
     BASE64 = "base64"
+    NONE = "none"
 
 
 class LeafDataset(str, Enum):
@@ -274,9 +275,9 @@ class WeightsSerializerConfig(BaseModel):
 class SerializedParameters(BaseModel):
     """Parameters as serialized blob with information on how to deserialize it"""
 
-    blob: str
+    blob: Union[str, bytes]
     serializer: WeightsSerializerConfig
-    string_format: BinaryStringFormat = BinaryStringFormat.BASE64
+    string_format: BinaryStringFormat = BinaryStringFormat.NONE
 
 
 class LocalPrivacyGuarantees(BaseModel):
@@ -313,7 +314,7 @@ class PayloadModelLoaderConfig(BaseModel):
     """Configuration parameters required for :class:`PayloadModelLoader`"""
 
     type: str = Field("payload", const=True)
-    payload: str
+    payload: Union[str, bytes]
     serializer: ModelSerializerConfig = ModelSerializerConfig(type="h5")
 
 

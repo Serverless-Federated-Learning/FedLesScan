@@ -14,6 +14,7 @@ from fedless.models import (
     NpzWeightsSerializerConfig,
     WeightsSerializerConfig,
     SerializedParameters,
+    BinaryStringFormat,
 )
 from fedless.serialization import NpzWeightsSerializer, Base64StringConverter
 
@@ -46,16 +47,29 @@ def dummy_client_results(dummy_parameters, dummy_cardinalities):
     results = []
     for i, params in enumerate(dummy_parameters):
         weights_bytes = NpzWeightsSerializer().serialize(params)
-        blob = Base64StringConverter.to_str(weights_bytes)
-        result = ClientResult(
-            parameters=SerializedParameters(
-                blob=blob,
-                serializer=WeightsSerializerConfig(
-                    type="npz", params=NpzWeightsSerializerConfig()
+        if i % 2 == 0:
+            blob = Base64StringConverter.to_str(weights_bytes)
+            result = ClientResult(
+                parameters=SerializedParameters(
+                    blob=blob,
+                    serializer=WeightsSerializerConfig(
+                        type="npz", params=NpzWeightsSerializerConfig()
+                    ),
+                    string_format=BinaryStringFormat.BASE64,
                 ),
-            ),
-            cardinality=dummy_cardinalities[i],
-        )
+                cardinality=dummy_cardinalities[i],
+            )
+        else:
+            result = ClientResult(
+                parameters=SerializedParameters(
+                    blob=weights_bytes,
+                    serializer=WeightsSerializerConfig(
+                        type="npz", params=NpzWeightsSerializerConfig()
+                    ),
+                    string_format=BinaryStringFormat.NONE,
+                ),
+                cardinality=dummy_cardinalities[i],
+            )
 
         results.append(result)
     return results
@@ -74,7 +88,6 @@ def dummy_expected_result():
 def test_fedavg_aggregate_calculation(
     dummy_parameters, dummy_cardinalities, dummy_expected_result
 ):
-
     aggregator = FedAvgAggregator()
     final_params = aggregator._aggregate(
         parameters=dummy_parameters, weights=dummy_cardinalities

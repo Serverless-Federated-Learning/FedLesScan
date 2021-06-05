@@ -17,6 +17,7 @@ from fedless.models import (
     ModelLoaderConfig,
     PayloadModelLoaderConfig,
     ModelSerializerConfig,
+    BinaryStringFormat,
 )
 from fedless.serialization import (
     H5FullModelSerializer,
@@ -275,6 +276,7 @@ def test_deserialize_parameters_correct():
         serializer=WeightsSerializerConfig(
             type="npz", params=NpzWeightsSerializerConfig(compressed=True)
         ),
+        string_format=BinaryStringFormat.BASE64,
     )
 
     parameters = deserialize_parameters(params_serialized)
