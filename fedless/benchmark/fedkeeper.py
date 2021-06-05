@@ -43,6 +43,7 @@ from fedless.models import (
     MNISTConfig,
     Parameters,
     TestMetrics,
+    BinaryStringFormat,
 )
 
 # Model Definitions for Config files
@@ -63,6 +64,7 @@ from fedless.providers import OpenwhiskCluster, FaaSProvider
 from fedless.serialization import (
     NpzWeightsSerializer,
     serialize_model,
+    Base64StringConverter,
 )
 from fedless.data import DatasetLoaderBuilder
 from fedless.auth import CognitoClient
@@ -243,6 +245,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         test_data: Optional[DatasetLoaderConfig] = None,
         aggregate_online: bool = False,
         compress_model: bool = False,
+        force_json_serializable_params: bool = False,
     ):
         super(FedkeeperStrategy, self).__init__(
             model=model,
@@ -250,6 +253,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
             test_data_config=test_data,
         )
 
+        self.force_json_serializable_params = force_json_serializable_params
         self.config = config
         self.evaluator_function: FunctionInvocationConfig = None
         self.aggregator_function: FunctionInvocationConfig = None
@@ -296,7 +300,7 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         #        f"client data configs. Numbers must match"
         #    )
         print(
-            f"{n_clients} clents and {len(self.client_data_configs)}f ound in total. Generating dataset shards and client configurations..."
+            f"{n_clients} clients and {len(self.client_data_configs)} data shards found in total. Generating dataset shards and client configurations..."
         )
         client_data_config_iterator = iter(self.client_data_configs)
         client_function_iterator = cycle(clients.functions)
@@ -330,17 +334,20 @@ class FedkeeperStrategy(FederatedLearningStrategy):
         parameters_dao = ParameterDao(db=self.mongo_client)
         models_dao = ModelDao(db=self.mongo_client)
 
-        weight_bytes = NpzWeightsSerializer(self.compress_model).serialize(
-            self.model.get_weights()
-        )
-        # weight_string = Base64StringConverter.to_str(weight_bytes)
-
         serialized_model = serialize_model(self.model)
+        weights = self.model.get_weights()
+        weight_bytes = NpzWeightsSerializer(self.compress_model).serialize(weights)
+        if self.force_json_serializable_params:
+            weight_bytes = Base64StringConverter.to_str(weight_bytes)
+            format = BinaryStringFormat.BASE64
+        else:
+            format = BinaryStringFormat.NONE
         params = SerializedParameters(
             blob=weight_bytes,
             serializer=WeightsSerializerConfig(
                 type="npz", params=NpzWeightsSerializerConfig()
             ),
+            string_format=format,
         )
         print(
             f"Model loaded and successfully serialized. Total size is {getsizeof(weight_bytes) // 10 ** 6}MB. "
@@ -523,6 +530,9 @@ class FedkeeperStrategy(FederatedLearningStrategy):
             aggregator_params = AggregatorFunctionParams(
                 session_id=session_id,
                 round_id=round_id,
+                serializer=WeightsSerializerConfig(
+                    type="npz", params=NpzWeightsSerializerConfig(compressed=False)
+                ),
                 database=self.config.database,
                 online=self.aggregate_online,
             )

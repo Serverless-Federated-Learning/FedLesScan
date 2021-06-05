@@ -24,7 +24,7 @@ from fedless.benchmark.fedkeeper import (
 )
 @click.option("--n-clients", type=int, default=100)
 @click.option("--clients-per-round", type=int, default=25)
-@click.option("--allowed-stragglers", type=int, default=5)
+@click.option("--allowed-stragglers", type=int, default=0)
 @click.option("--accuracy-threshold", type=float, default=0.99)
 @click.option("--log-dir", type=click.Path(), default=None)
 def run(

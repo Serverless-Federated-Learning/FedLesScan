@@ -1,0 +1,596 @@
+database:
+  host: '138.246.233.217'
+
+providers:
+  lrz-1:
+    type: openwhisk
+    params:
+      apihost: 138.246.233.207:31001
+      auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+
+fedkeeper:
+  provider: lrz-1
+
+  invoker:
+    type: openwhisk
+    params:
+      name: invoker
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/invoker/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 512
+      timeout: 60000
+
+  evaluator:
+    type: openwhisk
+    params:
+      name: evaluator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/evaluator/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 2048
+      timeout: 60000
+
+  aggregator:
+    type: openwhisk
+    params:
+      name: aggregator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/aggregator/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 2024
+      timeout: 60000
+
+
+clients:
+  functions:
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-1
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-2
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-3
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-4
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-5
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-6
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-7
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-8
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-9
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-10
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-11
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-12
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-13
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-14
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-15
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-16
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-17
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-18
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-19
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe
+          apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-20
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-0
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-1
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-2
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-3
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-4
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-5
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-6
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-7
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-8
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-9
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-10
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-11
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-12
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-13
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-14
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-15
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-16
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-17
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-18
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-19
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-20
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-21
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-22
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-23
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-24
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-25
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-26
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-27
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-28
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-29
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-30
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-31
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-32
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-33
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-34
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-35
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-36
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-37
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-38
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-39
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-40
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-41
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-42
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-43
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-44
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-45
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-46
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-47
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-48
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-49
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-50
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-51
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-52
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-53
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-54
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-55
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-56
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-57
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-58
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-59
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-60
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-61
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-62
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-63
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-64
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-65
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-66
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-67
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-68
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-thesis-303614.cloudfunctions.net/http-69
+        type: gcloud
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-0.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-1.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-2.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-3.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-4.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-5.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-6.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-7.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-8.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-9.json
+          self_signed_cert: true
+          token: rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U
+          type: openwhisk-web
+        type: openwhisk-web
+
+  hyperparams:
+    epochs: 5
+    batch_size: 10
+    optimizer:
+      class_name: "Adam"
+      config:
+        name: "Adam"
+        learning_rate: 0.001
+    local_privacy:
+      l2_norm_clip: 1.0
+      noise_multiplier: 1.0
+      num_microbatches: 5

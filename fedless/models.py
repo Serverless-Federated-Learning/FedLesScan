@@ -85,7 +85,7 @@ class NpzWeightsSerializerConfig(BaseModel):
     """Configuration parameters for this serializer"""
 
     type: str = Field("npz", const=True)
-    compressed: bool = True
+    compressed: bool = False
 
 
 class BinaryStringFormat(str, Enum):
