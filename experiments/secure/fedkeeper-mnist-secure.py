@@ -11,8 +11,8 @@ from fedless.benchmark.fedkeeper import (
     FedkeeperStrategy,
     create_mnist_cnn,
     create_mnist_train_data_loader_configs,
-    ClusterConfig,
 )
+from benchmark.models import ClusterConfig
 
 
 @click.command()

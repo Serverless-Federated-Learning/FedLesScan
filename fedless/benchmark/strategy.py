@@ -16,7 +16,12 @@ from requests import Session
 
 from fedless.benchmark.models import CognitoConfig
 from fedless.benchmark.common import run_in_executor, fetch_cognito_auth_token
-from fedless.invocation import invoke_sync, retry_session, InvocationTimeOut
+from fedless.invocation import (
+    invoke_sync,
+    retry_session,
+    InvocationTimeOut,
+    InvocationError,
+)
 from fedless.models import (
     TestMetrics,
     FunctionInvocationConfig,
@@ -105,6 +110,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         global_test_data: Optional[DatasetLoaderConfig] = None,
         aggregator_params: Optional[Dict] = None,
         session: Optional[str] = None,
+        save_dir: Optional[Path] = None,
     ):
         super().__init__(clients=clients)
         urllib3.disable_warnings()
@@ -125,6 +131,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.aggregator_config: FunctionDeploymentConfig = aggregator_config
         self.client_timeout: float = client_timeout
         self.clients: List[ClientConfig] = clients
+        self.save_dir = save_dir
 
     @abstractmethod
     async def deploy_all_functions(self, *args, **kwargs):
@@ -179,7 +186,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         result = invoke_sync(
             self.aggregator,
             data=params.dict(),
-            session=retry_session(backoff_factor=1.0, retries=3),
+            session=retry_session(backoff_factor=1.0, retries=5),
         )
         try:
             return AggregatorFunctionResult.parse_obj(result)
@@ -196,7 +203,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         result = invoke_sync(
             self.evaluator,
             data=params.dict(),
-            session=retry_session(backoff_factor=1.0, retries=3),
+            session=retry_session(backoff_factor=1.0, retries=5),
         )
         try:
             return EvaluatorResult.parse_obj(result)
@@ -229,6 +236,9 @@ class ServerlessFlStrategy(FLStrategy, ABC):
                 f"Only {len(succs)}/{len(clients)} clients finished this round, "
                 f"required are {len(clients) - self.allowed_stragglers}."
             )
+        logger.info(
+            f"Received results from {len(succs)}/{len(clients)} client functions"
+        )
 
         t_clients_end = time.time()
 
@@ -237,7 +247,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         agg_res: AggregatorFunctionResult = self.call_aggregator(round)
         t_agg_end = time.time()
         logger.info(f"Aggregator combined result of {agg_res.num_clients} clients.")
-        metrics_misc["aggregator_seconds"] = t_agg_start - t_agg_end
+        metrics_misc["aggregator_seconds"] = t_agg_end - t_agg_start
 
         if self.global_test_data:
             logger.info(f"Running global evaluator function")
@@ -271,7 +281,10 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         logger.info(f"Round {round}: loss={loss}, acc={acc}")
         self.save_round_results(
-            session=self.session, round=round, dir=None, **metrics_misc  # TODO dir
+            session=self.session,
+            round=round,
+            dir=self.save_dir,
+            **metrics_misc,
         )
         return loss, acc, metrics_misc
 
@@ -297,6 +310,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
         allowed_stragglers: int = 0,
         use_separate_invokers: bool = True,
         session: Optional[str] = None,
+        save_dir: Optional[Path] = None,
     ):
         super().__init__(
             provider=provider,
@@ -309,6 +323,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             aggregator_config=aggregator_config,
             client_timeout=client_timeout,
             allowed_stragglers=allowed_stragglers,
+            save_dir=save_dir,
         )
         self.use_separate_invokers = use_separate_invokers
         self.invoker_config: FunctionDeploymentConfig = invoker_config
@@ -356,19 +371,6 @@ class FedkeeperStrategy(ServerlessFlStrategy):
         urllib3.disable_warnings()
         tasks = []
 
-        # http_headers = {}
-        # if self.cognito:
-        #    token = fetch_cognito_auth_token(
-        #        user_pool_id=self.cognito.user_pool_id,
-        #        region_name=self.cognito.region_name,
-        #        auth_endpoint=self.cognito.auth_endpoint,
-        #        invoker_client_id=self.cognito.invoker_client_id,
-        #        invoker_client_secret=self.cognito.invoker_client_secret,
-        #        required_scopes=self.cognito.required_scopes,
-        #    )
-        #    http_headers = {"Authorization": f"Bearer {token}"}
-
-        # TODO: Authorization
         for client in clients:
             session = Session()
             session = retry_session(session=session)
@@ -377,7 +379,6 @@ class FedkeeperStrategy(ServerlessFlStrategy):
                 round_id=round,
                 client_id=client.client_id,
                 database=self.mongodb_config,
-                # http_headers=http_headers,
             )
             invoker = self.client_to_invoker[client.client_id]
 
@@ -397,7 +398,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
                         }
                     )
                     return res
-                except InvocationTimeOut as e:
+                except InvocationError as e:
                     return str(e)
 
             tasks.append(
@@ -431,6 +432,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         aggregator_params: Optional[Dict] = None,
         allowed_stragglers: int = 0,
         session: Optional[str] = None,
+        save_dir: Optional[Path] = None,
     ):
         super().__init__(
             provider=provider,
@@ -443,6 +445,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             aggregator_config=aggregator_config,
             client_timeout=client_timeout,
             allowed_stragglers=allowed_stragglers,
+            save_dir=save_dir,
         )
         self.cognito = cognito
 
@@ -497,7 +500,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                         }
                     )
                     return res
-                except InvocationTimeOut as e:
+                except InvocationError as e:
                     return str(e)
 
             tasks.append(

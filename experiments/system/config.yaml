@@ -43,12 +43,14 @@ clients:
       config:
         name: "Adam"
         learning_rate: 0.001
+    metrics:
+      - accuracy
   functions:
     - function:
         replicas: 50
         params:
-          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client.json
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-indep-1.json
           self_signed_cert: true
-          token: "/JCH1voWi6m/kFr+hbrCo9N2F1HPUXbBD1W2SxXS"
+          token: hLDZ4G+xTrwgVfIPNdncPGTHqWb0CmyOyl9xVWON
           type: openwhisk-web
         type: openwhisk-web

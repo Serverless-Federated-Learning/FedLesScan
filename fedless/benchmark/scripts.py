@@ -7,25 +7,20 @@ from pathlib import Path
 from typing import List, Union, Tuple
 
 import click
-
 import tensorflow as tf
 
-from fedless.providers import OpenwhiskCluster
 from fedless.benchmark.common import parse_yaml_file
 from fedless.benchmark.fedkeeper import (
     create_mnist_cnn,
     create_mnist_train_data_loader_configs,
 )
+from fedless.benchmark.leaf import create_femnist_cnn, create_shakespeare_lstm
 from fedless.benchmark.models import (
-    ClusterConfig,
     ExperimentConfig,
-    FedkeeperClientConfig,
     FedkeeperClientsConfig,
 )
-from fedless.data import LEAF
-from fedless.benchmark.leaf import create_femnist_cnn, create_shakespeare_lstm
+from fedless.benchmark.strategy import FedkeeperStrategy, FedlessStrategy
 from fedless.models import (
-    LeafDataset,
     ClientConfig,
     MongodbConnectionConfig,
     DatasetLoaderConfig,
@@ -36,8 +31,8 @@ from fedless.models import (
     LEAFConfig,
     MNISTConfig,
 )
-from fedless.benchmark.strategy import FedkeeperStrategy, FedlessStrategy
 from fedless.persistence import ClientConfigDao, ParameterDao, ModelDao
+from fedless.providers import OpenwhiskCluster
 from fedless.serialization import (
     serialize_model,
     NpzWeightsSerializer,
@@ -48,55 +43,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 FILE_SERVER = "http://138.246.235.163:31715"
-
-
-def create_model(dataset) -> tf.keras.Sequential:
-    if dataset.lower() == "femnist":
-        return create_femnist_cnn()
-    elif dataset.lower() == "shakespeare":
-        return create_shakespeare_lstm()
-    elif dataset.lower() == "mnist":
-        return create_mnist_cnn()
-    else:
-        raise NotImplementedError()
-
-
-def create_mnist_test_config() -> DatasetLoaderConfig:
-    return DatasetLoaderConfig(type="mnist", params=MNISTConfig(split="test"))
-
-
-# noinspection PydanticTypeChecker,PyTypeChecker
-def create_data_configs(
-    dataset: str, clients: int
-) -> List[Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]]:
-    dataset = dataset.lower()
-    if dataset == "mnist":
-        return list(
-            create_mnist_train_data_loader_configs(n_devices=clients, n_shards=600)
-        )
-    elif dataset in ["femnist", "shakespeare"]:
-        configs = []
-        for client_idx in range(clients):
-            train = DatasetLoaderConfig(
-                type="leaf",
-                params=LEAFConfig(
-                    dataset=dataset,
-                    location=f"{FILE_SERVER}/data/leaf/data/{dataset}/data/"
-                    f"train/user_{client_idx}_train_9.json",
-                ),
-            )
-            test = DatasetLoaderConfig(
-                type="leaf",
-                params=LEAFConfig(
-                    dataset=dataset,
-                    location=f"{FILE_SERVER}/data/leaf/data/{dataset}/data/"
-                    f"test/user_{client_idx}_test_9.json",
-                ),
-            )
-            configs.append((train, test))
-        return configs
-    else:
-        raise NotImplementedError(f"Dataset {dataset} not supported")
 
 
 @click.command()
@@ -161,6 +107,13 @@ def create_data_configs(
     type=float,
     default=0.99,
 )
+@click.option(
+    "-o",
+    "--out",
+    help="directory where logs will be stored",
+    type=click.Path(),
+    required=True,
+)
 def run(
     dataset: str,
     config: str,
@@ -172,9 +125,11 @@ def run(
     rounds: int,
     separate_invokers: bool,
     max_accuracy: float,
+    out: str,
 ):
     session = str(uuid.uuid4())
-    config_path = Path(config).parent
+    log_dir = Path(out) if out else Path(config).parent
+    log_dir.mkdir(parents=True, exist_ok=True)
     config: ExperimentConfig = parse_yaml_file(config, model=ExperimentConfig)
 
     model = create_model(dataset)
@@ -216,6 +171,7 @@ def run(
                 create_mnist_test_config() if dataset.lower() == "mnist" else None
             ),
             use_separate_invokers=separate_invokers,
+            save_dir=log_dir,
         )
     elif strategy == "fedless":
         strategy = FedlessStrategy(
@@ -228,6 +184,7 @@ def run(
             mongodb_config=config.database,
             allowed_stragglers=stragglers,
             client_timeout=timeout,
+            save_dir=log_dir,
             global_test_data=(
                 create_mnist_test_config() if dataset.lower() == "mnist" else None
             ),
@@ -319,6 +276,55 @@ def store_client_configs(
         f"Configured and stored all {len(data_configs)} clients configurations..."
     )
     return final_configs
+
+
+def create_model(dataset) -> tf.keras.Sequential:
+    if dataset.lower() == "femnist":
+        return create_femnist_cnn()
+    elif dataset.lower() == "shakespeare":
+        return create_shakespeare_lstm()
+    elif dataset.lower() == "mnist":
+        return create_mnist_cnn()
+    else:
+        raise NotImplementedError()
+
+
+def create_mnist_test_config() -> DatasetLoaderConfig:
+    return DatasetLoaderConfig(type="mnist", params=MNISTConfig(split="test"))
+
+
+# noinspection PydanticTypeChecker,PyTypeChecker
+def create_data_configs(
+    dataset: str, clients: int
+) -> List[Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]]:
+    dataset = dataset.lower()
+    if dataset == "mnist":
+        return list(
+            create_mnist_train_data_loader_configs(n_devices=clients, n_shards=600)
+        )
+    elif dataset in ["femnist", "shakespeare"]:
+        configs = []
+        for client_idx in range(clients):
+            train = DatasetLoaderConfig(
+                type="leaf",
+                params=LEAFConfig(
+                    dataset=dataset,
+                    location=f"{FILE_SERVER}/data/leaf/data/{dataset}/data/"
+                    f"train/user_{client_idx}_train_9.json",
+                ),
+            )
+            test = DatasetLoaderConfig(
+                type="leaf",
+                params=LEAFConfig(
+                    dataset=dataset,
+                    location=f"{FILE_SERVER}/data/leaf/data/{dataset}/data/"
+                    f"test/user_{client_idx}_test_9.json",
+                ),
+            )
+            configs.append((train, test))
+        return configs
+    else:
+        raise NotImplementedError(f"Dataset {dataset} not supported")
 
 
 if __name__ == "__main__":
