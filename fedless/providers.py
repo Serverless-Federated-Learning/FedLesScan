@@ -205,7 +205,7 @@ def openwhisk_action_handler(
 
 async def check_program_installed(name: str):
     process = await asyncio.create_subprocess_exec(
-        "command", "-v", name, stdout=asyncio.subprocess.PIPE
+        "hash", name, stdout=asyncio.subprocess.PIPE
     )
     await process.communicate()
     return process.returncode == 0

@@ -314,7 +314,7 @@ class PayloadModelLoaderConfig(BaseModel):
     """Configuration parameters required for :class:`PayloadModelLoader`"""
 
     type: str = Field("payload", const=True)
-    payload: Union[str, bytes]
+    payload: Union[bytes, str]
     serializer: ModelSerializerConfig = ModelSerializerConfig(type="h5")
 
 

@@ -1,11 +1,13 @@
+import asyncio
 import base64
 import json
 from typing import Optional, Dict
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pydantic
 from pydantic import ValidationError
 
+import fedless.providers as providers
 from fedless.client import ClientError
 from fedless.data import DatasetNotLoadedError
 from fedless.providers import (
@@ -16,7 +18,10 @@ from fedless.providers import (
     create_gcloud_http_user_error_response,
     gcloud_http_error_handler,
     openwhisk_action_handler,
+    check_program_installed,
+    OpenwhiskCluster,
 )
+from models import OpenwhiskFunctionDeploymentConfig
 from .fixtures import *
 
 
@@ -286,6 +291,26 @@ def test_openwhisk_http_error_handler_decorator_returns_valid_response():
     }
 
 
+def test_openwhisk_http_error_handler_decorator_returns_valid_response_on_str_return():
+    def dummy_handler(params):
+        return DummyModel(
+            parameters="1234", history={"loss": [0.0, 1.0]}, cardinality=12
+        ).json()
+
+    patched_function = openwhisk_action_handler((ValidationError, ClientError))(
+        dummy_handler
+    )
+
+    result_object = patched_function({})
+    assert result_object == {
+        "statusCode": 200,
+        "body": json.dumps(
+            {"parameters": "1234", "history": {"loss": [0.0, 1.0]}, "cardinality": 12}
+        ),
+        "headers": {"Content-Type": "application/json"},
+    }
+
+
 def test_openwhisk_http_error_handler_decorator_accepts_json():
     @openwhisk_action_handler((ValidationError, ClientError))
     def dummy_handler(params):
@@ -402,3 +427,31 @@ def test_openwhisk_web_action_handler_converts_base64_encoded_web_request_body()
             )
         }
     )
+
+
+@pytest.mark.asyncio
+async def test_check_program_installed_with_valid_program():
+    assert await check_program_installed("ls")
+    assert await check_program_installed("pwd")
+    assert not await check_program_installed("this-program-does-certainly-not-exist")
+
+
+@pytest.mark.asyncio
+async def test_openwhisk_deploy():
+    cluster = OpenwhiskCluster(apihost="localhost:3141", auth="myauthstring")
+    run_cmd_mock = MagicMock(cluster._run_command)
+
+    with patch.object(cluster, "_run_command", run_cmd_mock):
+        await cluster.deploy(
+            OpenwhiskFunctionDeploymentConfig(
+                name="client",
+                file="main.py",
+                image="Dockerfile",
+                memory=2048,
+                timeout=60,
+            )
+        )
+        run_cmd_mock.assert_called_with(
+            "wsk action update client main.py --docker Dockerfile "
+            "--memory 2048 --timeout 60 --web raw --web-secure false"
+        )
