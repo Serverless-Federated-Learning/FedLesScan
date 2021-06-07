@@ -437,8 +437,14 @@ async def test_check_program_installed_with_valid_program():
 
 @pytest.mark.asyncio
 async def test_openwhisk_deploy():
+    # Fix for Python 3.7
+    # https://stackoverflow.com/questions/51394411/python-object-magicmock-cant-be-used-in-await-expression
+    class AsyncMock(MagicMock):
+        async def __call__(self, *args, **kwargs):
+            return super(AsyncMock, self).__call__(*args, **kwargs)
+
     cluster = OpenwhiskCluster(apihost="localhost:3141", auth="myauthstring")
-    run_cmd_mock = MagicMock(cluster._run_command)
+    run_cmd_mock = AsyncMock(cluster._run_command)
 
     with patch.object(cluster, "_run_command", run_cmd_mock):
         await cluster.deploy(
