@@ -16,10 +16,9 @@ from fedless.models import (
 )
 from fedless.benchmark.fedkeeper import (
     FedkeeperStrategy,
-    CognitoConfig,
-    FedkeeperClientsConfig,
     get_deployment_manager,
 )
+from benchmark.models import FedkeeperClientsConfig, CognitoConfig
 
 
 class FedlessClusterFunctions(pydantic.BaseModel):

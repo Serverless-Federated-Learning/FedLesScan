@@ -4,6 +4,8 @@ from itertools import cycle
 import yaml
 from requests import Session
 
+from fedless.benchmark.models import ClusterConfig
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
 import time
@@ -15,7 +17,6 @@ from sys import getsizeof
 from typing import Iterator, List, Optional, Dict, Union, Tuple
 
 import numpy as np
-import pydantic
 import pymongo
 import urllib3
 import pandas as pd
@@ -26,10 +27,7 @@ from tensorflow import keras
 from fedless.benchmark.common import run_in_executor
 from fedless.models import (
     FunctionInvocationConfig,
-    Hyperparams,
-    MongodbConnectionConfig,
     FaaSProviderConfig,
-    FunctionDeploymentConfig,
     ClientConfig,
     DatasetLoaderConfig,
     EvaluatorParams,
@@ -68,41 +66,6 @@ from fedless.serialization import (
 )
 from fedless.data import DatasetLoaderBuilder
 from fedless.auth import CognitoClient
-
-
-class FedkeeperFunctions(pydantic.BaseModel):
-    provider: str
-    invoker: FunctionDeploymentConfig
-    evaluator: FunctionDeploymentConfig
-    aggregator: FunctionDeploymentConfig
-
-
-class FedkeeperClientConfig(pydantic.BaseModel):
-    function: FunctionInvocationConfig
-    hyperparams: Optional[Hyperparams]
-    replicas: int = 1
-
-
-class FedkeeperClientsConfig(pydantic.BaseModel):
-    functions: List[FedkeeperClientConfig]
-    hyperparams: Optional[Hyperparams]
-
-
-class CognitoConfig(pydantic.BaseModel):
-    user_pool_id: str
-    region_name: str
-    auth_endpoint: str
-    invoker_client_id: str
-    invoker_client_secret: str
-    required_scopes: List[str] = ["client-functions/invoke"]
-
-
-class ClusterConfig(pydantic.BaseModel):
-    database: MongodbConnectionConfig
-    clients: FedkeeperClientsConfig
-    providers: Dict[str, FaaSProviderConfig]
-    fedkeeper: FedkeeperFunctions
-    cognito: Optional[CognitoConfig]
 
 
 # Helper functions to create dataset shards / model

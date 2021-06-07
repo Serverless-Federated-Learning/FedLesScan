@@ -405,7 +405,7 @@ class EvaluatorParams(BaseModel):
     round_id: int
     database: MongodbConnectionConfig
     test_data: DatasetLoaderConfig
-    batch_size: int = 10
+    batch_size: int = 128
     metrics: List[str] = ["accuracy"]
 
 

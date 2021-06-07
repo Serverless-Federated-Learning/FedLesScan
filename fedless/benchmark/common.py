@@ -10,6 +10,8 @@ import pydantic
 import yaml
 from pydantic import ValidationError
 
+from fedless.auth import CognitoClient
+
 logger = logging.getLogger(__name__)
 
 
@@ -50,3 +52,23 @@ def run_in_executor(f):
         return loop.run_in_executor(_pool, lambda: f(*args, **kwargs))
 
     return inner
+
+
+def fetch_cognito_auth_token(
+    user_pool_id,
+    region_name,
+    auth_endpoint,
+    invoker_client_id,
+    invoker_client_secret,
+    required_scopes,
+) -> str:
+    cognito = CognitoClient(
+        user_pool_id=user_pool_id,
+        region_name=region_name,
+    )
+    return cognito.fetch_token_for_client(
+        auth_endpoint=auth_endpoint,
+        client_id=invoker_client_id,
+        client_secret=invoker_client_secret,
+        required_scopes=required_scopes,
+    )

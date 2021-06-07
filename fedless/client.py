@@ -110,7 +110,7 @@ def fedless_mongodb_handler(
         )
 
         # Load client configuration and prepare call statements
-        client_config = config_dao.load(id=client_id)
+        client_config = config_dao.load(client_id=client_id)
         client_params = ClientInvocationParams(
             data=client_config.data,
             model=model,

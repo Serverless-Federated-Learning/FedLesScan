@@ -1,4 +1,5 @@
 import json
+import logging
 from json import JSONDecodeError
 from typing import Iterable, Optional, Dict, Union
 
@@ -32,6 +33,8 @@ from fedless.persistence import (
     ClientResultDao,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class InvocationError(Exception):
     """Error during function invokation"""
@@ -56,6 +59,9 @@ def function_invoker_handler(
     database: MongodbConnectionConfig,
     http_headers: Optional[Dict] = None,
 ) -> InvocationResult:
+    logger.debug(
+        f"Invoker called for session {session_id} and client {client_id} for round {round_id}"
+    )
     db = pymongo.MongoClient(
         host=database.host,
         port=database.port,
@@ -71,9 +77,11 @@ def function_invoker_handler(
         results_dao = ClientResultDao(db=db)
 
         # Load model and latest weights
+        logger.debug(f"Loading model from database")
         model = model_dao.load(session_id=session_id)
         latest_params: SerializedParameters = parameter_dao.load_latest(session_id)
         if isinstance(latest_params.blob, bytes):
+            logger.debug(f"Making model parameters serializable")
             latest_params.blob = Base64StringConverter.to_str(latest_params.blob)
             latest_params.string_format = BinaryStringFormat.BASE64
         model = ModelLoaderConfig(
@@ -88,8 +96,9 @@ def function_invoker_handler(
             ),
         )
 
+        logger.debug(f"Load client config from db")
         # Load client configuration and prepare call statements
-        client_config = config_dao.load(id=client_id)
+        client_config = config_dao.load(client_id=client_id)
         client_params = ClientInvocationParams(
             data=client_config.data,
             model=model,
@@ -98,6 +107,7 @@ def function_invoker_handler(
         )
 
         # Call client
+        logger.debug(f"Calling function")
         session = retry_session(backoff_factor=1.0)
         session.headers = http_headers or {}
         client_result = invoke_sync(
@@ -106,7 +116,9 @@ def function_invoker_handler(
             session=session,
         )
 
+        logger.debug(f"Finished calling function")
         if isinstance(client_result, dict) and "parameters" in client_result:
+            logger.debug(f"Storing results to db")
             results_dao.save(
                 session_id=session_id,
                 round_id=round_id,
@@ -114,6 +126,7 @@ def function_invoker_handler(
                 result=client_result,
             )
         else:
+            logger.error(f"Client invocation failed with response {client_result}")
             raise InvocationError(
                 f"Client invocation failed with response {client_result}"
             )
@@ -154,13 +167,18 @@ def invoke_sync(
         params: OpenwhiskWebActionConfig = function_config.params
         if params.token:
             session.headers.update({"X-require-whisk-auth": params.token})
-        return invoke_http_function_sync(
+        response_dict = invoke_http_function_sync(
             url=params.endpoint,
             data=data,
             session=session,
             timeout=timeout,
             verify_certificate=not params.self_signed_cert,
         )
+        response_dict = response_dict.get("body", response_dict)
+
+        if not isinstance(response_dict, dict):
+            return json.loads(response_dict)
+        return response_dict
     elif function_config.type == "lambda":
         params: ApiGatewayLambdaFunctionConfig = function_config.params
         if params.api_key:

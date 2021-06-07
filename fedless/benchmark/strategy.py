@@ -10,8 +10,12 @@ from typing import Tuple, List, Dict, Optional
 
 import numpy as np
 import pandas as pd
+import urllib3
+from pydantic import ValidationError
+from requests import Session
 
-from data import DatasetLoaderBuilder
+from fedless.benchmark.common import run_in_executor
+from fedless.invocation import invoke_sync, retry_session, InvocationTimeOut
 from fedless.models import (
     TestMetrics,
     FunctionInvocationConfig,
@@ -23,16 +27,17 @@ from fedless.models import (
     DatasetLoaderConfig,
     EvaluatorParams,
     EvaluatorResult,
+    InvokerParams,
+    InvocationResult,
 )
-from invocation import invoke_sync, retry_session
-from providers import FaaSProvider
+from fedless.providers import FaaSProvider
 
 logger = logging.getLogger(__name__)
 
 
 class FLStrategy(ABC):
-    def __init__(self):
-        self.log_metrics = []
+    def __init__(self, clients):
+        self.clients = clients
 
     def aggregate_metrics(
         self, metrics: List[TestMetrics], metric_names: Optional[List[str]] = None
@@ -63,17 +68,16 @@ class FLStrategy(ABC):
         """
 
     def sample_clients(self, clients: int, pool: List) -> List:
-        return random.sample(pool, min(clients, len(pool)))
+        return random.sample(pool, clients)
 
     async def fit(
         self,
-        clients: List,
         n_clients_in_round: int,
         max_rounds: int,
         max_accuracy: Optional[float] = None,
     ):
         for round in range(max_rounds):
-            clients = self.sample_clients(n_clients_in_round, clients)
+            clients = self.sample_clients(n_clients_in_round, self.clients)
             logger.info(f"Sampled {len(clients)} for round {round}")
             loss, accuracy, metrics = await self.fit_round(round, clients)
             logger.info(
@@ -90,12 +94,16 @@ class FLStrategy(ABC):
 class ServerlessFlStrategy(FLStrategy, ABC):
     def __init__(
         self,
+        clients: List,
         provider: FaaSProvider,
         session: Optional[str] = None,
     ):
-        super().__init__()
+        super().__init__(clients=clients)
+        urllib3.disable_warnings()
         self.session: str = session or str(uuid.uuid4())
         self.provider = provider
+        self.log_metrics = []
+        self.client_timings = []
 
     @abstractmethod
     async def deploy_all_functions(self, *args, **kwargs):
@@ -111,6 +119,31 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         pd.DataFrame.from_records(self.log_metrics).to_csv(
             dir / f"timing_{session}.csv"
         )
+        pd.DataFrame.from_records(self.client_timings).to_csv(
+            dir / f"clients_{session}.csv"
+        )
+
+    @run_in_executor
+    def _async_call_request(
+        self,
+        function: FunctionInvocationConfig,
+        data: Dict,
+        session: Optional[Session] = None,
+        timeout: float = 300,
+    ) -> Dict:
+        session = session or retry_session(backoff_factor=0.5, retries=5)
+        return invoke_sync(
+            function_config=function, data=data, session=session, timeout=timeout
+        )
+
+    async def invoke_async(
+        self,
+        function: FunctionInvocationConfig,
+        data: Dict,
+        session: Optional[Session] = None,
+        timeout: float = 300,
+    ) -> Dict:
+        return await self._async_call_request(function, data, session, timeout=timeout)
 
     # async def fit_round(self, round: int, clients: List) -> Tuple[float, float, Dict]:
     #    pass
@@ -125,12 +158,16 @@ class FedkeeperStrategy(ServerlessFlStrategy):
         evaluator_config: FunctionDeploymentConfig,
         aggregator_config: FunctionDeploymentConfig,
         mongodb_config: MongodbConnectionConfig,
+        allowed_stragglers: int = 0,
+        client_timeout: float = 300,
         global_test_data: Optional[DatasetLoaderConfig] = None,
         use_separate_invokers: bool = True,
         session: Optional[str] = None,
         aggregator_params: Optional[Dict] = None,
     ):
-        super().__init__(provider=provider, session=session)
+        super().__init__(provider=provider, session=session, clients=clients)
+        self.allowed_stragglers = allowed_stragglers
+        self.client_timeout: float = client_timeout
         self.clients: List[ClientConfig] = clients
         self.use_separate_invokers = use_separate_invokers
         self.invoker_config: FunctionDeploymentConfig = invoker_config
@@ -145,13 +182,13 @@ class FedkeeperStrategy(ServerlessFlStrategy):
         self._client_to_invoker: Optional[Dict[str, FunctionInvocationConfig]] = None
 
         self.mongodb_config = mongodb_config
-        self.aggregator_params = aggregator_params
+        self.aggregator_params = aggregator_params or {}
 
         self.global_test_data = global_test_data
 
     @property
     def client_to_invoker(self) -> Dict[str, FunctionInvocationConfig]:
-        if not self._client_to_invoker:
+        if self._client_to_invoker is None:
             raise ValueError()
         return self._client_to_invoker
 
@@ -177,9 +214,12 @@ class FedkeeperStrategy(ServerlessFlStrategy):
         result = invoke_sync(
             self.aggregator,
             data=params.dict(),
-            session=retry_session(backoff_factor=1.0, retries=5),
+            session=retry_session(backoff_factor=1.0, retries=3),
         )
-        return AggregatorFunctionResult.parse_obj(result)
+        try:
+            return AggregatorFunctionResult.parse_obj(result)
+        except ValidationError as e:
+            raise ValueError(f"Aggregator returned invalid result.") from e
 
     def call_evaluator(self, round: int) -> EvaluatorResult:
         params = EvaluatorParams(
@@ -189,11 +229,14 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             test_data=self.global_test_data,
         )
         result = invoke_sync(
-            self.aggregator,
+            self.evaluator,
             data=params.dict(),
-            session=retry_session(backoff_factor=1.0, retries=5),
+            session=retry_session(backoff_factor=1.0, retries=3),
         )
-        return EvaluatorResult.parse_obj(result)
+        try:
+            return EvaluatorResult.parse_obj(result)
+        except ValidationError as e:
+            raise ValueError(f"Evaluator returned invalid result.") from e
 
     async def fit_round(
         self, round: int, clients: List[ClientConfig]
@@ -204,6 +247,14 @@ class FedkeeperStrategy(ServerlessFlStrategy):
 
         # Invoke clients
         t_clients_start = time.time()
+        succs, errors = await self.call_clients(round, clients)
+
+        if len(succs) < (len(clients) - self.allowed_stragglers):
+            logger.error(errors)
+            raise Exception(
+                f"Only {len(succs)}/{len(clients)} clients finished this round, "
+                f"required are {len(clients) - self.allowed_stragglers}."
+            )
 
         t_clients_end = time.time()
 
@@ -265,6 +316,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             client_invoker_mappings = []
             for ix, client in enumerate(client_ids):
                 invoker_config = self.invoker_config.copy(deep=True)
+
                 invoker_config.params.name = f"{invoker_config.params.name}-{ix}"
                 invoker_invocation_config = await self.provider.deploy(
                     invoker_config.params
@@ -276,3 +328,69 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             invoker = await self.provider.deploy(self.invoker_config.params)
             self._client_to_invoker = defaultdict(lambda: invoker)
             logger.debug(f"Deployed invoker {invoker.params.name}")
+
+    async def call_clients(
+        self, round: int, clients: List[ClientConfig]
+    ) -> Tuple[List[InvocationResult], List[str]]:
+        urllib3.disable_warnings()
+        tasks = []
+
+        # http_headers = {}
+        # if self.cognito:
+        #    token = fetch_cognito_auth_token(
+        #        user_pool_id=self.cognito.user_pool_id,
+        #        region_name=self.cognito.region_name,
+        #        auth_endpoint=self.cognito.auth_endpoint,
+        #        invoker_client_id=self.cognito.invoker_client_id,
+        #        invoker_client_secret=self.cognito.invoker_client_secret,
+        #        required_scopes=self.cognito.required_scopes,
+        #    )
+        #    http_headers = {"Authorization": f"Bearer {token}"}
+
+        # TODO: Authorization
+        for client in clients:
+            session = Session()
+            session = retry_session(session=session)
+            params = InvokerParams(
+                session_id=self.session,
+                round_id=round,
+                client_id=client.client_id,
+                database=self.mongodb_config,
+                # http_headers=http_headers,
+            )
+            invoker = self.client_to_invoker[client.client_id]
+
+            # function with closure for easier logging
+            async def _inv(function, data, session):
+                try:
+                    t_start = time.time()
+                    res = await self.invoke_async(
+                        function, data, session=session, timeout=self.client_timeout
+                    )
+                    dt_call = time.time() - t_start
+                    self.client_timings.append(
+                        {
+                            "client_id": client.client_id,
+                            "session_id": self.session,
+                            "seconds": dt_call,
+                        }
+                    )
+                    return res
+                except InvocationTimeOut as e:
+                    return str(e)
+
+            tasks.append(
+                asyncio.create_task(
+                    _inv(function=invoker, data=params.dict(), session=session)
+                )
+            )
+
+        done, pending = await asyncio.wait(tasks)
+        results = list(map(lambda f: f.result(), done))
+        suc, errs = [], []
+        for res in results:
+            try:
+                suc.append(InvocationResult.parse_obj(res))
+            except ValidationError:
+                errs.append(res)
+        return suc, errs

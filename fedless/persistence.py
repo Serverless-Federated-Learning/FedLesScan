@@ -286,13 +286,13 @@ class ClientConfigDao(MongoDbDao):
             raise StorageConnectionError(e) from e
 
     @wrap_pymongo_errors
-    def load(self, id: str) -> ClientConfig:
+    def load(self, client_id: str) -> ClientConfig:
         try:
-            obj_dict = self._collection.find_one(filter={"client_id": id})
+            obj_dict = self._collection.find_one(filter={"client_id": client_id})
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
         if obj_dict is None:
-            raise DocumentNotLoadedException(f"Client with id {id} not found")
+            raise DocumentNotLoadedException(f"Client with id {client_id} not found")
         return ClientConfig.parse_obj(obj_dict)
 
     @wrap_pymongo_errors

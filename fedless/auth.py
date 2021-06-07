@@ -117,7 +117,7 @@ class CognitoClient:
         auth_endpoint: str,
         required_scopes: List[str],
         session: requests.Session = None,
-    ):
+    ) -> str:
         session = session or requests.Session()
 
         body = {"grant_type": "client_credentials", "scope": " ".join(required_scopes)}
