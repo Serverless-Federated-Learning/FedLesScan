@@ -3,6 +3,7 @@ import base64
 import binascii
 import json
 import logging
+import subprocess
 import traceback
 from abc import ABC, abstractmethod
 from json.decoder import JSONDecodeError
@@ -204,11 +205,11 @@ def openwhisk_action_handler(
 
 
 async def check_program_installed(name: str):
-    process = await asyncio.create_subprocess_exec(
-        "hash", name, stdout=asyncio.subprocess.PIPE
-    )
-    await process.communicate()
-    return process.returncode == 0
+    # process = await asyncio.create_subprocess_exec(
+    #    "hash", name, stdout=asyncio.subprocess.PIPE
+    # )
+    exitcode, _ = subprocess.getstatusoutput(name)
+    return exitcode == 0
 
 
 class FaaSProvider(ABC):
