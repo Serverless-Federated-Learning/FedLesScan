@@ -7,7 +7,6 @@ from unittest.mock import patch, MagicMock
 import pydantic
 from pydantic import ValidationError
 
-import fedless.providers as providers
 from fedless.client import ClientError
 from fedless.data import DatasetNotLoadedError
 from fedless.providers import (
@@ -21,7 +20,7 @@ from fedless.providers import (
     check_program_installed,
     OpenwhiskCluster,
 )
-from models import OpenwhiskFunctionDeploymentConfig
+from fedless.models import OpenwhiskFunctionDeploymentConfig
 from .fixtures import *
 
 

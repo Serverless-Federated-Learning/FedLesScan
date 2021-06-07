@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Union, Dict, List, Tuple, Any
+from typing import Optional, Union, Dict, List
 from urllib import parse
 
 import numpy as np
@@ -9,10 +9,9 @@ from pydantic import (
     BaseModel,
     AnyHttpUrl,
     validator,
-    AnyUrl,
     BaseSettings,
     PositiveInt,
-    SecretStr,
+    StrictBytes,
 )
 from pydantic.fields import ModelField
 
@@ -275,7 +274,7 @@ class WeightsSerializerConfig(BaseModel):
 class SerializedParameters(BaseModel):
     """Parameters as serialized blob with information on how to deserialize it"""
 
-    blob: Union[str, bytes]
+    blob: Union[StrictBytes, str]
     serializer: WeightsSerializerConfig
     string_format: BinaryStringFormat = BinaryStringFormat.NONE
 
@@ -314,7 +313,7 @@ class PayloadModelLoaderConfig(BaseModel):
     """Configuration parameters required for :class:`PayloadModelLoader`"""
 
     type: str = Field("payload", const=True)
-    payload: Union[bytes, str]
+    payload: Union[StrictBytes, str]
     serializer: ModelSerializerConfig = ModelSerializerConfig(type="h5")
 
 

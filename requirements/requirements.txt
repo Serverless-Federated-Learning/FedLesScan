@@ -1,4 +1,4 @@
-pydantic==1.7.4
+pydantic==1.8
 tensorflow==2.5
 numpy==1.19.5
 requests>=2.25,<2.30
