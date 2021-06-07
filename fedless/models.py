@@ -389,7 +389,7 @@ class AggregatorFunctionParams(BaseModel):
     round_id: int
     database: MongodbConnectionConfig
     serializer: WeightsSerializerConfig = WeightsSerializerConfig(
-        type="npz", params=NpzWeightsSerializerConfig(compressed=True)
+        type="npz", params=NpzWeightsSerializerConfig(compressed=False)
     )
     online: bool = False
 

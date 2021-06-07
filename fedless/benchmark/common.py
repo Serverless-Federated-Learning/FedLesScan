@@ -26,7 +26,7 @@ def get_available_cores():
 
 
 MAX_THREAD_POOL_WORKERS = 500
-logger.debug(
+logger.info(
     f"Thread pool worker maximum set to {MAX_THREAD_POOL_WORKERS}, {get_available_cores()} available cores found"
 )
 _pool = ThreadPoolExecutor(max_workers=MAX_THREAD_POOL_WORKERS)
