@@ -208,7 +208,7 @@ async def check_program_installed(name: str):
     # process = await asyncio.create_subprocess_exec(
     #    "hash", name, stdout=asyncio.subprocess.PIPE
     # )
-    exitcode, _ = subprocess.getstatusoutput(name)
+    exitcode, _ = subprocess.getstatusoutput(f"hash {name}")
     return exitcode == 0
 
 
