@@ -14,7 +14,8 @@ import urllib3
 from pydantic import ValidationError
 from requests import Session
 
-from fedless.benchmark.common import run_in_executor
+from fedless.benchmark.models import CognitoConfig
+from fedless.benchmark.common import run_in_executor, fetch_cognito_auth_token
 from fedless.invocation import invoke_sync, retry_session, InvocationTimeOut
 from fedless.models import (
     TestMetrics,
@@ -96,6 +97,13 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self,
         clients: List,
         provider: FaaSProvider,
+        mongodb_config: MongodbConnectionConfig,
+        evaluator_config: FunctionDeploymentConfig,
+        aggregator_config: FunctionDeploymentConfig,
+        client_timeout: float = 300,
+        allowed_stragglers: int = 0,
+        global_test_data: Optional[DatasetLoaderConfig] = None,
+        aggregator_params: Optional[Dict] = None,
         session: Optional[str] = None,
     ):
         super().__init__(clients=clients)
@@ -104,6 +112,19 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.provider = provider
         self.log_metrics = []
         self.client_timings = []
+        self.allowed_stragglers = allowed_stragglers
+
+        self.mongodb_config = mongodb_config
+        self.aggregator_params = aggregator_params or {}
+        self.global_test_data = global_test_data
+
+        self._aggregator: Optional[FunctionInvocationConfig] = None
+        self._evaluator: Optional[FunctionInvocationConfig] = None
+
+        self.evaluator_config: FunctionDeploymentConfig = evaluator_config
+        self.aggregator_config: FunctionDeploymentConfig = aggregator_config
+        self.client_timeout: float = client_timeout
+        self.clients: List[ClientConfig] = clients
 
     @abstractmethod
     async def deploy_all_functions(self, *args, **kwargs):
@@ -135,62 +156,6 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         return invoke_sync(
             function_config=function, data=data, session=session, timeout=timeout
         )
-
-    async def invoke_async(
-        self,
-        function: FunctionInvocationConfig,
-        data: Dict,
-        session: Optional[Session] = None,
-        timeout: float = 300,
-    ) -> Dict:
-        return await self._async_call_request(function, data, session, timeout=timeout)
-
-    # async def fit_round(self, round: int, clients: List) -> Tuple[float, float, Dict]:
-    #    pass
-
-
-class FedkeeperStrategy(ServerlessFlStrategy):
-    def __init__(
-        self,
-        provider: FaaSProvider,
-        clients: List[ClientConfig],
-        invoker_config: FunctionDeploymentConfig,
-        evaluator_config: FunctionDeploymentConfig,
-        aggregator_config: FunctionDeploymentConfig,
-        mongodb_config: MongodbConnectionConfig,
-        allowed_stragglers: int = 0,
-        client_timeout: float = 300,
-        global_test_data: Optional[DatasetLoaderConfig] = None,
-        use_separate_invokers: bool = True,
-        session: Optional[str] = None,
-        aggregator_params: Optional[Dict] = None,
-    ):
-        super().__init__(provider=provider, session=session, clients=clients)
-        self.allowed_stragglers = allowed_stragglers
-        self.client_timeout: float = client_timeout
-        self.clients: List[ClientConfig] = clients
-        self.use_separate_invokers = use_separate_invokers
-        self.invoker_config: FunctionDeploymentConfig = invoker_config
-        self.evaluator_config: FunctionDeploymentConfig = evaluator_config
-        self.aggregator_config: FunctionDeploymentConfig = aggregator_config
-
-        # Will be set during deployment
-        self._invoker: Optional[FunctionInvocationConfig] = None
-        self._aggregator: Optional[FunctionInvocationConfig] = None
-        self._evaluator: Optional[FunctionInvocationConfig] = None
-
-        self._client_to_invoker: Optional[Dict[str, FunctionInvocationConfig]] = None
-
-        self.mongodb_config = mongodb_config
-        self.aggregator_params = aggregator_params or {}
-
-        self.global_test_data = global_test_data
-
-    @property
-    def client_to_invoker(self) -> Dict[str, FunctionInvocationConfig]:
-        if self._client_to_invoker is None:
-            raise ValueError()
-        return self._client_to_invoker
 
     @property
     def aggregator(self) -> FunctionInvocationConfig:
@@ -224,7 +189,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
     def call_evaluator(self, round: int) -> EvaluatorResult:
         params = EvaluatorParams(
             session_id=self.session,
-            round_id=round,
+            round_id=round + 1,
             database=self.mongodb_config,
             test_data=self.global_test_data,
         )
@@ -237,6 +202,15 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             return EvaluatorResult.parse_obj(result)
         except ValidationError as e:
             raise ValueError(f"Evaluator returned invalid result.") from e
+
+    async def invoke_async(
+        self,
+        function: FunctionInvocationConfig,
+        data: Dict,
+        session: Optional[Session] = None,
+        timeout: float = 300,
+    ) -> Dict:
+        return await self._async_call_request(function, data, session, timeout=timeout)
 
     async def fit_round(
         self, round: int, clients: List[ClientConfig]
@@ -264,7 +238,6 @@ class FedkeeperStrategy(ServerlessFlStrategy):
         t_agg_end = time.time()
         logger.info(f"Aggregator combined result of {agg_res.num_clients} clients.")
         metrics_misc["aggregator_seconds"] = t_agg_start - t_agg_end
-        # TODO: round_id = aggregator_result.new_round_id obsolete?
 
         if self.global_test_data:
             logger.info(f"Running global evaluator function")
@@ -301,6 +274,54 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             session=self.session, round=round, dir=None, **metrics_misc  # TODO dir
         )
         return loss, acc, metrics_misc
+
+    @abstractmethod
+    async def call_clients(
+        self, round: int, clients: List[ClientConfig]
+    ) -> Tuple[List[InvocationResult], List[str]]:
+        pass
+
+
+class FedkeeperStrategy(ServerlessFlStrategy):
+    def __init__(
+        self,
+        provider: FaaSProvider,
+        clients: List[ClientConfig],
+        invoker_config: FunctionDeploymentConfig,
+        mongodb_config: MongodbConnectionConfig,
+        evaluator_config: FunctionDeploymentConfig,
+        aggregator_config: FunctionDeploymentConfig,
+        client_timeout: float = 300,
+        global_test_data: Optional[DatasetLoaderConfig] = None,
+        aggregator_params: Optional[Dict] = None,
+        allowed_stragglers: int = 0,
+        use_separate_invokers: bool = True,
+        session: Optional[str] = None,
+    ):
+        super().__init__(
+            provider=provider,
+            session=session,
+            clients=clients,
+            mongodb_config=mongodb_config,
+            global_test_data=global_test_data,
+            aggregator_params=aggregator_params,
+            evaluator_config=evaluator_config,
+            aggregator_config=aggregator_config,
+            client_timeout=client_timeout,
+            allowed_stragglers=allowed_stragglers,
+        )
+        self.use_separate_invokers = use_separate_invokers
+        self.invoker_config: FunctionDeploymentConfig = invoker_config
+
+        # Will be set during deployment
+        self._invoker: Optional[FunctionInvocationConfig] = None
+        self._client_to_invoker: Optional[Dict[str, FunctionInvocationConfig]] = None
+
+    @property
+    def client_to_invoker(self) -> Dict[str, FunctionInvocationConfig]:
+        if self._client_to_invoker is None:
+            raise ValueError()
+        return self._client_to_invoker
 
     async def deploy_all_functions(self, *args, **kwargs):
         logger.info(f"Deploying fedkeeper functions...")
@@ -382,6 +403,106 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             tasks.append(
                 asyncio.create_task(
                     _inv(function=invoker, data=params.dict(), session=session)
+                )
+            )
+
+        done, pending = await asyncio.wait(tasks)
+        results = list(map(lambda f: f.result(), done))
+        suc, errs = [], []
+        for res in results:
+            try:
+                suc.append(InvocationResult.parse_obj(res))
+            except ValidationError:
+                errs.append(res)
+        return suc, errs
+
+
+class FedlessStrategy(ServerlessFlStrategy):
+    def __init__(
+        self,
+        provider: FaaSProvider,
+        clients: List[ClientConfig],
+        mongodb_config: MongodbConnectionConfig,
+        evaluator_config: FunctionDeploymentConfig,
+        aggregator_config: FunctionDeploymentConfig,
+        client_timeout: float = 300,
+        cognito: Optional[CognitoConfig] = None,
+        global_test_data: Optional[DatasetLoaderConfig] = None,
+        aggregator_params: Optional[Dict] = None,
+        allowed_stragglers: int = 0,
+        session: Optional[str] = None,
+    ):
+        super().__init__(
+            provider=provider,
+            session=session,
+            clients=clients,
+            mongodb_config=mongodb_config,
+            global_test_data=global_test_data,
+            aggregator_params=aggregator_params,
+            evaluator_config=evaluator_config,
+            aggregator_config=aggregator_config,
+            client_timeout=client_timeout,
+            allowed_stragglers=allowed_stragglers,
+        )
+        self.cognito = cognito
+
+    async def deploy_all_functions(self, *args, **kwargs):
+        logger.info(f"Deploying fedless functions...")
+        logger.info(f"Deploying aggregator and evaluator")
+        self._aggregator = await self.provider.deploy(self.aggregator_config.params)
+        self._evaluator = await self.provider.deploy(self.evaluator_config.params)
+
+    async def call_clients(
+        self, round: int, clients: List[ClientConfig]
+    ) -> Tuple[List[InvocationResult], List[str]]:
+        urllib3.disable_warnings()
+        tasks = []
+
+        http_headers = {}
+        if self.cognito:
+            token = fetch_cognito_auth_token(
+                user_pool_id=self.cognito.user_pool_id,
+                region_name=self.cognito.region_name,
+                auth_endpoint=self.cognito.auth_endpoint,
+                invoker_client_id=self.cognito.invoker_client_id,
+                invoker_client_secret=self.cognito.invoker_client_secret,
+                required_scopes=self.cognito.required_scopes,
+            )
+            http_headers = {"Authorization": f"Bearer {token}"}
+
+        for client in clients:
+            session = Session()
+            session.headers = http_headers
+            session = retry_session(backoff_factor=1.0, session=session)
+            params = InvokerParams(
+                session_id=self.session,
+                round_id=round,
+                client_id=client.client_id,
+                database=self.mongodb_config,
+            )
+
+            # function with closure for easier logging
+            async def _inv(function, data, session):
+                try:
+                    t_start = time.time()
+                    res = await self.invoke_async(
+                        function, data, session=session, timeout=self.client_timeout
+                    )
+                    dt_call = time.time() - t_start
+                    self.client_timings.append(
+                        {
+                            "client_id": client.client_id,
+                            "session_id": self.session,
+                            "seconds": dt_call,
+                        }
+                    )
+                    return res
+                except InvocationTimeOut as e:
+                    return str(e)
+
+            tasks.append(
+                asyncio.create_task(
+                    _inv(function=client.function, data=params.dict(), session=session)
                 )
             )
 

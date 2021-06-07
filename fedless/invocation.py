@@ -326,7 +326,7 @@ def poll_openwhisk_activation_result(
     """Poll result for given activation id (blocking)"""
 
     _fetch_and_retry = backoff.on_predicate(
-        backoff.constant, max_time=max_time, interval=interval
+        backoff.constant, max_time=max_time, interval=interval, logger=None
     )(_fetch_openwhisk_activation_result)
     result = _fetch_and_retry(
         activation_id=activation_id,

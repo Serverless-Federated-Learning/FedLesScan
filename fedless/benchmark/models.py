@@ -48,7 +48,7 @@ class ClusterConfig(pydantic.BaseModel):
 
 
 class ExperimentConfig(pydantic.BaseModel):
-    cognito: Optional[CognitoConfig]
+    cognito: Optional[CognitoConfig] = None
     database: MongodbConnectionConfig
     cluster: OpenwhiskClusterConfig
     server: ServerFunctions

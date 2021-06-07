@@ -36,7 +36,7 @@ from fedless.models import (
     LEAFConfig,
     MNISTConfig,
 )
-from fedless.benchmark.strategy import FedkeeperStrategy
+from fedless.benchmark.strategy import FedkeeperStrategy, FedlessStrategy
 from fedless.persistence import ClientConfigDao, ParameterDao, ModelDao
 from fedless.serialization import (
     serialize_model,
@@ -201,21 +201,37 @@ def run(
         namespace=config.cluster.namespace,
         package=config.cluster.package,
     )
-    strategy = FedkeeperStrategy(
-        session=session,
-        provider=cluster,
-        clients=clients,
-        invoker_config=config.server.invoker,
-        evaluator_config=config.server.evaluator,
-        aggregator_config=config.server.aggregator,
-        mongodb_config=config.database,
-        allowed_stragglers=stragglers,
-        client_timeout=timeout,
-        global_test_data=(
-            create_mnist_test_config() if dataset.lower() == "mnist" else None
-        ),
-        use_separate_invokers=separate_invokers,
-    )
+    if strategy == "fedkeeper":
+        strategy = FedkeeperStrategy(
+            session=session,
+            provider=cluster,
+            clients=clients,
+            invoker_config=config.server.invoker,
+            evaluator_config=config.server.evaluator,
+            aggregator_config=config.server.aggregator,
+            mongodb_config=config.database,
+            allowed_stragglers=stragglers,
+            client_timeout=timeout,
+            global_test_data=(
+                create_mnist_test_config() if dataset.lower() == "mnist" else None
+            ),
+            use_separate_invokers=separate_invokers,
+        )
+    elif strategy == "fedless":
+        strategy = FedlessStrategy(
+            session=session,
+            cognito=config.cognito,
+            provider=cluster,
+            clients=clients,
+            evaluator_config=config.server.evaluator,
+            aggregator_config=config.server.aggregator,
+            mongodb_config=config.database,
+            allowed_stragglers=stragglers,
+            client_timeout=timeout,
+            global_test_data=(
+                create_mnist_test_config() if dataset.lower() == "mnist" else None
+            ),
+        )
 
     asyncio.run(strategy.deploy_all_functions())
     asyncio.run(
