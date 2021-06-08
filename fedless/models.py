@@ -149,6 +149,7 @@ class MNISTConfig(BaseModel):
     type: str = Field("mnist", const=True)
     indices: List[int] = None
     split: str = "train"
+    proxies: Optional[Dict] = None
 
 
 class DatasetLoaderConfig(BaseModel):

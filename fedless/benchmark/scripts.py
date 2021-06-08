@@ -4,7 +4,7 @@ import sys
 import uuid
 from itertools import cycle
 from pathlib import Path
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, Optional, Dict
 
 import click
 import tensorflow as tf
@@ -138,8 +138,21 @@ def run(
     log_dir.mkdir(parents=True, exist_ok=True)
     config: ExperimentConfig = parse_yaml_file(config, model=ExperimentConfig)
 
+    # Configure proxy if specified
+    proxies = (
+        {
+            "http": "http://proxy.in.tum.de:8080",
+            "https": "http://proxy.in.tum.de:8080",
+            "ftp": "ftp://proxy.in.tum.de:8080",
+            "no_proxy": "localhost,127.0.0.1,10.244.0.0/16,172.24.65.11,10.96.0.0/12,172.24.65.16,172.24.65.17,"
+            + "172.24.65.18",
+        }
+        if tum_proxy
+        else None
+    )
+
     model = create_model(dataset)
-    data_configs = create_data_configs(dataset, clients)
+    data_configs = create_data_configs(dataset, clients, proxies=proxies)
 
     clients = store_client_configs(
         session=session,
@@ -161,19 +174,6 @@ def run(
         insecure=config.cluster.insecure,
         namespace=config.cluster.namespace,
         package=config.cluster.package,
-    )
-
-    # Configure proxy if specified
-    proxies = (
-        {
-            "http": "http://proxy.in.tum.de:8080",
-            "https": "http://proxy.in.tum.de:8080",
-            "ftp": "ftp://proxy.in.tum.de:8080",
-            "no_proxy": "localhost,127.0.0.1,10.244.0.0/16,172.24.65.11,10.96.0.0/12,172.24.65.16,172.24.65.17,"
-            + "172.24.65.18",
-        }
-        if tum_proxy
-        else None
     )
 
     if strategy == "fedkeeper":
@@ -317,12 +317,14 @@ def create_mnist_test_config() -> DatasetLoaderConfig:
 
 # noinspection PydanticTypeChecker,PyTypeChecker
 def create_data_configs(
-    dataset: str, clients: int
+    dataset: str, clients: int, proxies: Optional[Dict] = None
 ) -> List[Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]]:
     dataset = dataset.lower()
     if dataset == "mnist":
         return list(
-            create_mnist_train_data_loader_configs(n_devices=clients, n_shards=600)
+            create_mnist_train_data_loader_configs(
+                n_devices=clients, n_shards=600, proxies=proxies
+            )
         )
     elif dataset in ["femnist", "shakespeare"]:
         configs = []

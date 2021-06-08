@@ -1,6 +1,7 @@
 import abc
 import json
 import logging
+import os
 from collections import OrderedDict
 from functools import reduce, wraps
 from json import JSONDecodeError
@@ -216,12 +217,15 @@ class MNIST(DatasetLoader):
         self,
         indices: Optional[List[int]] = None,
         split: str = "train",
+        proxies: Dict = None,
     ):
         self.split = split
         self.indices = indices
+        self.proxies = proxies or {}
 
     @cache
     def load(self) -> tf.data.Dataset:
+        os.environ.update(self.proxies)
         (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 
         if self.split.lower() == "train":
@@ -261,7 +265,9 @@ class DatasetLoaderBuilder:
             )
         elif config.type == "mnist":
             params: MNISTConfig = config.params
-            return MNIST(split=params.split, indices=params.indices)
+            return MNIST(
+                split=params.split, indices=params.indices, proxies=params.proxies
+            )
         else:
             raise NotImplementedError(
                 f"Dataset loader {config.type} is not implemented"
