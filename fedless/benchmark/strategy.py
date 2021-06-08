@@ -14,12 +14,11 @@ import urllib3
 from pydantic import ValidationError
 from requests import Session
 
-from fedless.benchmark.models import CognitoConfig
 from fedless.benchmark.common import run_in_executor, fetch_cognito_auth_token
+from fedless.benchmark.models import CognitoConfig
 from fedless.invocation import (
     invoke_sync,
     retry_session,
-    InvocationTimeOut,
     InvocationError,
 )
 from fedless.models import (
@@ -111,6 +110,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         aggregator_params: Optional[Dict] = None,
         session: Optional[str] = None,
         save_dir: Optional[Path] = None,
+        proxies: Dict = None,
     ):
         super().__init__(clients=clients)
         urllib3.disable_warnings()
@@ -132,6 +132,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.client_timeout: float = client_timeout
         self.clients: List[ClientConfig] = clients
         self.save_dir = save_dir
+        self.proxies = proxies
 
     @abstractmethod
     async def deploy_all_functions(self, *args, **kwargs):
@@ -159,7 +160,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         session: Optional[Session] = None,
         timeout: float = 300,
     ) -> Dict:
-        session = session or retry_session(backoff_factor=0.5, retries=5)
+        session = retry_session(backoff_factor=0.5, retries=5, session=session)
         return invoke_sync(
             function_config=function, data=data, session=session, timeout=timeout
         )
@@ -183,10 +184,12 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             database=self.mongodb_config,
             **self.aggregator_params,
         )
+        session = Session()
+        session.proxies.update(self.proxies)
         result = invoke_sync(
             self.aggregator,
             data=params.dict(),
-            session=retry_session(backoff_factor=1.0, retries=5),
+            session=retry_session(backoff_factor=1.0, retries=5, session=session),
         )
         try:
             return AggregatorFunctionResult.parse_obj(result)
@@ -200,10 +203,12 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             database=self.mongodb_config,
             test_data=self.global_test_data,
         )
+        session = Session()
+        session.proxies.update(self.proxies)
         result = invoke_sync(
             self.evaluator,
             data=params.dict(),
-            session=retry_session(backoff_factor=1.0, retries=5),
+            session=retry_session(backoff_factor=1.0, retries=5, session=session),
         )
         try:
             return EvaluatorResult.parse_obj(result)
@@ -373,6 +378,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
 
         for client in clients:
             session = Session()
+            session.proxies.update(self.proxies)
             session = retry_session(session=session)
             params = InvokerParams(
                 session_id=self.session,
@@ -475,13 +481,15 @@ class FedlessStrategy(ServerlessFlStrategy):
 
         for client in clients:
             session = Session()
-            session.headers = http_headers
+            session.headers.update(http_headers)
+            session.proxies.update(self.proxies)
             session = retry_session(backoff_factor=1.0, session=session)
             params = InvokerParams(
                 session_id=self.session,
                 round_id=round,
                 client_id=client.client_id,
                 database=self.mongodb_config,
+                http_proxies=self.proxies,
             )
 
             # function with closure for easier logging

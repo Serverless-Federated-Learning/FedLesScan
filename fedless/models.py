@@ -373,6 +373,7 @@ class InvokerParams(BaseModel):
     client_id: str
     database: MongodbConnectionConfig
     http_headers: Optional[Dict] = None
+    http_proxies: Optional[Dict] = None
 
 
 class ClientInvocationParams(BaseModel):

@@ -243,14 +243,14 @@ def store_client_configs(
     client_config_dao = ClientConfigDao(database)
 
     n_clients = sum(function.replicas for function in clients.functions)
-
+    clients_unrolled = list(f for f in clients.functions for _ in range(f.replicas))
     logger.info(
         f"{len(data_configs)} data configurations given with the "
         f"instruction to setup {num_clients} clients from {n_clients} potential endpoints."
     )
 
     data_shards = iter(data_configs)
-    function_iter = cycle(clients.functions)
+    function_iter = cycle(clients_unrolled)
     default_hyperparms = clients.hyperparams
     final_configs = []
     for shard in data_shards:

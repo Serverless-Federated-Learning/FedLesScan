@@ -58,6 +58,7 @@ def function_invoker_handler(
     client_id: str,
     database: MongodbConnectionConfig,
     http_headers: Optional[Dict] = None,
+    http_proxies: Optional[Dict] = None,
 ) -> InvocationResult:
     logger.debug(
         f"Invoker called for session {session_id} and client {client_id} for round {round_id}"
@@ -109,7 +110,8 @@ def function_invoker_handler(
         # Call client
         logger.debug(f"Calling function")
         session = retry_session(backoff_factor=1.0)
-        session.headers = http_headers or {}
+        session.headers.update(http_headers or {})
+        session.proxies.update(http_proxies or {})
         client_result = invoke_sync(
             function_config=client_config.function,
             data=client_params.dict(),

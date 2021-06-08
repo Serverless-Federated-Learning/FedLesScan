@@ -22,4 +22,5 @@ def main(request):
         client_id=config.client_id,
         database=config.database,
         http_headers=config.http_headers,
+        http_proxies=config.http_proxies,
     )
