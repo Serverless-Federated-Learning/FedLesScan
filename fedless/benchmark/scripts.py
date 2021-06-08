@@ -140,13 +140,7 @@ def run(
 
     # Configure proxy if specified
     proxies = (
-        {
-            "http": "http://proxy.in.tum.de:8080",
-            "https": "http://proxy.in.tum.de:8080",
-            "ftp": "ftp://proxy.in.tum.de:8080",
-            "no_proxy": "localhost,127.0.0.1,10.244.0.0/16,172.24.65.11,10.96.0.0/12,172.24.65.16,172.24.65.17,"
-            + "172.24.65.18",
-        }
+        {"https://storage.googleapis.com": "http://proxy.in.tum.de:8080"}
         if tum_proxy
         else None
     )
@@ -188,7 +182,9 @@ def run(
             allowed_stragglers=stragglers,
             client_timeout=timeout,
             global_test_data=(
-                create_mnist_test_config() if dataset.lower() == "mnist" else None
+                create_mnist_test_config(proxies=proxies)
+                if dataset.lower() == "mnist"
+                else None
             ),
             use_separate_invokers=separate_invokers,
             save_dir=log_dir,
@@ -311,8 +307,10 @@ def create_model(dataset) -> tf.keras.Sequential:
         raise NotImplementedError()
 
 
-def create_mnist_test_config() -> DatasetLoaderConfig:
-    return DatasetLoaderConfig(type="mnist", params=MNISTConfig(split="test"))
+def create_mnist_test_config(proxies) -> DatasetLoaderConfig:
+    return DatasetLoaderConfig(
+        type="mnist", params=MNISTConfig(split="test", proxies=proxies)
+    )
 
 
 # noinspection PydanticTypeChecker,PyTypeChecker
