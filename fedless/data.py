@@ -2,12 +2,14 @@ import abc
 import json
 import logging
 import os
+import tempfile
 from collections import OrderedDict
 from functools import reduce, wraps
 from json import JSONDecodeError
 from pathlib import Path
 from typing import Union, Dict, Iterator, List, Optional, Tuple
 
+import numpy as np
 import requests
 import tensorflow as tf
 from pydantic import validate_arguments, AnyHttpUrl
