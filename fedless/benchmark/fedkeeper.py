@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, Optional, Dict
 
 import numpy as np
 from tensorflow import keras
@@ -13,7 +13,7 @@ from fedless.models import (
 
 
 def create_mnist_train_data_loader_configs(
-    n_devices: int, n_shards: int
+    n_devices: int, n_shards: int, proxies: Optional[Dict] = None
 ) -> Iterator[DatasetLoaderConfig]:
     if n_shards % n_devices != 0:
         raise ValueError(
@@ -35,7 +35,7 @@ def create_mnist_train_data_loader_configs(
         indices = np.concatenate(client_shards)
         # noinspection PydanticTypeChecker,PyTypeChecker
         yield DatasetLoaderConfig(
-            type="mnist", params=MNISTConfig(indices=indices.tolist())
+            type="mnist", params=MNISTConfig(indices=indices.tolist(), proxies=proxies)
         )
 
 
