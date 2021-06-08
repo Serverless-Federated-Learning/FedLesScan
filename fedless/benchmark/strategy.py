@@ -132,7 +132,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.client_timeout: float = client_timeout
         self.clients: List[ClientConfig] = clients
         self.save_dir = save_dir
-        self.proxies = proxies
+        self.proxies = proxies or {}
 
     @abstractmethod
     async def deploy_all_functions(self, *args, **kwargs):
@@ -316,6 +316,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
         use_separate_invokers: bool = True,
         session: Optional[str] = None,
         save_dir: Optional[Path] = None,
+        proxies: Dict = None,
     ):
         super().__init__(
             provider=provider,
@@ -329,6 +330,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             client_timeout=client_timeout,
             allowed_stragglers=allowed_stragglers,
             save_dir=save_dir,
+            proxies=proxies,
         )
         self.use_separate_invokers = use_separate_invokers
         self.invoker_config: FunctionDeploymentConfig = invoker_config
@@ -439,6 +441,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         allowed_stragglers: int = 0,
         session: Optional[str] = None,
         save_dir: Optional[Path] = None,
+        proxies: Dict = None,
     ):
         super().__init__(
             provider=provider,
@@ -452,6 +455,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             client_timeout=client_timeout,
             allowed_stragglers=allowed_stragglers,
             save_dir=save_dir,
+            proxies=proxies,
         )
         self.cognito = cognito
 

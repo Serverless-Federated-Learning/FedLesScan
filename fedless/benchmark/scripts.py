@@ -114,6 +114,11 @@ FILE_SERVER = "http://138.246.235.163:31715"
     type=click.Path(),
     required=True,
 )
+@click.option(
+    "--tum-proxy/--no-tum-proxy",
+    help="use in.tum.de proxy",
+    default=False,
+)
 def run(
     dataset: str,
     config: str,
@@ -126,6 +131,7 @@ def run(
     separate_invokers: bool,
     max_accuracy: float,
     out: str,
+    tum_proxy: bool,
 ):
     session = str(uuid.uuid4())
     log_dir = Path(out) if out else Path(config).parent
@@ -156,6 +162,20 @@ def run(
         namespace=config.cluster.namespace,
         package=config.cluster.package,
     )
+
+    # Configure proxy if specified
+    proxies = (
+        {
+            "http": "http://proxy.in.tum.de:8080",
+            "https": "http://proxy.in.tum.de:8080",
+            "ftp": "ftp://proxy.in.tum.de:8080",
+            "no_proxy": "localhost,127.0.0.1,10.244.0.0/16,172.24.65.11,10.96.0.0/12,172.24.65.16,172.24.65.17,"
+            + "172.24.65.18",
+        }
+        if tum_proxy
+        else None
+    )
+
     if strategy == "fedkeeper":
         strategy = FedkeeperStrategy(
             session=session,
@@ -172,6 +192,7 @@ def run(
             ),
             use_separate_invokers=separate_invokers,
             save_dir=log_dir,
+            proxies=proxies,
         )
     elif strategy == "fedless":
         strategy = FedlessStrategy(
@@ -188,6 +209,7 @@ def run(
             global_test_data=(
                 create_mnist_test_config() if dataset.lower() == "mnist" else None
             ),
+            proxies=proxies,
         )
 
     asyncio.run(strategy.deploy_all_functions())
