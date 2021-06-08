@@ -225,8 +225,17 @@ class MNIST(DatasetLoader):
 
     @cache
     def load(self) -> tf.data.Dataset:
-        os.environ.update(self.proxies)
-        (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+        response = requests.get(
+            "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz",
+            proxies=self.proxies,
+        )
+        fp, path = tempfile.mkstemp()
+        with os.fdopen(fp, "wb") as f:
+            f.write(response.content)
+
+        with np.load(path, allow_pickle=True) as f:
+            x_train, y_train = f["x_train"], f["y_train"]
+            x_test, y_test = f["x_test"], f["y_test"]
 
         if self.split.lower() == "train":
             features, labels = x_train, y_train
