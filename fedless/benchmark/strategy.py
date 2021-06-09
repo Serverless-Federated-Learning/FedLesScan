@@ -380,13 +380,14 @@ class FedkeeperStrategy(ServerlessFlStrategy):
 
         for client in clients:
             session = Session()
-            session.proxies.update(self.proxies)
+            # session.proxies.update(self.proxies)
             session = retry_session(session=session)
             params = InvokerParams(
                 session_id=self.session,
                 round_id=round,
                 client_id=client.client_id,
                 database=self.mongodb_config,
+                http_proxies=self.proxies,
             )
             invoker = self.client_to_invoker[client.client_id]
 

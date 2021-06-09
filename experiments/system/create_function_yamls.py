@@ -14,7 +14,7 @@ if __name__ == "__main__":
             type="lambda",
             params=ApiGatewayLambdaFunctionConfig(
                 apigateway=f"https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-{i + 1}",
-                api_key="hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD",
+                api_key="HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD",
             ),
         )
         functions.append({"function": config.dict()})
@@ -48,5 +48,3 @@ if __name__ == "__main__":
         functions.append({"function": config.dict()})
 
     print(yaml.dump(functions))
-
-# https://fedless-client-4.azurewebsites.net/api/client-indep

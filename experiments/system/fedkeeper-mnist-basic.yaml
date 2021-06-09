@@ -2,7 +2,7 @@ database:
   host: '138.246.233.217'
 
 cluster:
-  apihost: 138.246.233.207:31001
+  apihost: localhost:31001
   auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
 
 server:
@@ -10,7 +10,7 @@ server:
     type: openwhisk
     params:
       name: invoker
-      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/invoker/main.py
+      file: /u/home/grafberg/thesis-code/functions/openwhisk/invoker/main.py
       image: andreasgrafberger/fedless-openwhisk
       memory: 2048
       timeout: 60000
@@ -19,7 +19,7 @@ server:
     type: openwhisk
     params:
       name: evaluator
-      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/evaluator/main.py
+      file: /u/home/grafberg/thesis-code/functions/openwhisk/evaluator/main.py
       image: andreasgrafberger/fedless-openwhisk
       memory: 2048
       timeout: 60000
@@ -28,11 +28,11 @@ server:
     type: openwhisk
     params:
       name: aggregator
-      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/aggregator/main.py
+      file: /u/home/grafberg/thesis-code/functions/openwhisk/aggregator/main.py
       image: andreasgrafberger/fedless-openwhisk
       memory: 2024
       timeout: 60000
-      
+
 
 clients:
   hyperparams:
@@ -48,91 +48,91 @@ clients:
   functions:
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-1
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-2
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-3
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-4
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-5
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-6
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-7
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-8
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-9
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-10
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-11
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-12
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-13
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-14
           type: lambda
         type: lambda
     - function:
         params:
-          api_key: hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
+          api_key: HPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD
           apigateway: https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-15
           type: lambda
         type: lambda
@@ -581,3 +581,5 @@ clients:
           trigger_url: https://fedless-client-5.azurewebsites.net/api/client
           type: azure
         type: azure
+
+    
