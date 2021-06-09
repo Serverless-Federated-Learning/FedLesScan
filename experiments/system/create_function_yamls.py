@@ -4,16 +4,17 @@ from fedless.models import (
     FunctionInvocationConfig,
     GCloudFunctionConfig,
     OpenwhiskWebActionConfig,
+    AzureFunctionHTTPConfig,
 )
 
 if __name__ == "__main__":
     functions = []
-    for i in range(20):
+    for i in range(15):
         config = FunctionInvocationConfig(
             type="lambda",
             params=ApiGatewayLambdaFunctionConfig(
                 apigateway=f"https://sfeenj9g31.execute-api.eu-central-1.amazonaws.com/dev/federated/client-{i + 1}",
-                api_key="dlTu9R1Lc41IrLhJpj9Mv79dFwpShckP40dieHHe",
+                api_key="hHPKpJnrlGQ7fnsh1h5BJBaW3TvcUM9Nf2WKOmUkD",
             ),
         )
         functions.append({"function": config.dict()})
@@ -22,7 +23,7 @@ if __name__ == "__main__":
         config = FunctionInvocationConfig(
             type="gcloud",
             params=GCloudFunctionConfig(
-                url=f"https://europe-west3-thesis-303614.cloudfunctions.net/http-{i}"
+                url=f"https://europe-west3-thesis-303614.cloudfunctions.net/http-{i + 1}"
             ),
         )
         functions.append({"function": config.dict()})
@@ -31,10 +32,21 @@ if __name__ == "__main__":
         config = FunctionInvocationConfig(
             type="openwhisk-web",
             params=OpenwhiskWebActionConfig(
-                endpoint=f"https://138.246.233.207:31001/api/v1/web/guest/default/client-{i}.json",
-                token="rHMzaoFGivt7GszbnnO9YRcsxU61lEUd9XAVpF8U",
+                endpoint=f"https://138.246.233.207:31001/api/v1/web/guest/default/client-{i + 1}.json",
+                token="PEETox0e/24aVK6+Xy9KERZMnnnwlHJa620wbk28",
+            ),
+        )
+        functions.append({"function": config.dict()})
+
+    for i in range(5):
+        config = FunctionInvocationConfig(
+            type="azure",
+            params=AzureFunctionHTTPConfig(
+                trigger_url=f"https://fedless-client-{i + 1}.azurewebsites.net/api/client"
             ),
         )
         functions.append({"function": config.dict()})
 
     print(yaml.dump(functions))
+
+# https://fedless-client-4.azurewebsites.net/api/client-indep

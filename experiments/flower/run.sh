@@ -12,10 +12,10 @@ docker build -f client.Dockerfile -t "flower-client" .
 docker tag "flower-client" andreasgrafberger/flower:client
 docker push andreasgrafberger/flower:client
 
-ssh_host="lrz-master"
+ssh_host="invasic"
 port="31532"
-server_address="138.246.233.67:$port"
-server_cpus=4 #"16"
+server_address="172.24.65.11:$port"
+server_cpus="16"
 server_memory="32g"
 rounds=200
 min_num_clients=15
@@ -23,14 +23,14 @@ num_clients_total=100
 
 client_cpus=2.0
 client_memory="8g"
-dataset="femnist"
+dataset="mnist"
 batch_size=10
 epochs=1
 optimizer="Adam"
 lr=0.001
 
-server_address='138.246.233.67:31532'
-declare -a ssh_hosts=("lrz-master" "lrz-4-master" "lrz-4-worker-1" "lrz-4-worker-2" "lrz-4-worker-3" "lrz-4-worker-4" "lrz-4-worker-5")
+server_address='172.24.65.11:31532'
+declare -a ssh_hosts=("invasic") # "lrz-master" "lrz-4-master" "lrz-4-worker-1" "lrz-4-worker-2" "lrz-4-worker-3" "lrz-4-worker-4" "lrz-4-worker-5")
 
 echo "Removing running container if it exists..."
 ssh "$ssh_host" 'docker stop fl-server' ||
@@ -51,7 +51,7 @@ current_partition=0
 echo "Making sure all client machines have the latest docker images and priviledges to run docker"
 for ssh_host in "${ssh_hosts[@]}"; do
   ssh "$ssh_host" "docker pull andreasgrafberger/flower:client"
-  ssh "$ssh_host" "sudo usermod -aG docker \$USER"
+  # ssh "$ssh_host" "sudo usermod -aG docker \$USER"
 done
 
 echo "Starting clients..."

@@ -16,13 +16,7 @@ provider:
         path: .
   apiGateway:
     apiKeys:
-      - invoker-key
-    usagePlan:
-      quota:
-        limit: 2000
-        period: MONTH
-      throttle:
-        rateLimit: 100
+      - invoker-key-clients
 
 functions:
   hello:

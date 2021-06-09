@@ -100,7 +100,11 @@ def run(
         ), f"Partition index {partition} too large. Must be < {clients_total}"
         partition_config = list(
             create_mnist_train_data_loader_configs(
-                n_devices=clients_total, n_shards=600
+                n_devices=clients_total,
+                n_shards=600,
+                proxies={
+                    "https://storage.googleapis.com": "http://proxy.in.tum.de:8080"
+                },
             )
         )[partition]
         train_set = DatasetLoaderBuilder.from_config(partition_config).load()

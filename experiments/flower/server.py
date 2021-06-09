@@ -18,7 +18,14 @@ def get_eval_fn(model):
     """Return an evaluation function for server-side evaluation."""
 
     # Load data and model here to avoid the overhead of doing it in `evaluate` itself
-    test_set = MNIST(split="test").load().batch(32)
+    test_set = (
+        MNIST(
+            split="test",
+            proxies={"https://storage.googleapis.com": "http://proxy.in.tum.de:8080"},
+        )
+        .load()
+        .batch(32)
+    )
 
     # The `evaluate` function will be called after every round
     def evaluate(weights: fl.common.Weights) -> Optional[Tuple[float, float]]:

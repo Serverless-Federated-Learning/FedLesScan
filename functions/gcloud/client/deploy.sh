@@ -12,7 +12,7 @@ COMMIT_HASH=$(git rev-parse HEAD)
 trap "exit" INT TERM ERR
 trap "kill 0" EXIT
 
-for i in {1..50}; do
+for i in {1..100}; do
   function_name="http-${i}"
   echo "Deploying function $function_name"
   # shellcheck disable=SC2140
