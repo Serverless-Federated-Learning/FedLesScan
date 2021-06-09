@@ -224,6 +224,7 @@ def invoke_http_function_sync(
             data=data,
             headers={"Content-Type": "application/json"},
             verify=verify_certificate,
+            proxies=session.proxies,
             timeout=timeout,
         )
         if (
@@ -268,6 +269,7 @@ def invoke_wsk_action_async(
             data=data,
             headers={"Content-Type": "application/json"},
             verify=verify_certificate,
+            proxies=session.proxies,
         )
         response.raise_for_status()
         response_dict = response.json()
@@ -293,6 +295,7 @@ def _fetch_openwhisk_activation_result(
         response = session.get(
             url=f"https://{auth_token}@{api_host}/api/v1/namespaces/_/activations/{activation_id}/result",
             verify=verify_certificate,
+            proxies=session.proxies,
         )
 
         if (
