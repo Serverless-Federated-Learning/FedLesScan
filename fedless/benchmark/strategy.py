@@ -185,7 +185,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             **self.aggregator_params,
         )
         session = Session()
-        session.proxies.update(self.proxies)
+        # session.proxies.update(self.proxies)
         result = invoke_sync(
             self.aggregator,
             data=params.dict(),
@@ -204,7 +204,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             test_data=self.global_test_data,
         )
         session = Session()
-        session.proxies.update(self.proxies)
+        # session.proxies.update(self.proxies)
         result = invoke_sync(
             self.evaluator,
             data=params.dict(),

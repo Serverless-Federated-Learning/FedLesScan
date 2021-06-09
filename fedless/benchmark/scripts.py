@@ -140,13 +140,16 @@ def run(
 
     # Configure proxy if specified
     proxies = (
-        {"https://storage.googleapis.com": "http://proxy.in.tum.de:8080"}
+        {
+            "https": "http://proxy.in.tum.de:8080/",
+            "http": "http://proxy.in.tum.de:8080/",
+        }
         if tum_proxy
         else None
     )
 
     model = create_model(dataset)
-    data_configs = create_data_configs(dataset, clients, proxies=proxies)
+    data_configs = create_data_configs(dataset, clients)  # , proxies=proxies)
 
     clients = store_client_configs(
         session=session,
