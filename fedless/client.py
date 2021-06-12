@@ -184,7 +184,7 @@ def default_handler(
     :raises ClientError if something failed during execution
     """
     logger.info(
-        f"handler called with data_config={str(data_config)} and hyperparams={str(hyperparams)}"
+        f"handler called with data_config={str(data_config.type)} and hyperparams={str(hyperparams)}"
     )
     data_loader = DatasetLoaderBuilder.from_config(data_config)
     model_loader = ModelLoaderBuilder.from_config(model_config)
