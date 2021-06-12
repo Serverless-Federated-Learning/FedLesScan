@@ -143,6 +143,10 @@ def run(
         {
             "https": "http://proxy.in.tum.de:8080/",
             "http": "http://proxy.in.tum.de:8080/",
+            "https://138.246.233.207": "",
+            "http://138.246.233.207": "",
+            "https://127.0.0.1": "",
+            "http://127.0.0.1": "",
         }
         if tum_proxy
         else None
