@@ -1,0 +1,531 @@
+database:
+  host: '138.246.233.217'
+
+cluster:
+  apihost: localhost:31001
+  auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+
+server:
+  evaluator:
+    type: openwhisk
+    params:
+      name: evaluator
+      file: /u/home/grafberg/thesis-code/functions/openwhisk/evaluator/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 2048
+      timeout: 60000
+
+  aggregator:
+    type: openwhisk
+    params:
+      name: aggregator
+      file: /u/home/grafberg/thesis-code/functions/openwhisk/aggregator/main.py
+      image: andreasgrafberger/fedless-openwhisk
+      memory: 2024
+      timeout: 60000
+
+
+clients:
+  hyperparams:
+    epochs: 1
+    batch_size: 10
+    optimizer:
+      class_name: "Adam"
+      config:
+        name: "Adam"
+        learning_rate: 0.001
+    metrics:
+      - accuracy
+  functions:
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-1.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-2.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-3.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-4.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-5.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-6.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-7.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-8.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-9.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-10.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-11.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-12.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-13.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-14.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-15.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-16.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-17.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-18.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-19.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-20.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-21.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-22.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-23.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-24.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-25.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-26.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-27.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-28.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-29.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-30.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-31.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-32.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-33.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-34.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-35.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-36.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-37.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-38.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-39.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-40.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-41.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-42.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-43.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-44.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-45.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-46.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-47.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-48.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-49.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-50.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-51.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-52.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-53.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-54.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-55.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-56.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-57.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-58.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-59.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-60.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-61.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-62.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-63.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-64.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-65.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-66.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-67.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-68.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-69.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-70.json
+          self_signed_cert: true
+          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
+          type: openwhisk-web
+        type: openwhisk-web
+
+
