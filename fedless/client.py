@@ -183,9 +183,7 @@ def default_handler(
     Uses Npz weight serializer + Base64 encoding by default
     :raises ClientError if something failed during execution
     """
-    logger.info(
-        f"handler called with data_config={str(data_config.type)} and hyperparams={str(hyperparams)}"
-    )
+    logger.info(f"handler called with hyperparams={str(hyperparams)}")
     data_loader = DatasetLoaderBuilder.from_config(data_config)
     model_loader = ModelLoaderBuilder.from_config(model_config)
     test_data_loader = (
