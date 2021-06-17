@@ -5,7 +5,7 @@ set -e
 wsk -i action update \
   invoker \
   main.py \
-  --docker andreasgrafberger/fedless-openwhisk \
+  --docker andreasgrafberger/fedless-openwhisk:clients \
   --memory 256 \
   --timeout 60000 \
   --web raw \

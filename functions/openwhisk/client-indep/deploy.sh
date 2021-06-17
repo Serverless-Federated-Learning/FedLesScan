@@ -11,7 +11,7 @@ for i in {1..20}; do
   wsk -i action update \
     "$action_name" \
     main.py \
-    --docker andreasgrafberger/fedless-openwhisk \
+    --docker andreasgrafberger/fedless-openwhisk:clients \
     --memory 2048 \
     --timeout 60000 \
     --web raw \
