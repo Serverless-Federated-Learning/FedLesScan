@@ -219,7 +219,7 @@ class MNIST(DatasetLoader):
         self,
         indices: Optional[List[int]] = None,
         split: str = "train",
-        proxies: Dict = None,
+        proxies: Optional[Dict] = None,
     ):
         self.split = split
         self.indices = indices
