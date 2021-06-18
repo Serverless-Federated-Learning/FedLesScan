@@ -111,6 +111,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         session: Optional[str] = None,
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
+        invocation_delay: float = None,
     ):
         super().__init__(clients=clients)
         urllib3.disable_warnings()
@@ -133,6 +134,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.clients: List[ClientConfig] = clients
         self.save_dir = save_dir
         self.proxies = proxies or {}
+        self.invocation_delay: Optional[float] = invocation_delay
 
     @abstractmethod
     async def deploy_all_functions(self, *args, **kwargs):
@@ -317,6 +319,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
         session: Optional[str] = None,
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
+        invocation_delay: float = None,
     ):
         super().__init__(
             provider=provider,
@@ -331,6 +334,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             allowed_stragglers=allowed_stragglers,
             save_dir=save_dir,
             proxies=proxies,
+            invocation_delay=invocation_delay,
         )
         self.use_separate_invokers = use_separate_invokers
         self.invoker_config: FunctionDeploymentConfig = invoker_config
@@ -443,6 +447,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         session: Optional[str] = None,
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
+        invocation_delay: float = None,
     ):
         super().__init__(
             provider=provider,
@@ -457,6 +462,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             allowed_stragglers=allowed_stragglers,
             save_dir=save_dir,
             proxies=proxies,
+            invocation_delay=invocation_delay,
         )
         self.cognito = cognito
 
@@ -501,6 +507,8 @@ class FedlessStrategy(ServerlessFlStrategy):
             async def _inv(function, data, session):
                 try:
                     t_start = time.time()
+                    if self.invocation_delay:
+                        await asyncio.sleep(random.uniform(0.0, self.invocation_delay))
                     res = await self.invoke_async(
                         function, data, session=session, timeout=self.client_timeout
                     )
