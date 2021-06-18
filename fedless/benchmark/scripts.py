@@ -153,6 +153,8 @@ def run(
             "http://138.246.233.207": "",
             "https://127.0.0.1": "",
             "http://127.0.0.1": "",
+            "https://localhost": "",
+            "http://localhost": "",
         }
         if tum_proxy
         else None
