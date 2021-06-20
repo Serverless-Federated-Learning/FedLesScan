@@ -1,0 +1,11 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://138.246.233.67:31112
+functions:
+  client-indep-1:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-1
+    build_args:
+      ADDITIONAL_PACKAGE: git
