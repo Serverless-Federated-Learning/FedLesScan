@@ -7,20 +7,14 @@ from fedless.client import (
     ClientError,
 )
 from fedless.models import InvokerParams
-from fedless.providers import lambda_proxy_handler
+from fedless.providers import gcloud_http_error_handler
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-@lambda_proxy_handler(caught_exceptions=(ValidationError, ClientError))
+@gcloud_http_error_handler(caught_exceptions=(ValidationError, ClientError))
 def handle(event, context):
-    """
-    Train client on given data and model and return :class:`fedless.client.ClientResult`.
-    Relies on :meth:`fedless.client.lambda_proxy_handler` decorator
-    for return object conversion and error handling
-    :return Response dictionary compatible with API gateway's lambda-proxy integration
-    """
-    config = InvokerParams.parse_obj(event["body"])
+    config = InvokerParams.parse_raw(event.body)
 
     return fedless_mongodb_handler(
         session_id=config.session_id,
