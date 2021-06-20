@@ -63,5 +63,63 @@ functions:
     image: andreasgrafberger/faas-func-fedless-10
     build_args:
       ADDITIONAL_PACKAGE: git
-
-
+  client-indep-11:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-11
+    build_args:
+      ADDITIONAL_PACKAGE: git
+  client-indep-12:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-12
+    build_args:
+      ADDITIONAL_PACKAGE: git
+  client-indep-13:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-13
+    build_args:
+      ADDITIONAL_PACKAGE: git
+  client-indep-14:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-14
+    build_args:
+      ADDITIONAL_PACKAGE: git
+  client-indep-15:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-15
+    build_args:
+      ADDITIONAL_PACKAGE: git
+  client-indep-16:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-16
+    build_args:
+      ADDITIONAL_PACKAGE: git
+  client-indep-17:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-17
+    build_args:
+      ADDITIONAL_PACKAGE: git
+  client-indep-18:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-18
+    build_args:
+      ADDITIONAL_PACKAGE: git
+  client-indep-19:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-19
+    build_args:
+      ADDITIONAL_PACKAGE: git
+  client-indep-20:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-20
+    build_args:
+      ADDITIONAL_PACKAGE: git
