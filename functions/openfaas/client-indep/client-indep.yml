@@ -9,117 +9,1196 @@ functions:
     image: andreasgrafberger/faas-func-fedless-1
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-2:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-2
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-3:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-3
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-4:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-4
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-5:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-5
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-6:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-6
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-7:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-7
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-8:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-8
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-9:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-9
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-10:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-10
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-11:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-11
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-12:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-12
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-13:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-13
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-14:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-14
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-15:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-15
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-16:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-16
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-17:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-17
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-18:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-18
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-19:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-19
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
   client-indep-20:
     lang: python3-http-debian
     handler: ./client-indep
     image: andreasgrafberger/faas-func-fedless-20
     build_args:
       ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-21:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-21
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-22:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-22
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-23:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-23
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-24:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-24
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-25:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-25
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-26:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-26
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-27:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-27
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-28:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-28
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-29:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-29
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-30:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-30
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-31:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-31
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-32:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-32
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-33:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-33
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-34:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-34
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-35:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-35
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-36:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-36
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-37:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-37
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-38:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-38
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-39:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-39
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-40:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-40
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-41:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-41
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-42:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-42
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-43:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-43
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-44:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-44
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-45:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-45
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-46:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-46
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-47:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-47
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-48:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-48
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-49:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-49
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-50:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-50
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-51:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-51
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-52:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-52
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-53:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-53
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-54:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-54
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-55:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-55
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-56:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-56
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-57:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-57
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-58:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-58
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-59:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-59
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-60:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-60
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-61:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-61
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-62:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-62
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-63:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-63
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-64:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-64
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-65:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-65
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-66:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-66
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-67:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-67
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-68:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-68
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-69:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-69
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-70:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-70
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-71:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-71
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-72:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-72
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-73:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-73
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-74:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-74
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-75:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-75
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-76:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-76
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-77:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-77
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-78:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-78
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-79:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-79
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-80:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-80
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-81:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-81
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-82:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-82
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-83:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-83
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-84:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-84
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-85:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-85
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-86:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-86
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-87:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-87
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-88:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-88
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-89:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-89
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-90:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-90
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-91:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-91
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-92:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-92
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-93:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-93
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-94:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-94
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-95:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-95
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-96:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-96
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-97:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-97
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-98:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-98
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-99:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-99
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
+
+  client-indep-100:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-100
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      memory: 2000Mi
