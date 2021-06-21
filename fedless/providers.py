@@ -162,6 +162,30 @@ def gcloud_http_error_handler(
     return decorator
 
 
+def openfaas_action_handler(
+    caught_exceptions: Iterable[Exception],
+) -> Callable[
+    [Callable[["flask.Request"], Union[pydantic.BaseModel, str]]],
+    Callable[["flask.Request"], Dict],
+]:
+    """Decorator for OpenFaas Function handlers to,
+    catch certain exceptions and respond to them with 400 errors."""
+
+    def decorator(func):
+        def patched_func(*args, **kwargs):
+            try:
+                result: Union[pydantic.BaseModel, str] = func(*args, **kwargs)
+                if isinstance(result, str):
+                    return create_http_success_response(result)
+                return create_http_success_response(result.json())
+            except tuple(caught_exceptions) as e:
+                return create_http_user_error_response(e)
+
+        return patched_func
+
+    return decorator
+
+
 def openwhisk_action_handler(
     caught_exceptions: Iterable[Exception],
 ) -> Callable[

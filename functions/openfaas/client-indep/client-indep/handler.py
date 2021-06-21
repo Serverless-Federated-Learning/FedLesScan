@@ -7,12 +7,12 @@ from fedless.client import (
     ClientError,
 )
 from fedless.models import InvokerParams
-from fedless.providers import gcloud_http_error_handler
+from fedless.providers import openfaas_action_handler
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-@gcloud_http_error_handler(caught_exceptions=(ValidationError, ClientError))
+@openfaas_action_handler(caught_exceptions=(ValidationError, ClientError))
 def handle(event, context):
     config = InvokerParams.parse_raw(event.body)
 

@@ -23,6 +23,7 @@ from fedless.models import (
     AzureFunctionHTTPConfig,
     SerializedParameters,
     BinaryStringFormat,
+    OpenFaasFunctionConfig,
 )
 from fedless.serialization import Base64StringConverter
 from fedless.persistence import (
@@ -197,6 +198,11 @@ def invoke_sync(
         params: AzureFunctionHTTPConfig = function_config.params
         return invoke_http_function_sync(
             url=params.trigger_url, data=data, session=session, timeout=timeout
+        )
+    elif function_config.type == "openfaas":
+        params: OpenFaasFunctionConfig = function_config.params
+        return invoke_http_function_sync(
+            url=params.url, data=data, session=session, timeout=timeout
         )
     else:
         raise NotImplementedError(

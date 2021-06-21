@@ -198,6 +198,13 @@ class GCloudFunctionConfig(BaseModel):
     url: str
 
 
+class OpenFaasFunctionConfig(BaseModel):
+    """OpenFaas function"""
+
+    type: str = Field("openfaas", const=True)
+    url: str
+
+
 class AzureFunctionHTTPConfig(BaseModel):
     """Azure function"""
 
@@ -215,6 +222,7 @@ class FunctionInvocationConfig(BaseModel):
         GCloudFunctionConfig,
         OpenwhiskWebActionConfig,
         AzureFunctionHTTPConfig,
+        OpenFaasFunctionConfig,
     ]
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
