@@ -39,503 +39,501 @@ clients:
   functions:
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-1
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-2
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-3
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-4
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-5
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-6
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-7
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-8
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-9
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-10
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-11
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-12
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-13
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-14
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-15
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-16
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-17
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-18
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-19
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-20
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-21
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-22
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-23
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-24
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-25
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-26
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-27
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-28
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-29
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-30
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-31
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-32
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-33
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-34
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-35
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-36
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-37
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-38
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-39
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-40
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-41
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-42
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-43
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-44
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-45
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-46
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-47
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-48
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-49
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-50
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-51
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-52
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-53
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-54
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-55
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-56
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-57
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-58
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-59
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-60
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-61
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-62
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-63
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-64
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-65
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-66
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-67
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-68
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-69
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-70
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-71
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-72
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-73
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-74
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-75
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-76
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-77
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-78
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-79
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-80
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-81
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-82
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-83
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-84
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-85
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-86
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-87
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-88
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-89
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-90
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-91
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-92
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-93
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-94
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-95
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-96
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-97
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-98
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-99
-        type: gcloud
+        type: openfaas
     - function:
         params:
-          type: gcloud
+          type: openfaas
           url: http://127.0.0.1:31112/function/client-indep-100
-        type: gcloud
-
-
+        type: openfaas
