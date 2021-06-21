@@ -382,18 +382,8 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             self._client_to_invoker = defaultdict(lambda: invoker)
             logger.debug(f"Deployed invoker {invoker.params.name}")
 
-    async def evaluate_clients(self, round: int, clients: List[ClientConfig]) -> Dict:
-        succ, fails = self.call_clients(round, clients, evaluate_only=True)
-        logger.info(
-            f"{len(succ)} client evaluations returned, {len(fails)} failures... {fails}"
-        )
-        client_metrics = [res.test_metrics for res in succ]
-        return self.aggregate_metrics(
-            metrics=client_metrics, metric_names=["loss", "accuracy"]
-        )
-
     async def call_clients(
-        self, round: int, clients: List[ClientConfig], evaluate_only: bool = False
+        self, round: int, clients: List[ClientConfig]
     ) -> Tuple[List[InvocationResult], List[str]]:
         urllib3.disable_warnings()
         tasks = []
@@ -408,7 +398,6 @@ class FedkeeperStrategy(ServerlessFlStrategy):
                 client_id=client.client_id,
                 database=self.mongodb_config,
                 http_proxies=self.proxies,
-                evaluate_only=evaluate_only,
             )
             invoker = self.client_to_invoker[client.client_id]
 
@@ -425,7 +414,6 @@ class FedkeeperStrategy(ServerlessFlStrategy):
                             "client_id": client.client_id,
                             "session_id": self.session,
                             "seconds": dt_call,
-                            "evaluate": evaluate_only,
                         }
                     )
                     return res
@@ -491,7 +479,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         self._evaluator = await self.provider.deploy(self.evaluator_config.params)
 
     async def call_clients(
-        self, round: int, clients: List[ClientConfig]
+        self, round: int, clients: List[ClientConfig], evaluate_only: bool = False
     ) -> Tuple[List[InvocationResult], List[str]]:
         urllib3.disable_warnings()
         tasks = []
@@ -519,6 +507,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                 client_id=client.client_id,
                 database=self.mongodb_config,
                 http_proxies=self.proxies,
+                evaluate_only=evaluate_only,
             )
 
             # function with closure for easier logging
@@ -536,6 +525,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                             "client_id": client.client_id,
                             "session_id": self.session,
                             "seconds": dt_call,
+                            "eval": evaluate_only,
                         }
                     )
                     return res
@@ -557,3 +547,13 @@ class FedlessStrategy(ServerlessFlStrategy):
             except ValidationError:
                 errs.append(res)
         return suc, errs
+
+    async def evaluate_clients(self, round: int, clients: List[ClientConfig]) -> Dict:
+        succ, fails = await self.call_clients(round, clients, evaluate_only=True)
+        logger.info(
+            f"{len(succ)} client evaluations returned, {len(fails)} failures... {fails}"
+        )
+        client_metrics = [res.test_metrics for res in succ]
+        return self.aggregate_metrics(
+            metrics=client_metrics, metric_names=["loss", "accuracy"]
+        )
