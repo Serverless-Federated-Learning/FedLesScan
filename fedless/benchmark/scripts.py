@@ -120,6 +120,11 @@ FILE_SERVER = "http://138.246.235.163:31715"
     default=False,
 )
 @click.option(
+    "--proxy-in-evaluator/--no-proxy-in-evaluator",
+    help="use proxy also in evaluation function",
+    default=False,
+)
+@click.option(
     "--aggregate-online/--aggregate-offline",
     help="use in.tum.de proxy",
     default=False,
@@ -137,6 +142,7 @@ def run(
     max_accuracy: float,
     out: str,
     tum_proxy: bool,
+    proxy_in_evaluator: bool,
     aggregate_online: bool,
 ):
     session = str(uuid.uuid4())
@@ -197,7 +203,9 @@ def run(
             allowed_stragglers=stragglers,
             client_timeout=timeout,
             global_test_data=(
-                create_mnist_test_config(proxies=proxies)
+                create_mnist_test_config(
+                    proxies=(proxies if proxy_in_evaluator else None)
+                )
                 if dataset.lower() == "mnist"
                 else None
             ),
@@ -220,7 +228,9 @@ def run(
             save_dir=log_dir,
             aggregator_params={"online": aggregate_online},
             global_test_data=(
-                create_mnist_test_config(proxies=proxies)
+                create_mnist_test_config(
+                    proxies=(proxies if proxy_in_evaluator else None)
+                )
                 if dataset.lower() == "mnist"
                 else None
             ),
