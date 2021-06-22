@@ -408,6 +408,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
                             "client_id": client_id,
                             "session_id": self.session,
                             "invocation_time": t_start,
+                            "function": function.json(),
                             "seconds": dt_call,
                             "round": round,
                         }
@@ -526,6 +527,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                             "client_id": client_id,
                             "session_id": self.session,
                             "invocation_time": t_start,
+                            "function": function.json(),
                             "seconds": dt_call,
                             "round": round,
                         }
