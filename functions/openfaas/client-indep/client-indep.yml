@@ -10,11 +10,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -28,11 +28,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -46,11 +46,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -64,11 +64,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -82,11 +82,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -100,11 +100,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -118,11 +118,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -136,11 +136,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -154,11 +154,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -172,11 +172,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -190,11 +190,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -208,11 +208,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -226,11 +226,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -244,11 +244,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -262,11 +262,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -280,11 +280,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -298,11 +298,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -316,11 +316,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -334,11 +334,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -352,11 +352,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -370,11 +370,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -388,11 +388,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -406,11 +406,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -424,11 +424,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -442,11 +442,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -460,11 +460,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -478,11 +478,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -496,11 +496,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -514,11 +514,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -532,11 +532,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -550,11 +550,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -568,11 +568,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -586,11 +586,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -604,11 +604,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -622,11 +622,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -640,11 +640,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -658,11 +658,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -676,11 +676,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -694,11 +694,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -712,11 +712,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -730,11 +730,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -748,11 +748,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -766,11 +766,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -784,11 +784,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -802,11 +802,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -820,11 +820,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -838,11 +838,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -856,11 +856,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -874,11 +874,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -892,11 +892,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -910,11 +910,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -928,11 +928,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -946,11 +946,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -964,11 +964,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -982,11 +982,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1000,11 +1000,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1018,11 +1018,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1036,11 +1036,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1054,11 +1054,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1072,11 +1072,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1090,11 +1090,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1108,11 +1108,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1126,11 +1126,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1144,11 +1144,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1162,11 +1162,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1180,11 +1180,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1198,11 +1198,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1216,11 +1216,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1234,11 +1234,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1252,11 +1252,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1270,11 +1270,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1288,11 +1288,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1306,11 +1306,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1324,11 +1324,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1342,11 +1342,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1360,11 +1360,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1378,11 +1378,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1396,11 +1396,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1414,11 +1414,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1432,11 +1432,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1450,11 +1450,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1468,11 +1468,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1486,11 +1486,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1504,11 +1504,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1522,11 +1522,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1540,11 +1540,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1558,11 +1558,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1576,11 +1576,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1594,11 +1594,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1612,11 +1612,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1630,11 +1630,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1648,11 +1648,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1666,11 +1666,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1684,11 +1684,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1702,11 +1702,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1720,11 +1720,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1738,11 +1738,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1756,11 +1756,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1774,11 +1774,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
@@ -1792,11 +1792,11 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 1000m
+      memory: 2000Mi
     requests:
       cpu: 300m
-      memory: 2000Mi
+      memory: 1000Mi
     environment:
       write_timeout: 3m
       read_timeout: 3m
