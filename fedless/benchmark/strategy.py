@@ -396,8 +396,9 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             invoker = self.client_to_invoker[client.client_id]
 
             # function with closure for easier logging
-            async def _inv(function, data, session):
+            async def _inv(function, data, session, round, client_id):
                 try:
+                    logger.info(f"Invoking {client_id}")
                     t_start = time.time()
                     res = await self.invoke_async(
                         function, data, session=session, timeout=self.client_timeout
@@ -405,9 +406,10 @@ class FedkeeperStrategy(ServerlessFlStrategy):
                     dt_call = time.time() - t_start
                     self.client_timings.append(
                         {
-                            "client_id": client.client_id,
+                            "client_id": client_id,
                             "session_id": self.session,
                             "seconds": dt_call,
+                            "round": round,
                         }
                     )
                     return res
@@ -416,7 +418,13 @@ class FedkeeperStrategy(ServerlessFlStrategy):
 
             tasks.append(
                 asyncio.create_task(
-                    _inv(function=invoker, data=params.dict(), session=session)
+                    _inv(
+                        function=invoker,
+                        data=params.dict(),
+                        session=session,
+                        round=round,
+                        client_id=client.client_id,
+                    )
                 )
             )
 
@@ -504,7 +512,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             )
 
             # function with closure for easier logging
-            async def _inv(function, data, session):
+            async def _inv(function, data, session, round, client_id):
                 try:
                     t_start = time.time()
                     if self.invocation_delay:
@@ -515,9 +523,10 @@ class FedlessStrategy(ServerlessFlStrategy):
                     dt_call = time.time() - t_start
                     self.client_timings.append(
                         {
-                            "client_id": client.client_id,
+                            "client_id": client_id,
                             "session_id": self.session,
                             "seconds": dt_call,
+                            "round": round,
                         }
                     )
                     return res
@@ -526,7 +535,13 @@ class FedlessStrategy(ServerlessFlStrategy):
 
             tasks.append(
                 asyncio.create_task(
-                    _inv(function=client.function, data=params.dict(), session=session)
+                    _inv(
+                        function=client.function,
+                        data=params.dict(),
+                        session=session,
+                        round=round,
+                        client_id=client.client_id,
+                    )
                 )
             )
 
