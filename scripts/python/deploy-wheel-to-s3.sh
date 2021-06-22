@@ -13,4 +13,5 @@ python setup.py bdist_wheel
 
 # Building image
 echo "Build and Push Image"
-aws s3 cp "$ROOT_DIR/dist/fedless-0.0.0-py3-none-any.whl" "s3://thesis-datasets/fedless-latest.whl" --acl public-read
+aws s3 cp "$ROOT_DIR/dist/fedless-0.0.0-py3-none-any.whl" "s3://thesis-datasets/fedless-0.0.0-py3-none-any.whl" \
+  --acl public-read
