@@ -398,7 +398,6 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             # function with closure for easier logging
             async def _inv(function, data, session, round, client_id):
                 try:
-                    logger.info(f"Invoking {client_id}")
                     t_start = time.time()
                     res = await self.invoke_async(
                         function, data, session=session, timeout=self.client_timeout
@@ -408,6 +407,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
                         {
                             "client_id": client_id,
                             "session_id": self.session,
+                            "invocation_time": t_start,
                             "seconds": dt_call,
                             "round": round,
                         }
@@ -525,6 +525,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                         {
                             "client_id": client_id,
                             "session_id": self.session,
+                            "invocation_time": t_start,
                             "seconds": dt_call,
                             "round": round,
                         }
