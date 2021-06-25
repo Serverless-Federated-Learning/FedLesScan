@@ -256,14 +256,14 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         logger.info(f"Aggregator combined result of {agg_res.num_clients} clients.")
         metrics_misc["aggregator_seconds"] = t_agg_end - t_agg_start
 
-        if self.global_test_data:
-            logger.info(f"Running global evaluator function")
-            t_eval_start = time.time()
-            eval_res = self.call_evaluator(round)
-            t_eval_end = time.time()
-            metrics_misc["evaluator_seconds"] = t_eval_end - t_eval_start
-            loss = eval_res.metrics.metrics.get("loss")
-            acc = eval_res.metrics.metrics.get("accuracy")
+        if agg_res.global_test_results:
+            # logger.info(f"Running global evaluator function")
+            # t_eval_start = time.time()
+            # eval_res = self.call_evaluator(round)
+            # t_eval_end = time.time()
+            # metrics_misc["evaluator_seconds"] = t_eval_end - t_eval_start
+            loss = agg_res.global_test_results.metrics.get("loss")
+            acc = agg_res.global_test_results.metrics.get("accuracy")
         else:
             logger.info(f"Computing test statistics from clients")
             if not agg_res.test_results:

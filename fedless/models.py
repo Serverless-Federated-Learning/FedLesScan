@@ -402,12 +402,15 @@ class AggregatorFunctionParams(BaseModel):
         type="npz", params=NpzWeightsSerializerConfig(compressed=False)
     )
     online: bool = False
+    test_data: Optional[DatasetLoaderConfig]
+    test_batch_size: int = 512
 
 
 class AggregatorFunctionResult(BaseModel):
     new_round_id: int
     num_clients: int
     test_results: Optional[List[TestMetrics]]
+    global_test_results: Optional[TestMetrics]
 
 
 class EvaluatorParams(BaseModel):
@@ -474,7 +477,6 @@ class GCloudFunctionDeploymentConfig(BaseModel):
 
 
 class FunctionDeploymentConfig(BaseModel):
-
     type: str
     params: Union[OpenwhiskFunctionDeploymentConfig]
 
