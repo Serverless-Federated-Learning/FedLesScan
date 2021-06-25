@@ -8,6 +8,7 @@ from fedless.aggregation import (
     FedAvgAggregator,
     UnknownCardinalityError,
     StreamFedAvgAggregator,
+    chunks,
 )
 from fedless.models import (
     ClientResult,
@@ -126,9 +127,20 @@ def test_fedavg_recovers_on_invalid_cardinality(
     )
 
 
-def test_streamfedavg_aggregate_function(dummy_client_results, dummy_expected_result):
-    aggregator = StreamFedAvgAggregator()
+@pytest.mark.parametrize("chunk_size", [1, 2, 10, 50])
+def test_streamfedavg_aggregate_function(
+    dummy_client_results, dummy_expected_result, chunk_size
+):
+    aggregator = StreamFedAvgAggregator(chunk_size=chunk_size)
     final_params, _ = aggregator.aggregate(client_results=dummy_client_results)
     assert all(
         [np.allclose(a, b) for a, b in zip_longest(final_params, dummy_expected_result)]
     )
+
+
+def test_chunks():
+    iterator = list(x for x in range(10))
+    assert list(chunks(iterator, 3)) == [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
+    assert list(chunks(iterator, 2)) == [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]
+    assert list(chunks(iterator, 1)) == [[i] for i in range(10)]
+    assert list(chunks(iterator, 20)) == [[i for i in range(10)]]
