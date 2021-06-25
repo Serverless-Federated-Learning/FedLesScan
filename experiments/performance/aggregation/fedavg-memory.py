@@ -1,4 +1,3 @@
-import sys
 from typing import Iterator
 
 import click
@@ -14,30 +13,32 @@ from fedless.models import (
     NpzWeightsSerializerConfig,
     WeightsSerializerConfig,
 )
-from fedless.serialization import NpzWeightsSerializer, Base64StringConverter
+from fedless.serialization import NpzWeightsSerializer
 
 
 @click.command()
 @click.option("--stream/--no-stream", default=False)
-@click.option("--num-models", default=20)
+@click.option("--num-models", default=50)
 @click.option("--large-models/--small-models", default=False)
-def run(stream: bool, num_models: int, large_models: bool):
+@click.option("--chunk-size", default=10)
+def run(stream: bool, num_models: int, large_models: bool, chunk_size: int):
     def create_models() -> Iterator[ClientResult]:
         for i in range(num_models):
             params = create_femnist_cnn(small=not large_models).get_weights()
             weights_bytes = NpzWeightsSerializer().serialize(params)
-            blob = Base64StringConverter.to_str(weights_bytes)
             yield ClientResult(
                 parameters=SerializedParameters(
-                    blob=blob,
+                    blob=weights_bytes,
                     serializer=WeightsSerializerConfig(
                         type="npz", params=NpzWeightsSerializerConfig()
                     ),
                 ),
-                cardinality=i,
+                cardinality=i + 1,
             )
 
-    aggregator = StreamFedAvgAggregator() if stream else FedAvgAggregator()
+    aggregator = (
+        StreamFedAvgAggregator(chunk_size=chunk_size) if stream else FedAvgAggregator()
+    )
 
     final_params = aggregator.aggregate(create_models())
     print(f"Got final parameters!")

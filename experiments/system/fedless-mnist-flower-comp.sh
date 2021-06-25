@@ -9,6 +9,7 @@ n_clients=100
 clients_per_round=10
 allowed_stragglers=5
 accuracy_threshold=0.99
+max_rounds=100
 
 # shellcheck disable=SC2034
 for curr_repeat in {1..3}; do
@@ -19,6 +20,7 @@ for curr_repeat in {1..3}; do
     --clients "$n_clients" \
     --clients-in-round "$clients_per_round" \
     --stragglers "$allowed_stragglers" \
+    --rounds "$max_rounds" \
     --max-accuracy "$accuracy_threshold" \
     --out "$root_directory/out/fedless-mnist-flower" \
     --tum-proxy
