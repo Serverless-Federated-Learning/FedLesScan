@@ -266,13 +266,19 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             acc = agg_res.global_test_results.metrics.get("accuracy")
         else:
             logger.info(f"Computing test statistics from clients")
-            if not agg_res.test_results:
-                raise ValueError(
-                    f"Clients or aggregator did not return local test results..."
+            if hasattr(self, "evaluate_clients"):
+                n_clients_in_round = len(clients)
+                eval_clients = self.sample_clients(n_clients_in_round, self.clients)
+                logger.info(f"Selected {len(eval_clients)} for evaluation...")
+                metrics = await self.evaluate_clients(round, eval_clients)
+            else:
+                if not agg_res.test_results:
+                    raise ValueError(
+                        f"Clients or aggregator did not return local test results..."
+                    )
+                metrics = self.aggregate_metrics(
+                    metrics=agg_res.test_results, metric_names=["loss", "accuracy"]
                 )
-            metrics = self.aggregate_metrics(
-                metrics=agg_res.test_results, metric_names=["loss", "accuracy"]
-            )
             loss = metrics.get("mean_loss")
             acc = metrics.get("mean_accuracy")
 
@@ -482,7 +488,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         self._evaluator = await self.provider.deploy(self.evaluator_config.params)
 
     async def call_clients(
-        self, round: int, clients: List[ClientConfig]
+        self, round: int, clients: List[ClientConfig], evaluate_only: bool = False
     ) -> Tuple[List[InvocationResult], List[str]]:
         urllib3.disable_warnings()
         tasks = []
@@ -510,6 +516,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                 client_id=client.client_id,
                 database=self.mongodb_config,
                 http_proxies=self.proxies,
+                evaluate_only=evaluate_only,
             )
 
             # function with closure for easier logging
@@ -529,6 +536,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                             "invocation_time": t_start,
                             "function": function.json(),
                             "seconds": dt_call,
+                            "eval": evaluate_only,
                             "round": round,
                         }
                     )
@@ -557,3 +565,13 @@ class FedlessStrategy(ServerlessFlStrategy):
             except ValidationError:
                 errs.append(res)
         return suc, errs
+
+    async def evaluate_clients(self, round: int, clients: List[ClientConfig]) -> Dict:
+        succ, fails = await self.call_clients(round, clients, evaluate_only=True)
+        logger.info(
+            f"{len(succ)} client evaluations returned, {len(fails)} failures... {fails}"
+        )
+        client_metrics = [res.test_metrics for res in succ]
+        return self.aggregate_metrics(
+            metrics=client_metrics, metric_names=["loss", "accuracy"]
+        )

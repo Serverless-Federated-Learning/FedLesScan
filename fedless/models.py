@@ -236,6 +236,7 @@ class InvocationResult(BaseModel):
     session_id: str
     round_id: int
     client_id: str
+    test_metrics: Optional[TestMetrics] = None
 
 
 class MongodbConnectionConfig(BaseSettings):
@@ -381,6 +382,7 @@ class InvokerParams(BaseModel):
     round_id: int
     client_id: str
     database: MongodbConnectionConfig
+    evaluate_only: bool = False
     http_headers: Optional[Dict] = None
     http_proxies: Optional[Dict] = None
 
