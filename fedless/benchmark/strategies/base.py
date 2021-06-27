@@ -263,7 +263,9 @@ class ServerlessFlStrategy(FLStrategy, ABC):
                 n_clients_in_round = len(clients)
                 eval_clients = self.sample_clients(n_clients_in_round, self.clients)
                 logger.info(f"Selected {len(eval_clients)} for evaluation...")
-                metrics = await self.evaluate_clients(round, eval_clients)
+                metrics = await self.evaluate_clients(
+                    agg_res.new_round_id, eval_clients
+                )
             else:
                 if not agg_res.test_results:
                     raise ValueError(
