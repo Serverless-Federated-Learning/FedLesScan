@@ -49,11 +49,12 @@ def main(req: azure.functions.HttpRequest):
         print(e)
         raise AuthenticationError(e) from e
 
-    params = InvokerParams.parse_obj(req.get_json())
+    config = InvokerParams.parse_obj(req.get_json())
 
     return fedless_mongodb_handler(
-        session_id=params.session_id,
-        round_id=params.round_id,
-        client_id=params.client_id,
-        database=params.database,
+        session_id=config.session_id,
+        round_id=config.round_id,
+        client_id=config.client_id,
+        database=config.database,
+        evaluate_only=config.evaluate_only,
     )
