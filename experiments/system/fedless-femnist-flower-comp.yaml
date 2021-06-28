@@ -39,701 +39,503 @@ clients:
   functions:
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-1.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-1.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-2.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-2.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-3.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-3.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-4.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-4.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-5.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-5.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-6.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-6.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-7.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-7.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-8.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-8.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-9.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-9.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-10.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-10.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-11.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-11.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-12.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-12.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-13.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-13.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-14.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-14.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-15.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-15.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-16.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-16.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-17.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-17.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-18.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-18.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-19.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-19.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-20.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-20.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-21.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-21.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-22.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-22.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-23.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-23.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-24.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-24.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-25.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-25.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-26.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-26.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-27.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-27.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-28.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-28.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-29.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-29.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-30.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-30.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-31.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-31.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-32.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-32.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-33.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-33.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-34.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-34.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-35.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-35.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-36.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-36.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-37.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-37.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-38.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-38.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-39.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-39.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-40.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-40.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-41.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-41.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-42.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-42.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-43.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-43.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-44.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-44.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-45.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-45.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-46.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-46.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-47.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-47.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-48.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-48.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-49.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-49.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-50.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-50.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-51.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-51.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-52.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-52.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-53.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-53.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-54.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-54.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-55.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-55.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-56.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-56.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-57.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-57.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-58.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-58.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-59.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-59.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-60.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-60.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-61.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-61.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-62.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-62.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-63.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-63.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-64.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-64.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-65.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-65.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-66.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-66.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-67.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-67.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-68.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-68.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-69.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-69.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-70.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://127.0.0.1:31112/function/client-indep-70.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-71.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.203:31112/function/client-indep-71.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-72.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.203:31112/function/client-indep-72.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-73.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.203:31112/function/client-indep-73.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-74.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.203:31112/function/client-indep-74.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-75.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.203:31112/function/client-indep-75.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-76.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.135:31112/function/client-indep-76.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-77.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.135:31112/function/client-indep-77.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-78.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.135:31112/function/client-indep-78.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-79.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.135:31112/function/client-indep-79.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-80.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.235.135:31112/function/client-indep-80.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-81.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-81.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-82.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-82.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-83.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-83.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-84.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-84.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-85.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-85.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-86.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-86.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-87.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-87.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-88.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-88.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-89.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-89.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-90.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-90.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-91.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-91.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-92.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-92.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-93.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-93.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-94.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-94.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-95.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-95.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-96.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-96.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-97.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-97.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-98.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-98.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-99.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-99.openfaas-fn
+        type: openfaas
     - function:
         params:
-          endpoint: https://localhost:31001/api/v1/web/guest/default/client-indep-100.json
-          self_signed_cert: true
-          token: BrZt9e/O47SzCCJ9Of+I2odcB9RP+Hs5vMGdfGjs
-          type: openwhisk-web
-        type: openwhisk-web
+          type: openfaas
+          url: http://138.246.233.207:31112/function/client-indep-100.openfaas-fn
+        type: openfaas
+
+
