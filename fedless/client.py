@@ -156,7 +156,7 @@ def fedless_mongodb_handler(
             hyperparams=client_params.hyperparams,
             weights_serializer=weights_serializer,
             string_serializer=None,
-            test_data_loader=test_data_loader,
+            test_data_loader=None,
             verbose=verbose,
         )
 
