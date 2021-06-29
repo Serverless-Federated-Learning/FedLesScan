@@ -20,6 +20,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-2:
     lang: python3-http-debian
@@ -38,6 +40,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-3:
     lang: python3-http-debian
@@ -56,6 +60,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-4:
     lang: python3-http-debian
@@ -74,6 +80,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-5:
     lang: python3-http-debian
@@ -92,6 +100,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-6:
     lang: python3-http-debian
@@ -110,6 +120,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-7:
     lang: python3-http-debian
@@ -128,6 +140,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-8:
     lang: python3-http-debian
@@ -146,6 +160,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-9:
     lang: python3-http-debian
@@ -164,6 +180,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-10:
     lang: python3-http-debian
@@ -182,6 +200,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-11:
     lang: python3-http-debian
@@ -200,6 +220,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-12:
     lang: python3-http-debian
@@ -218,6 +240,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-13:
     lang: python3-http-debian
@@ -236,6 +260,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-14:
     lang: python3-http-debian
@@ -254,6 +280,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-15:
     lang: python3-http-debian
@@ -272,6 +300,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-16:
     lang: python3-http-debian
@@ -290,6 +320,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-17:
     lang: python3-http-debian
@@ -308,6 +340,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-18:
     lang: python3-http-debian
@@ -326,6 +360,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-19:
     lang: python3-http-debian
@@ -344,6 +380,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-20:
     lang: python3-http-debian
@@ -362,6 +400,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-21:
     lang: python3-http-debian
@@ -380,6 +420,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-22:
     lang: python3-http-debian
@@ -398,6 +440,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-23:
     lang: python3-http-debian
@@ -416,6 +460,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-24:
     lang: python3-http-debian
@@ -434,6 +480,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-25:
     lang: python3-http-debian
@@ -452,6 +500,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-26:
     lang: python3-http-debian
@@ -470,6 +520,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-27:
     lang: python3-http-debian
@@ -488,6 +540,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-28:
     lang: python3-http-debian
@@ -506,6 +560,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-29:
     lang: python3-http-debian
@@ -524,6 +580,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-30:
     lang: python3-http-debian
@@ -542,6 +600,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-31:
     lang: python3-http-debian
@@ -560,6 +620,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-32:
     lang: python3-http-debian
@@ -578,6 +640,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-33:
     lang: python3-http-debian
@@ -596,6 +660,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-34:
     lang: python3-http-debian
@@ -614,6 +680,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-35:
     lang: python3-http-debian
@@ -632,6 +700,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-36:
     lang: python3-http-debian
@@ -650,6 +720,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-37:
     lang: python3-http-debian
@@ -668,6 +740,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-38:
     lang: python3-http-debian
@@ -686,6 +760,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-39:
     lang: python3-http-debian
@@ -704,6 +780,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-40:
     lang: python3-http-debian
@@ -722,6 +800,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-41:
     lang: python3-http-debian
@@ -740,6 +820,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-42:
     lang: python3-http-debian
@@ -758,6 +840,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-43:
     lang: python3-http-debian
@@ -776,6 +860,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-44:
     lang: python3-http-debian
@@ -794,6 +880,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-45:
     lang: python3-http-debian
@@ -812,6 +900,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-46:
     lang: python3-http-debian
@@ -830,6 +920,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-47:
     lang: python3-http-debian
@@ -848,6 +940,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-48:
     lang: python3-http-debian
@@ -866,6 +960,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-49:
     lang: python3-http-debian
@@ -884,6 +980,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-50:
     lang: python3-http-debian
@@ -902,6 +1000,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-51:
     lang: python3-http-debian
@@ -920,6 +1020,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-52:
     lang: python3-http-debian
@@ -938,6 +1040,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-53:
     lang: python3-http-debian
@@ -956,6 +1060,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-54:
     lang: python3-http-debian
@@ -974,6 +1080,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-55:
     lang: python3-http-debian
@@ -992,6 +1100,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-56:
     lang: python3-http-debian
@@ -1010,6 +1120,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-57:
     lang: python3-http-debian
@@ -1028,6 +1140,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-58:
     lang: python3-http-debian
@@ -1046,6 +1160,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-59:
     lang: python3-http-debian
@@ -1064,6 +1180,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-60:
     lang: python3-http-debian
@@ -1082,6 +1200,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-61:
     lang: python3-http-debian
@@ -1100,6 +1220,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-62:
     lang: python3-http-debian
@@ -1118,6 +1240,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-63:
     lang: python3-http-debian
@@ -1136,6 +1260,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-64:
     lang: python3-http-debian
@@ -1154,6 +1280,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-65:
     lang: python3-http-debian
@@ -1172,6 +1300,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-66:
     lang: python3-http-debian
@@ -1190,6 +1320,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-67:
     lang: python3-http-debian
@@ -1208,6 +1340,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-68:
     lang: python3-http-debian
@@ -1226,6 +1360,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-69:
     lang: python3-http-debian
@@ -1244,6 +1380,8 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/
 
   client-indep-70:
     lang: python3-http-debian
@@ -1262,3 +1400,5 @@ functions:
       read_timeout: 5m
       exec_timeout: 5m
       handler_wait_duration: 2m
+      https_proxy: http://proxy.in.tum.de:8080/
+      http_proxy: http://proxy.in.tum.de:8080/

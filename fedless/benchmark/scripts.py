@@ -174,7 +174,7 @@ def run(
     )
 
     model = create_model(dataset)
-    data_configs = create_data_configs(dataset, clients, proxies=proxies)
+    data_configs = create_data_configs(dataset, clients)  # , proxies=proxies)
 
     clients = store_client_configs(
         session=session,
