@@ -1,3 +1,4 @@
+import concurrent.futures
 from typing import Optional, Tuple, List, Dict
 
 import click
@@ -14,11 +15,65 @@ from fedless.benchmark.fedkeeper import create_mnist_cnn
 # logger = logging.getLogger(__name__)
 
 
+def fit_clients(client_instructions):
+    """Refine parameters concurrently on all selected clients."""
+    with concurrent.futures.ThreadPoolExecutor(100) as executor:
+        futures = [
+            executor.submit(fit_client, c, ins) for c, ins in client_instructions
+        ]
+        concurrent.futures.wait(futures)
+    # Gather results
+    results = []
+    failures: List[BaseException] = []
+    for future in futures:
+        failure = future.exception()
+        if failure is not None:
+            failures.append(failure)
+        else:
+            # Success case
+            result = future.result()
+            results.append(result)
+    return results, failures
+
+
+def fit_client(client: ClientProxy, ins):
+    """Refine parameters on a single client."""
+    fit_res = client.fit(ins)
+    return client, fit_res
+
+
+def evaluate_clients(client_instructions):
+    """Evaluate parameters concurrently on all selected clients."""
+    with concurrent.futures.ThreadPoolExecutor(100) as executor:
+        futures = [
+            executor.submit(evaluate_client, c, ins) for c, ins in client_instructions
+        ]
+        concurrent.futures.wait(futures)
+    # Gather results
+    results: List[Tuple[ClientProxy, EvaluateRes]] = []
+    failures: List[BaseException] = []
+    for future in futures:
+        failure = future.exception()
+        if failure is not None:
+            failures.append(failure)
+        else:
+            # Success case
+            result = future.result()
+            results.append(result)
+    return results, failures
+
+
+def evaluate_client(client: ClientProxy, ins) -> Tuple[ClientProxy, EvaluateRes]:
+    """Evaluate parameters on a single client."""
+    evaluate_res = client.evaluate(ins)
+    return client, evaluate_res
+
+
 def get_eval_fn(model):
     """Return an evaluation function for server-side evaluation."""
 
     # Load data and model here to avoid the overhead of doing it in `evaluate` itself
-    test_set = MNIST(split="test").load().batch(32)
+    test_set = MNIST(split="test").load().batch(10)
 
     # The `evaluate` function will be called after every round
     def evaluate(weights: fl.common.Weights) -> Optional[Tuple[float, Dict]]:
@@ -79,6 +134,9 @@ def run(dataset, min_num_clients, rounds, port):
         min_available_clients=min_num_clients,
         eval_fn=get_eval_fn(create_mnist_cnn()) if dataset.lower() == "mnist" else None,
     )
+    # if dataset.lower() != "mnist":
+    fl.server.server.evaluate_clients = evaluate_clients
+    fl.server.server.fit_clients = fit_clients
     server = fl.server.Server(client_manager=client_manager, strategy=strategy)
 
     # Run server
