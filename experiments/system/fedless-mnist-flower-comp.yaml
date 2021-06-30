@@ -21,13 +21,13 @@ server:
       name: aggregator
       file: /u/home/grafberg/thesis-code/functions/openwhisk/aggregator/main.py
       image: andreasgrafberger/fedless-openwhisk:clients
-      memory: 2024
+      memory: 4096
       timeout: 60000
 
 
 clients:
   hyperparams:
-    epochs: 10
+    epochs: 5
     batch_size: 10
     optimizer:
       class_name: "Adam"
@@ -40,500 +40,502 @@ clients:
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-1
+          url: http://127.0.0.1:31112/function/client-indep-1.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-2
+          url: http://127.0.0.1:31112/function/client-indep-2.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-3
+          url: http://127.0.0.1:31112/function/client-indep-3.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-4
+          url: http://127.0.0.1:31112/function/client-indep-4.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-5
+          url: http://127.0.0.1:31112/function/client-indep-5.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-6
+          url: http://127.0.0.1:31112/function/client-indep-6.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-7
+          url: http://127.0.0.1:31112/function/client-indep-7.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-8
+          url: http://127.0.0.1:31112/function/client-indep-8.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-9
+          url: http://127.0.0.1:31112/function/client-indep-9.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-10
+          url: http://127.0.0.1:31112/function/client-indep-10.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-11
+          url: http://127.0.0.1:31112/function/client-indep-11.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-12
+          url: http://127.0.0.1:31112/function/client-indep-12.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-13
+          url: http://127.0.0.1:31112/function/client-indep-13.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-14
+          url: http://127.0.0.1:31112/function/client-indep-14.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-15
+          url: http://127.0.0.1:31112/function/client-indep-15.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-16
+          url: http://127.0.0.1:31112/function/client-indep-16.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-17
+          url: http://127.0.0.1:31112/function/client-indep-17.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-18
+          url: http://127.0.0.1:31112/function/client-indep-18.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-19
+          url: http://127.0.0.1:31112/function/client-indep-19.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-20
+          url: http://127.0.0.1:31112/function/client-indep-20.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-21
+          url: http://127.0.0.1:31112/function/client-indep-21.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-22
+          url: http://127.0.0.1:31112/function/client-indep-22.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-23
+          url: http://127.0.0.1:31112/function/client-indep-23.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-24
+          url: http://127.0.0.1:31112/function/client-indep-24.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-25
+          url: http://127.0.0.1:31112/function/client-indep-25.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-26
+          url: http://127.0.0.1:31112/function/client-indep-26.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-27
+          url: http://127.0.0.1:31112/function/client-indep-27.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-28
+          url: http://127.0.0.1:31112/function/client-indep-28.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-29
+          url: http://127.0.0.1:31112/function/client-indep-29.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-30
+          url: http://127.0.0.1:31112/function/client-indep-30.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-31
+          url: http://127.0.0.1:31112/function/client-indep-31.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-32
+          url: http://127.0.0.1:31112/function/client-indep-32.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-33
+          url: http://127.0.0.1:31112/function/client-indep-33.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-34
+          url: http://127.0.0.1:31112/function/client-indep-34.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-35
+          url: http://127.0.0.1:31112/function/client-indep-35.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-36
+          url: http://127.0.0.1:31112/function/client-indep-36.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-37
+          url: http://127.0.0.1:31112/function/client-indep-37.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-38
+          url: http://127.0.0.1:31112/function/client-indep-38.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-39
+          url: http://127.0.0.1:31112/function/client-indep-39.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-40
+          url: http://127.0.0.1:31112/function/client-indep-40.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-41
+          url: http://127.0.0.1:31112/function/client-indep-41.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-42
+          url: http://127.0.0.1:31112/function/client-indep-42.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-43
+          url: http://127.0.0.1:31112/function/client-indep-43.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-44
+          url: http://127.0.0.1:31112/function/client-indep-44.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-45
+          url: http://127.0.0.1:31112/function/client-indep-45.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-46
+          url: http://127.0.0.1:31112/function/client-indep-46.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-47
+          url: http://127.0.0.1:31112/function/client-indep-47.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-48
+          url: http://127.0.0.1:31112/function/client-indep-48.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-49
+          url: http://127.0.0.1:31112/function/client-indep-49.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-50
+          url: http://127.0.0.1:31112/function/client-indep-50.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-51
+          url: http://127.0.0.1:31112/function/client-indep-51.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-52
+          url: http://127.0.0.1:31112/function/client-indep-52.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-53
+          url: http://127.0.0.1:31112/function/client-indep-53.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-54
+          url: http://127.0.0.1:31112/function/client-indep-54.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-55
+          url: http://127.0.0.1:31112/function/client-indep-55.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-56
+          url: http://127.0.0.1:31112/function/client-indep-56.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-57
+          url: http://127.0.0.1:31112/function/client-indep-57.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-58
+          url: http://127.0.0.1:31112/function/client-indep-58.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-59
+          url: http://127.0.0.1:31112/function/client-indep-59.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-60
+          url: http://127.0.0.1:31112/function/client-indep-60.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-61
+          url: http://127.0.0.1:31112/function/client-indep-61.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-62
+          url: http://127.0.0.1:31112/function/client-indep-62.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-63
+          url: http://127.0.0.1:31112/function/client-indep-63.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-64
+          url: http://127.0.0.1:31112/function/client-indep-64.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-65
+          url: http://127.0.0.1:31112/function/client-indep-65.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-66
+          url: http://127.0.0.1:31112/function/client-indep-66.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-67
+          url: http://127.0.0.1:31112/function/client-indep-67.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-68
+          url: http://127.0.0.1:31112/function/client-indep-68.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-69
+          url: http://127.0.0.1:31112/function/client-indep-69.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-70
+          url: http://127.0.0.1:31112/function/client-indep-70.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-71
+          url: http://138.246.235.203:31112/function/client-indep-71.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-72
+          url: http://138.246.235.203:31112/function/client-indep-72.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-73
+          url: http://138.246.235.203:31112/function/client-indep-73.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-74
+          url: http://138.246.235.203:31112/function/client-indep-74.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-75
+          url: http://138.246.235.203:31112/function/client-indep-75.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-76
+          url: http://138.246.235.135:31112/function/client-indep-76.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-77
+          url: http://138.246.235.135:31112/function/client-indep-77.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-78
+          url: http://138.246.235.135:31112/function/client-indep-78.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-79
+          url: http://138.246.235.135:31112/function/client-indep-79.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-80
+          url: http://138.246.235.135:31112/function/client-indep-80.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-81
+          url: http://138.246.233.207:31112/function/client-indep-81.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-82
+          url: http://138.246.233.207:31112/function/client-indep-82.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-83
+          url: http://138.246.233.207:31112/function/client-indep-83.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-84
+          url: http://138.246.233.207:31112/function/client-indep-84.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-85
+          url: http://138.246.233.207:31112/function/client-indep-85.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-86
+          url: http://138.246.233.207:31112/function/client-indep-86.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-87
+          url: http://138.246.233.207:31112/function/client-indep-87.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-88
+          url: http://138.246.233.207:31112/function/client-indep-88.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-89
+          url: http://138.246.233.207:31112/function/client-indep-89.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-90
+          url: http://138.246.233.207:31112/function/client-indep-90.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-91
+          url: http://138.246.233.207:31112/function/client-indep-91.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-92
+          url: http://138.246.233.207:31112/function/client-indep-92.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-93
+          url: http://138.246.233.207:31112/function/client-indep-93.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-94
+          url: http://138.246.233.207:31112/function/client-indep-94.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-95
+          url: http://138.246.233.207:31112/function/client-indep-95.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-96
+          url: http://138.246.233.207:31112/function/client-indep-96.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-97
+          url: http://138.246.233.207:31112/function/client-indep-97.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-98
+          url: http://138.246.233.207:31112/function/client-indep-98.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-99
+          url: http://138.246.233.207:31112/function/client-indep-99.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-100
+          url: http://138.246.233.207:31112/function/client-indep-100.openfaas-fn
         type: openfaas
+
+

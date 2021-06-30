@@ -21,13 +21,13 @@ server:
       name: aggregator
       file: /u/home/grafberg/thesis-code/functions/openwhisk/aggregator/main.py
       image: andreasgrafberger/fedless-openwhisk:clients
-      memory: 2024
+      memory: 4096
       timeout: 60000
 
 
 clients:
   hyperparams:
-    epochs: 1
+    epochs: 5
     batch_size: 10
     optimizer:
       class_name: "Adam"
