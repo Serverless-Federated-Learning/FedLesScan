@@ -35,6 +35,7 @@ session_id="$RANDOM"
 
 declare -a ssh_hosts=("invasic" "sk1" "sk2" "lrz-1" "lrz-2" "lrz-4xlarge" "lrz-3")
 for session_id in "$RANDOM" "$RANDOM" "$RANDOM"; do
+  # shellcheck disable=SC2043
   for dataset in "mnist"; do
     for min_num_clients in 100; do # 75 50 25
       for epochs in 5 1; do # 1 10
