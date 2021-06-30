@@ -67,7 +67,6 @@ def fedless_mongodb_handler(
     client_id: str,
     database: MongodbConnectionConfig,
     evaluate_only: bool = False,
-    test_batch_size: int = 32,
 ):
     """
     Basic handler that only requires data and model loader configs plus hyperparams.
@@ -131,7 +130,7 @@ def fedless_mongodb_handler(
             model = model_loader.load()
             cardinality = test_data.cardinality()
 
-            test_data = test_data.batch(test_batch_size)
+            test_data = test_data.batch(client_config.hyperparams.batch_size)
 
             evaluation_result = model.evaluate(test_data, return_dict=True)
             test_metrics = TestMetrics(
