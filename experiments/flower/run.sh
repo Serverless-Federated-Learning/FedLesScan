@@ -19,7 +19,7 @@ port="31532"
 server_address="$server_ip:$port"
 server_cpus="16"    #"4"
 server_memory="32g" # "16g"
-rounds=50
+rounds=100
 min_num_clients=100
 num_clients_total=100
 
