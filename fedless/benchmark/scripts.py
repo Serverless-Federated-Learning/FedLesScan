@@ -133,7 +133,7 @@ FILE_SERVER = "http://138.246.235.163:31715"
 @click.option(
     "--test-batch-size",
     type=int,
-    default=512,
+    default=10,
 )
 def run(
     dataset: str,
