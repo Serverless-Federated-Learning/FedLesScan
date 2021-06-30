@@ -365,27 +365,27 @@ clients:
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-66.openfaas-fn
+          url: http://138.246.235.151:31112/function/client-indep-66.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-67.openfaas-fn
+          url: http://138.246.235.151:31112/function/client-indep-67.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-68.openfaas-fn
+          url: http://138.246.235.151:31112/function/client-indep-68.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-69.openfaas-fn
+          url: http://138.246.235.151:31112/function/client-indep-69.openfaas-fn
         type: openfaas
     - function:
         params:
           type: openfaas
-          url: http://127.0.0.1:31112/function/client-indep-70.openfaas-fn
+          url: http://138.246.235.151:31112/function/client-indep-70.openfaas-fn
         type: openfaas
     - function:
         params:
@@ -537,5 +537,3 @@ clients:
           type: openfaas
           url: http://138.246.233.207:31112/function/client-indep-100.openfaas-fn
         type: openfaas
-
-
