@@ -19,6 +19,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
 
   client-indep-82:
@@ -37,6 +38,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-83:
     lang: python3-http-debian
@@ -54,6 +56,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-84:
     lang: python3-http-debian
@@ -71,6 +74,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-85:
     lang: python3-http-debian
@@ -88,6 +92,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-86:
     lang: python3-http-debian
@@ -105,6 +110,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-87:
     lang: python3-http-debian
@@ -122,6 +128,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-88:
     lang: python3-http-debian
@@ -139,6 +146,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-89:
     lang: python3-http-debian
@@ -156,6 +164,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-90:
     lang: python3-http-debian
@@ -173,6 +182,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-91:
     lang: python3-http-debian
@@ -190,6 +200,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-92:
     lang: python3-http-debian
@@ -207,6 +218,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-93:
     lang: python3-http-debian
@@ -224,6 +236,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-94:
     lang: python3-http-debian
@@ -241,6 +254,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-95:
     lang: python3-http-debian
@@ -258,6 +272,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-96:
     lang: python3-http-debian
@@ -275,6 +290,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-97:
     lang: python3-http-debian
@@ -292,6 +308,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-98:
     lang: python3-http-debian
@@ -309,6 +326,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-99:
     lang: python3-http-debian
@@ -326,6 +344,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
   client-indep-100:
     lang: python3-http-debian
@@ -343,4 +362,5 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m

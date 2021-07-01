@@ -19,6 +19,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -41,6 +42,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -63,6 +65,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -85,6 +88,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -107,6 +111,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -129,6 +134,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -151,6 +157,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -173,6 +180,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -195,6 +203,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -217,6 +226,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -239,6 +249,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -261,6 +272,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -283,6 +295,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -305,6 +318,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -327,6 +341,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -349,6 +364,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -371,6 +387,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -393,6 +410,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -415,6 +433,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -437,6 +456,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -459,6 +479,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -481,6 +502,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -503,6 +525,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -525,6 +548,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -547,6 +571,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -569,6 +594,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -591,6 +617,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -613,6 +640,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -635,6 +663,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -657,6 +686,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -679,6 +709,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -701,6 +732,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -723,6 +755,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -745,6 +778,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -767,6 +801,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -789,6 +824,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -811,6 +847,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -833,6 +870,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -855,6 +893,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -877,6 +916,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -899,6 +939,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -921,6 +962,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -943,6 +985,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -965,6 +1008,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -987,6 +1031,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1009,6 +1054,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1031,6 +1077,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1053,6 +1100,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1075,6 +1123,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1097,6 +1146,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1119,6 +1169,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1141,6 +1192,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1163,6 +1215,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1185,6 +1238,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1207,6 +1261,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1229,6 +1284,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1251,6 +1307,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1273,6 +1330,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1295,6 +1353,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1317,6 +1376,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1339,6 +1399,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1361,6 +1422,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1383,6 +1445,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1405,6 +1468,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
@@ -1427,6 +1491,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
       https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/

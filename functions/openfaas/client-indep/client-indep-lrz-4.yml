@@ -19,6 +19,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
 
   client-indep-67:
@@ -37,6 +38,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
 
   client-indep-68:
@@ -55,6 +57,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
 
   client-indep-69:
@@ -73,6 +76,7 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
 
   client-indep-70:
@@ -91,4 +95,5 @@ functions:
       write_timeout: 5m
       read_timeout: 5m
       exec_timeout: 5m
+      upstream_timeout: 4m55s
       handler_wait_duration: 2m
