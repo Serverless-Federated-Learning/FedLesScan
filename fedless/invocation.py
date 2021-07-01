@@ -402,16 +402,26 @@ def retry_session(
     if prefixes is None:
         prefixes = ["http://", "https://"]
     if status_list is None:
-        status_list = {413, 421, 423, 429, 500, 502, 503, 504}
+        status_list = {
+            413,
+            421,
+            423,
+            429,
+            500,
+            502,
+            503,
+        }  # Optionally include 504 for Gateway Timeout
 
     session = session or requests.Session()
 
     retry = Retry(
-        total=retries,
+        status=retries,
+        other=0,
+        read=0,
+        total=None,
         status_forcelist=status_list,
         method_whitelist=allowed_methods,
         backoff_factor=backoff_factor,
-        read=0,
     )
     adapter = HTTPAdapter(max_retries=retry)
 
