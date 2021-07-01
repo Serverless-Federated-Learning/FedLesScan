@@ -416,7 +416,6 @@ def retry_session(
 
     retry = Retry(
         status=retries,
-        other=0,
         read=0,
         total=None,
         status_forcelist=status_list,
