@@ -59,6 +59,7 @@ def default_aggregation_handler(
     online: bool = False,
     test_data: Optional[DatasetLoaderConfig] = None,
     test_batch_size: int = 512,
+    delete_results_after_finish: bool = True,
 ) -> AggregatorFunctionResult:
     mongo_client = pymongo.MongoClient(
         host=database.host,
@@ -137,11 +138,18 @@ def default_aggregation_handler(
         )
         logger.debug(f"Finished...")
 
+        results_processed = result_dao.count_results_for_round(
+            session_id=session_id, round_id=round_id
+        )
+        if delete_results_after_finish:
+            logger.debug(f"Deleting individual results...")
+            result_dao.delete_results_for_round(
+                session_id=session_id, round_id=round_id
+            )
+
         return AggregatorFunctionResult(
             new_round_id=new_round_id,
-            num_clients=result_dao.count_results_for_round(
-                session_id=session_id, round_id=round_id
-            ),
+            num_clients=results_processed,
             test_results=test_results,
             global_test_results=global_test_metrics,
         )
