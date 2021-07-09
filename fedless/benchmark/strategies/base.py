@@ -154,7 +154,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         session: Optional[Session] = None,
         timeout: float = 300,
     ) -> Dict:
-        session = retry_session(backoff_factor=0.5, retries=5, session=session)
+        # session = retry_session(backoff_factor=0.5, retries=5, session=session)
         return invoke_sync(
             function_config=function, data=data, session=session, timeout=timeout
         )
