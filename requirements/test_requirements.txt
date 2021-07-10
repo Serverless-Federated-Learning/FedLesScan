@@ -7,3 +7,4 @@ httpretty~=1.0.5
 jupyterlab
 memory_profiler~=0.58
 pytest-asyncio
+pymongo-inmemory
