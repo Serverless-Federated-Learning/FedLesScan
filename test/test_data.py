@@ -12,8 +12,8 @@ from fedless.data import (
     DatasetNotLoadedError,
     DatasetFormatError,
     DatasetLoaderBuilder,
-    _clear_cache,
 )
+from fedless.cache import _clear_cache
 from fedless.models import LEAFConfig, DatasetLoaderConfig, LeafDataset
 from .common import resource_folder_path, get_error_function
 

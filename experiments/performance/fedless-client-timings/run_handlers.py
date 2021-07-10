@@ -1,15 +1,20 @@
 import cProfile
 import logging
 import pstats
-
-import click
-import pymongo_inmemory
+import time
 from unittest.mock import patch
 
+import click
+import numpy as np
+import pymongo_inmemory
+
+from fedless.benchmark.fedkeeper import create_mnist_cnn
+from fedless.benchmark.leaf import create_femnist_cnn
+from fedless.cache import _clear_cache
 from fedless.client import fedless_mongodb_handler
+from fedless.data import DatasetLoaderBuilder
 from fedless.models import (
     MongodbConnectionConfig,
-    SerializedModel,
     SerializedParameters,
     WeightsSerializerConfig,
     NpzWeightsSerializerConfig,
@@ -24,11 +29,7 @@ from fedless.models import (
     LeafDataset,
 )
 from fedless.persistence import ParameterDao, ClientConfigDao, ModelDao
-from fedless.benchmark.leaf import create_femnist_cnn
-from fedless.benchmark.fedkeeper import create_mnist_cnn
-from fedless.data import MNIST, DatasetLoaderBuilder
 from fedless.serialization import serialize_model, NpzWeightsSerializer
-
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -48,10 +49,13 @@ def run_handler(mongo_client, session_id, round_id, client_id):
 
 
 @click.command()
-@click.option("--out", type=click.Path(), required=True)
+@click.option("--out", type=str, default="out")
 @click.option("--preload-dataset/--no-preload-dataset", default=True)
-@click.option("--dataset", type=str, required=True)
-def main(out, preload_dataset, dataset):
+@click.option("--dataset", type=str, default="femnist")
+@click.option("--repeats", type=int, default=10)
+@click.option("--batch-size", type=int, default=10)
+@click.option("--epochs", type=int, default=5)
+def main(out, preload_dataset, dataset, repeats, batch_size, epochs):
     mongo_client = pymongo_inmemory.MongoClient()
     session_id = "session-123"
     round_id = 0
@@ -98,7 +102,7 @@ def main(out, preload_dataset, dataset):
             type="gcloud", params=GCloudFunctionConfig(url="https://test.com")
         ),
         data=data,
-        hyperparams=Hyperparams(batch_size=10, epochs=5),
+        hyperparams=Hyperparams(batch_size=batch_size, epochs=epochs),
     )
     config_dao.save(client_config)
 
@@ -106,7 +110,47 @@ def main(out, preload_dataset, dataset):
         DatasetLoaderBuilder.from_config(client_config.data).load()
 
     with patch("fedless.client.pymongo.MongoClient") as mockMongoClient:
+        mongo_client.close = lambda *args, **kwargs: None
         mockMongoClient.return_value = mongo_client
+
+        # Run once so tensorflow functions etc. are already initialized for all
+        run_handler(mongo_client, session_id, round_id, client_id)
+        _clear_cache()
+
+        print(f"Running functions multiple times to collect runtimes")
+        no_cache_durations = []
+        for repeat in range(repeats):
+            _clear_cache()
+            tik = time.time_ns()
+            run_handler(mongo_client, session_id, round_id, client_id)
+            no_cache_durations.append(time.time_ns() - tik)
+
+        print(
+            f"Avg. duration with whole cache deleted {np.average(no_cache_durations) / 10 ** 9}"
+        )
+
+        cache_durations = []
+        for repeat in range(repeats):
+            tik = time.time_ns()
+            run_handler(mongo_client, session_id, round_id, client_id)
+            cache_durations.append(time.time_ns() - tik)
+        print(
+            f"Avg. duration with cache activated {np.average(cache_durations) / 10 ** 9}"
+        )
+
+        no_model_cache_durations = []
+        for repeat in range(repeats):
+            _clear_cache()
+            DatasetLoaderBuilder.from_config(client_config.data).load()
+            tik = time.time_ns()
+            run_handler(mongo_client, session_id, round_id, client_id)
+            no_model_cache_durations.append(time.time_ns() - tik)
+        print(
+            f"Avg. duration with cache only activated for data {np.average(no_model_cache_durations) / 10 ** 9}"
+        )
+
+        print(f"Running profilers...")
+        _clear_cache()
         profiler = cProfile.Profile()
         profiler.enable()
         run_handler(mongo_client, session_id, round_id, client_id)
@@ -116,7 +160,19 @@ def main(out, preload_dataset, dataset):
             .strip_dirs()
             .sort_stats("cumtime")
             .print_callees("client.py:.*(fedless_mongodb_handler)")
-            .dump_stats(out)
+            .dump_stats(f"{out}-cold.prof")
+        )
+
+        profiler = cProfile.Profile()
+        profiler.enable()
+        run_handler(mongo_client, session_id, round_id, client_id)
+        profiler.disable()
+        (
+            pstats.Stats(profiler)
+            .strip_dirs()
+            .sort_stats("cumtime")
+            .print_callees("client.py:.*(fedless_mongodb_handler)")
+            .dump_stats(f"{out}-warm.prof")
         )
 
 
