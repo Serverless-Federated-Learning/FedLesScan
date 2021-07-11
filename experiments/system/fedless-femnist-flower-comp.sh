@@ -4,7 +4,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 root_directory="$(dirname "$(dirname "$script_dir")")"
 
 n_clients=100
-clients_per_round=100
+clients_per_round=25
 allowed_stragglers=10
 accuracy_threshold=0.90
 max_rounds=100

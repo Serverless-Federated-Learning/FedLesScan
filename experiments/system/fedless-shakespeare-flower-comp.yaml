@@ -27,13 +27,13 @@ server:
 
 clients:
   hyperparams:
-    epochs: 5
-    batch_size: 10
+    epochs: 1
+    batch_size: 32
     optimizer:
-      class_name: "Adam"
+      class_name: "SGD"
       config:
-        name: "Adam"
-        learning_rate: 0.001
+        name: "SGD"
+        learning_rate: 0.8
     metrics:
       - accuracy
   functions:

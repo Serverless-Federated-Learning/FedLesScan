@@ -229,6 +229,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         # Invoke clients
         t_clients_start = time.time()
         succs, errors = await self.call_clients(round, clients)
+        for err in errors:
+            print(err)
 
         if len(succs) < (len(clients) - self.allowed_stragglers):
             logger.error(errors)

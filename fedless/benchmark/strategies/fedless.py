@@ -2,6 +2,7 @@ import asyncio
 import logging
 import random
 import time
+import os
 from pathlib import Path
 from typing import List, Optional, Dict, Tuple
 
@@ -89,7 +90,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             session = Session()
             session.headers.update(http_headers)
             session.proxies.update(self.proxies)
-            session = retry_session(backoff_factor=1.0, session=session)
+            #session = retry_session(backoff_factor=1.0, session=session)
             params = InvokerParams(
                 session_id=self.session,
                 round_id=round,
@@ -106,7 +107,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                         await asyncio.sleep(random.uniform(0.0, self.invocation_delay))
                     t_start = time.time()
                     res = await self.invoke_async(
-                        function, data, session=session, timeout=self.client_timeout
+                        function, data, session=session, timeout=self.client_timeout if not evaluate_only else 30.0
                     )
                     dt_call = time.time() - t_start
                     self.client_timings.append(
