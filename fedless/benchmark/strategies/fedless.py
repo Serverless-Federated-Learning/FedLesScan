@@ -44,6 +44,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
         invocation_delay: float = None,
+        evaluation_timeout: float = 30.0,
     ):
         super().__init__(
             provider=provider,
@@ -61,6 +62,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             invocation_delay=invocation_delay,
         )
         self.cognito = cognito
+        self.evaluation_timeout = evaluation_timeout
 
     async def deploy_all_functions(self, *args, **kwargs):
         logger.info(f"Deploying fedless functions...")
@@ -90,7 +92,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             session = Session()
             session.headers.update(http_headers)
             session.proxies.update(self.proxies)
-            #session = retry_session(backoff_factor=1.0, session=session)
+            # session = retry_session(backoff_factor=1.0, session=session)
             params = InvokerParams(
                 session_id=self.session,
                 round_id=round,
@@ -107,7 +109,12 @@ class FedlessStrategy(ServerlessFlStrategy):
                         await asyncio.sleep(random.uniform(0.0, self.invocation_delay))
                     t_start = time.time()
                     res = await self.invoke_async(
-                        function, data, session=session, timeout=self.client_timeout if not evaluate_only else 30.0
+                        function,
+                        data,
+                        session=session,
+                        timeout=self.client_timeout
+                        if not evaluate_only
+                        else self.evaluation_timeout,
                     )
                     dt_call = time.time() - t_start
                     self.client_timings.append(
