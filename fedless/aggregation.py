@@ -238,7 +238,7 @@ def chunks(iterator: Iterator, n) -> Iterator[List]:
 
 
 class StreamFedAvgAggregator(FedAvgAggregator):
-    def __init__(self, chunk_size: int = 10):
+    def __init__(self, chunk_size: int = 25):
         self.chunk_size = chunk_size
 
     def aggregate(
