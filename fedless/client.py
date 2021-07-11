@@ -66,6 +66,7 @@ def fedless_mongodb_handler(
     round_id: int,
     client_id: str,
     database: MongodbConnectionConfig,
+    evaluate_only: bool = False,
 ):
     """
     Basic handler that only requires data and model loader configs plus hyperparams.
@@ -118,13 +119,31 @@ def fedless_mongodb_handler(
             test_data=client_config.test_data,
         )
 
-        data_loader = DatasetLoaderBuilder.from_config(client_params.data)
-        model_loader = ModelLoaderBuilder.from_config(client_params.model)
         test_data_loader = (
             DatasetLoaderBuilder.from_config(client_params.test_data)
             if client_params.test_data
             else None
         )
+        model_loader = ModelLoaderBuilder.from_config(client_params.model)
+        if evaluate_only:
+            test_data = test_data_loader.load()
+            model = model_loader.load()
+            cardinality = test_data.cardinality()
+
+            test_data = test_data.batch(client_config.hyperparams.batch_size)
+
+            evaluation_result = model.evaluate(test_data, return_dict=True)
+            test_metrics = TestMetrics(
+                cardinality=cardinality, metrics=evaluation_result
+            )
+            return InvocationResult(
+                session_id=session_id,
+                round_id=round_id,
+                client_id=client_id,
+                test_metrics=test_metrics,
+            )
+
+        data_loader = DatasetLoaderBuilder.from_config(client_params.data)
         weights_serializer: WeightsSerializer = NpzWeightsSerializer(
             compressed=client_config.compress_model
         )
@@ -136,7 +155,7 @@ def fedless_mongodb_handler(
             hyperparams=client_params.hyperparams,
             weights_serializer=weights_serializer,
             string_serializer=None,
-            test_data_loader=test_data_loader,
+            test_data_loader=None,
             verbose=verbose,
         )
 

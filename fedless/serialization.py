@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import abc
 import base64
 import binascii
@@ -10,6 +11,7 @@ import h5py
 import numpy as np
 import tensorflow as tf
 
+from fedless.cache import cache
 from fedless.models import (
     ModelSerializerConfig,
     WeightsSerializerConfig,
@@ -383,7 +385,7 @@ class SimpleModelLoader(ModelLoader):
         loss: Optional[Union[str, Dict]] = None,
         metrics: Optional[List[str]] = None,
     ):
-        self.parameters = parameters
+        self._parameters = parameters
         self.model = model
         self.compiled = compiled
         self.optimizer = optimizer
@@ -403,13 +405,10 @@ class SimpleModelLoader(ModelLoader):
             metrics=config.metrics,
         )
 
-    def load(self) -> tf.keras.Model:
-        """Reconstruct model from config, deserialize parameters, and optionally compile model"""
+    @cache
+    def _load_except_weights(self) -> tf.keras.Model:
         try:
             model: tf.keras.Model = tf.keras.models.model_from_json(self.model)
-            weights = deserialize_parameters(self.parameters)
-
-            model.set_weights(weights)
 
             # Compile if specified
             if self.compiled:
@@ -433,6 +432,14 @@ class SimpleModelLoader(ModelLoader):
                 "Malformed or otherwise invalid model architecture. "
                 "Check if model config is malformed or shapes of parameters do not match"
             )
+
+    def load(self) -> tf.keras.Model:
+        """Reconstruct model from config, deserialize parameters, and optionally compile model"""
+        try:
+            model = self._load_except_weights()
+            weights = deserialize_parameters(self._parameters)
+            model.set_weights(weights)
+            return model
         except SerializationError as e:
             raise ModelLoadError("Weights could not be deserialized") from e
 

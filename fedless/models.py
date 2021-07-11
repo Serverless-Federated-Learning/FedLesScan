@@ -236,6 +236,7 @@ class InvocationResult(BaseModel):
     session_id: str
     round_id: int
     client_id: str
+    test_metrics: Optional[TestMetrics] = None
 
 
 class MongodbConnectionConfig(BaseSettings):
@@ -381,6 +382,7 @@ class InvokerParams(BaseModel):
     round_id: int
     client_id: str
     database: MongodbConnectionConfig
+    evaluate_only: bool = False
     http_headers: Optional[Dict] = None
     http_proxies: Optional[Dict] = None
 
@@ -402,12 +404,15 @@ class AggregatorFunctionParams(BaseModel):
         type="npz", params=NpzWeightsSerializerConfig(compressed=False)
     )
     online: bool = False
+    test_data: Optional[DatasetLoaderConfig]
+    test_batch_size: int = 512
 
 
 class AggregatorFunctionResult(BaseModel):
     new_round_id: int
     num_clients: int
     test_results: Optional[List[TestMetrics]]
+    global_test_results: Optional[TestMetrics]
 
 
 class EvaluatorParams(BaseModel):
@@ -474,7 +479,6 @@ class GCloudFunctionDeploymentConfig(BaseModel):
 
 
 class FunctionDeploymentConfig(BaseModel):
-
     type: str
     params: Union[OpenwhiskFunctionDeploymentConfig]
 

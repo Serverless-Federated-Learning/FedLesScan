@@ -19,7 +19,8 @@ from fedless.benchmark.models import (
     ExperimentConfig,
     FedkeeperClientsConfig,
 )
-from fedless.benchmark.strategy import FedkeeperStrategy, FedlessStrategy
+from fedless.benchmark.strategies.fedless import FedlessStrategy
+from fedless.benchmark.strategies.fedkeeper import FedkeeperStrategy
 from fedless.models import (
     ClientConfig,
     MongodbConnectionConfig,
@@ -129,6 +130,11 @@ FILE_SERVER = "http://138.246.235.163:31715"
     help="use in.tum.de proxy",
     default=False,
 )
+@click.option(
+    "--test-batch-size",
+    type=int,
+    default=10,
+)
 def run(
     dataset: str,
     config: str,
@@ -144,6 +150,7 @@ def run(
     tum_proxy: bool,
     proxy_in_evaluator: bool,
     aggregate_online: bool,
+    test_batch_size: int,
 ):
     session = str(uuid.uuid4())
     log_dir = Path(out) if out else Path(config).parent
@@ -167,7 +174,7 @@ def run(
     )
 
     model = create_model(dataset)
-    data_configs = create_data_configs(dataset, clients, proxies=proxies)
+    data_configs = create_data_configs(dataset, clients)  # , proxies=proxies)
 
     clients = store_client_configs(
         session=session,
@@ -210,7 +217,10 @@ def run(
                 else None
             ),
             use_separate_invokers=separate_invokers,
-            aggregator_params={"online": aggregate_online},
+            aggregator_params={
+                "online": aggregate_online,
+                "test_batch_size": test_batch_size,
+            },
             save_dir=log_dir,
             proxies=proxies,
         )
@@ -226,7 +236,10 @@ def run(
             allowed_stragglers=stragglers,
             client_timeout=timeout,
             save_dir=log_dir,
-            aggregator_params={"online": aggregate_online},
+            aggregator_params={
+                "online": aggregate_online,
+                "test_batch_size": test_batch_size,
+            },
             global_test_data=(
                 create_mnist_test_config(
                     proxies=(proxies if proxy_in_evaluator else None)

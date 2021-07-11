@@ -237,6 +237,34 @@ class ClientResultDao(MongoDbDao):
                 results_file.close()
 
     @wrap_pymongo_errors
+    def delete_results_for_round(
+        self,
+        session_id: str,
+        round_id: int,
+    ):
+        try:
+            result_dicts = iter(
+                self._collection.find(
+                    filter={
+                        "session_id": session_id,
+                        "round_id": round_id,
+                    },
+                )
+            )
+            for result_dict in result_dicts:
+                if not result_dict or "file_id" not in result_dict:
+                    continue
+                self._gridfs.delete({"_id": result_dict["file_id"]})
+            self._collection.delete_many(
+                filter={
+                    "session_id": session_id,
+                    "round_id": round_id,
+                }
+            )
+        except ConnectionFailure as e:
+            raise StorageConnectionError(e) from e
+
+    @wrap_pymongo_errors
     def count_results_for_round(
         self,
         session_id: str,

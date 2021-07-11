@@ -26,4 +26,5 @@ def main(request):
         round_id=config.round_id,
         client_id=config.client_id,
         database=config.database,
+        evaluate_only=config.evaluate_only,
     )

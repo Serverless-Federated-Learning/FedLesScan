@@ -1,11 +1,13 @@
 import abc
 import logging
+from functools import reduce
 from typing import Iterator, Optional, List, Tuple
 
 import numpy as np
 import pymongo
 import tensorflow as tf
 
+from fedless.data import DatasetLoaderBuilder
 from fedless.models import (
     Parameters,
     ClientResult,
@@ -14,14 +16,22 @@ from fedless.models import (
     AggregatorFunctionResult,
     SerializedParameters,
     TestMetrics,
+    DatasetLoaderConfig,
+    ModelLoaderConfig,
+    SimpleModelLoaderConfig,
+    SerializedModel,
+)
+from fedless.persistence import (
+    ClientResultDao,
+    ParameterDao,
+    PersistenceError,
+    ModelDao,
 )
 from fedless.serialization import (
     deserialize_parameters,
-    Base64StringConverter,
     WeightsSerializerBuilder,
     SerializationError,
 )
-from fedless.persistence import ClientResultDao, ParameterDao, PersistenceError
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +58,9 @@ def default_aggregation_handler(
     database: MongodbConnectionConfig,
     serializer: WeightsSerializerConfig,
     online: bool = False,
+    test_data: Optional[DatasetLoaderConfig] = None,
+    test_batch_size: int = 512,
+    delete_results_after_finish: bool = True,
 ) -> AggregatorFunctionResult:
     mongo_client = pymongo.MongoClient(
         host=database.host,
@@ -85,6 +98,31 @@ def default_aggregation_handler(
         new_parameters, test_results = aggregator.aggregate(previous_results)
         logger.debug(f"Aggregation finished")
 
+        global_test_metrics = None
+        if test_data:
+            logger.debug(f"Evaluating model")
+            model_dao = ModelDao(mongo_client)
+            # Load model and latest weights
+            serialized_model: SerializedModel = model_dao.load(session_id=session_id)
+            test_data = DatasetLoaderBuilder.from_config(test_data).load()
+            cardinality = test_data.cardinality()
+            test_data = test_data.batch(test_batch_size)
+            model: tf.keras.Model = tf.keras.models.model_from_json(
+                serialized_model.model_json
+            )
+            model.set_weights(new_parameters)
+            if not serialized_model.loss or not serialized_model.optimizer:
+                raise AggregationError("If compiled=True, a loss has to be specified")
+            model.compile(
+                optimizer=tf.keras.optimizers.get(serialized_model.optimizer),
+                loss=tf.keras.losses.get(serialized_model.loss),
+                metrics=serialized_model.metrics or [],
+            )
+            evaluation_result = model.evaluate(test_data, return_dict=True)
+            global_test_metrics = TestMetrics(
+                cardinality=cardinality, metrics=evaluation_result
+            )
+
         logger.debug(f"Serializing model")
         serialized_params_str = WeightsSerializerBuilder.from_config(
             serializer
@@ -101,12 +139,20 @@ def default_aggregation_handler(
         )
         logger.debug(f"Finished...")
 
+        results_processed = result_dao.count_results_for_round(
+            session_id=session_id, round_id=round_id
+        )
+        if delete_results_after_finish:
+            logger.debug(f"Deleting individual results...")
+            result_dao.delete_results_for_round(
+                session_id=session_id, round_id=round_id
+            )
+
         return AggregatorFunctionResult(
             new_round_id=new_round_id,
-            num_clients=result_dao.count_results_for_round(
-                session_id=session_id, round_id=round_id
-            ),
+            num_clients=results_processed,
             test_results=test_results,
+            global_test_results=global_test_metrics,
         )
     except (SerializationError, PersistenceError) as e:
         raise AggregationError(e) from e
@@ -126,10 +172,20 @@ class FedAvgAggregator(ParameterAggregator):
     def _aggregate(
         self, parameters: List[List[np.ndarray]], weights: List[float]
     ) -> List[np.ndarray]:
-        return [
-            np.average(params_for_layer, axis=0, weights=weights)
-            for params_for_layer in zip(*parameters)
+        # Partially from https://github.com/adap/flower/blob/
+        # 570788c9a827611230bfa78f624a89a6630555fd/src/py/flwr/server/strategy/aggregate.py#L26
+        num_examples_total = sum(weights)
+        weighted_weights = [
+            [layer * num_examples for layer in weights]
+            for weights, num_examples in zip(parameters, weights)
         ]
+
+        # noinspection PydanticTypeChecker,PyTypeChecker
+        weights_prime: List[np.ndarray] = [
+            reduce(np.add, layer_updates) / num_examples_total
+            for layer_updates in zip(*weighted_weights)
+        ]
+        return weights_prime
 
     def aggregate(
         self,
