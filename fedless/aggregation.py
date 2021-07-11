@@ -1,5 +1,6 @@
 import abc
 import logging
+from functools import reduce
 from typing import Iterator, Optional, List, Tuple
 
 import numpy as np
@@ -171,10 +172,20 @@ class FedAvgAggregator(ParameterAggregator):
     def _aggregate(
         self, parameters: List[List[np.ndarray]], weights: List[float]
     ) -> List[np.ndarray]:
-        return [
-            np.average(params_for_layer, axis=0, weights=weights)
-            for params_for_layer in zip(*parameters)
+        # Partially from https://github.com/adap/flower/blob/
+        # 570788c9a827611230bfa78f624a89a6630555fd/src/py/flwr/server/strategy/aggregate.py#L26
+        num_examples_total = sum(weights)
+        weighted_weights = [
+            [layer * num_examples for layer in weights]
+            for weights, num_examples in zip(parameters, weights)
         ]
+
+        # noinspection PydanticTypeChecker,PyTypeChecker
+        weights_prime: List[np.ndarray] = [
+            reduce(np.add, layer_updates) / num_examples_total
+            for layer_updates in zip(*weighted_weights)
+        ]
+        return weights_prime
 
     def aggregate(
         self,
