@@ -1,16 +1,16 @@
 version: 1.0
 provider:
   name: openfaas
-  gateway: http://138.246.235.151:31112
+  gateway: http://138.246.235.135:31112
 functions:
-  client-indep-66:
+  client-indep-76:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-66
+    image: andreasgrafberger/faas-func-fedless-76
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -22,14 +22,14 @@ functions:
       upstream_timeout: 19m55s
       handler_wait_duration: 2m
 
-  client-indep-67:
+  client-indep-77:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-67
+    image: andreasgrafberger/faas-func-fedless-77
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -41,14 +41,14 @@ functions:
       upstream_timeout: 19m55s
       handler_wait_duration: 2m
 
-  client-indep-68:
+  client-indep-78:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-68
+    image: andreasgrafberger/faas-func-fedless-78
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -60,14 +60,14 @@ functions:
       upstream_timeout: 19m55s
       handler_wait_duration: 2m
 
-  client-indep-69:
+  client-indep-79:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-69
+    image: andreasgrafberger/faas-func-fedless-79
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -79,14 +79,14 @@ functions:
       upstream_timeout: 19m55s
       handler_wait_duration: 2m
 
-  client-indep-70:
+  client-indep-80:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-70
+    image: andreasgrafberger/faas-func-fedless-80
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m

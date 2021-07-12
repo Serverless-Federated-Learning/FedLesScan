@@ -10,7 +10,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -33,7 +33,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -56,7 +56,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -79,7 +79,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -102,7 +102,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -125,7 +125,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -148,7 +148,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -171,7 +171,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -194,7 +194,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -217,7 +217,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -240,7 +240,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -263,7 +263,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -286,7 +286,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -309,7 +309,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -332,7 +332,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -355,7 +355,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -378,7 +378,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -401,7 +401,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -424,7 +424,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -447,7 +447,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -470,7 +470,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -493,7 +493,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -516,7 +516,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -539,7 +539,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -562,7 +562,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -585,7 +585,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -608,7 +608,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -631,7 +631,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -654,7 +654,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -677,7 +677,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -700,7 +700,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -723,7 +723,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -746,7 +746,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -769,7 +769,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -792,7 +792,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -815,7 +815,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -838,7 +838,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -861,7 +861,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -884,7 +884,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -907,7 +907,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -930,7 +930,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -953,7 +953,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -976,7 +976,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -999,7 +999,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1022,7 +1022,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1045,7 +1045,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1068,7 +1068,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1091,7 +1091,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1114,7 +1114,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1137,7 +1137,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1160,7 +1160,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1183,7 +1183,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1206,7 +1206,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1229,7 +1229,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1252,7 +1252,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1275,7 +1275,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1298,7 +1298,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1321,7 +1321,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1344,7 +1344,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1367,7 +1367,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1390,7 +1390,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1413,7 +1413,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1436,7 +1436,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1459,7 +1459,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m
@@ -1482,7 +1482,7 @@ functions:
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
-      cpu: 2000m
+      cpu: 4000m
       memory: 4000Mi
     requests:
       cpu: 300m

@@ -16,10 +16,10 @@ functions:
       cpu: 300m
       memory: 1000Mi
     environment:
-      write_timeout: 5m
-      read_timeout: 5m
-      exec_timeout: 5m
-      upstream_timeout: 4m55s
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
       handler_wait_duration: 2m
 
   client-indep-72:
@@ -35,10 +35,10 @@ functions:
       cpu: 300m
       memory: 1000Mi
     environment:
-      write_timeout: 5m
-      read_timeout: 5m
-      exec_timeout: 5m
-      upstream_timeout: 4m55s
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
       handler_wait_duration: 2m
 
   client-indep-73:
@@ -54,10 +54,10 @@ functions:
       cpu: 300m
       memory: 1000Mi
     environment:
-      write_timeout: 5m
-      read_timeout: 5m
-      exec_timeout: 5m
-      upstream_timeout: 4m55s
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
       handler_wait_duration: 2m
 
   client-indep-74:
@@ -73,10 +73,10 @@ functions:
       cpu: 300m
       memory: 1000Mi
     environment:
-      write_timeout: 5m
-      read_timeout: 5m
-      exec_timeout: 5m
-      upstream_timeout: 4m55s
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
       handler_wait_duration: 2m
 
   client-indep-75:
@@ -92,9 +92,9 @@ functions:
       cpu: 300m
       memory: 1000Mi
     environment:
-      write_timeout: 5m
-      read_timeout: 5m
-      exec_timeout: 5m
-      upstream_timeout: 4m55s
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
       handler_wait_duration: 2m
 
