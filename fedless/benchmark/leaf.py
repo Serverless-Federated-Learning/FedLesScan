@@ -44,7 +44,7 @@ def create_shakespeare_lstm(
     embedding_size: int = 8,
 ):
     model = keras.Sequential()
-    keras.layers.InputLayer(shape=(sequence_length, vocab_size))
+    keras.layers.InputLayer((sequence_length, vocab_size))
     model.add(
         keras.layers.Embedding(
             vocab_size,

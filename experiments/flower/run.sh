@@ -2,7 +2,6 @@
 
 set -e
 
-
 server_ssh_host="lrz-4xlarge"
 server_ip="138.246.233.207"
 port="31532"
@@ -24,9 +23,10 @@ lr=0.001
 session_id="$RANDOM"
 
 # Syntax='ssh-host;clients'
-workers[0]='invasic;33' #workers[0]='invasic;30'
-workers[1]='sk1;16' #workers[1]='sk1;15'
-workers[2]='sk2;16' #workers[2]='sk2;15'
+workers[0]='invasic;30'
+workers[1]='sk1;15'
+workers[2]='sk2;15'
+workers[2]='sksmall;5'
 workers[3]='lrz-1;5'
 workers[4]='lrz-2;5'
 workers[5]='lrz-3;5'
@@ -141,34 +141,17 @@ andreasgrafberger/flower:client \
 
 #run_experiment dataset min_num_clients client_cpus client_memory batch_size epochs optimizer lr rounds session_id
 
-# MNIST
+## MNIST
 run_experiment "mnist" 75 2.0 "8g" 10 5 "Adam" 0.001 100 "$RANDOM"
 run_experiment "mnist" 75 2.0 "8g" 10 5 "Adam" 0.001 100 "$RANDOM"
 run_experiment "mnist" 75 2.0 "8g" 10 5 "Adam" 0.001 100 "$RANDOM"
-
-# Femnist
-run_experiment "mnist" 75 2.0 "8g" 10 5 "Adam" 0.001 100 "$RANDOM"
-run_experiment "mnist" 75 2.0 "8g" 10 5 "Adam" 0.001 100 "$RANDOM"
-run_experiment "mnist" 75 2.0 "8g" 10 5 "Adam" 0.001 100 "$RANDOM"
+#
+## Femnist
+run_experiment "femnist" 75 2.0 "8g" 10 5 "Adam" 0.001 100 "$RANDOM"
+run_experiment "femnist" 75 2.0 "8g" 10 5 "Adam" 0.001 100 "$RANDOM"
+run_experiment "femnist" 75 2.0 "8g" 10 5 "Adam" 0.001 100 "$RANDOM"
 
 # Shakespeare
 run_experiment "shakespeare" 25 4.0 "8g" 32 1 "SGD" 0.8 100 "$RANDOM"
 run_experiment "shakespeare" 25 4.0 "8g" 32 1 "SGD" 0.8 100 "$RANDOM"
 run_experiment "shakespeare" 25 4.0 "8g" 32 1 "SGD" 0.8 100 "$RANDOM"
-
-
-#for session_id in "$RANDOM" "$RANDOM" "$RANDOM"; do
-#  # shellcheck disable=SC2043
-#  for dataset in "mnist"; do
-#    for min_num_clients in 100; do # 75 50 25
-#      for epochs in 5 1; do # 1 10
-#for ssh_host in "${ssh_hosts[@]}"; do
-#  if [ "$ssh_host" != "$server_ssh_host" ]; then
-#    scp "$ssh_host:*_*_*_*.out" "$server_ssh_host:flower-logs"
-#    scp "$ssh_host:*_*_*_*.err" "$server_ssh_host:flower-logs"
-#  fi
-#done
-#      done
-#    done
-#  done
-#done
