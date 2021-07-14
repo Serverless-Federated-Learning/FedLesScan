@@ -156,6 +156,8 @@ def run(
     log_dir = Path(out) if out else Path(config).parent
     log_dir.mkdir(parents=True, exist_ok=True)
     config: ExperimentConfig = parse_yaml_file(config, model=ExperimentConfig)
+    with (log_dir / f"config_{session}.json").open("w+") as f:
+        f.write(config.json())
 
     # Configure proxy if specified
     proxies = (
