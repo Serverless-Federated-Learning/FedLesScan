@@ -5,7 +5,7 @@ serverless_file_content=$(sed -n '/authorizers:/q;p' serverless.yml)
 echo "$serverless_file_content" >serverless.all.yml
 echo "    authorizers:" >>serverless.all.yml
 
-for i in {1..10}; do
+for i in {1..20}; do
   authorizer_block="""
       client-authorizer-$i:
         identitySource: \$request.header.Authorization
@@ -17,14 +17,14 @@ for i in {1..10}; do
 done
 
 echo "functions:" >>serverless.all.yml
-for i in {1..10}; do
+for i in {1..20}; do
 
   function_config_obj="""
   client-functions-$i:
     image: baseimage
     events:
       - httpApi:
-          path: /client-secure-$i
+          path: /client-indep-secure-$i
           method: POST
           integration: lambda-proxy
           #private: true

@@ -24,7 +24,7 @@ for i in {1..5}; do
     --storage-account "$storage_name" \
     --os-type linux
   sleep 5
-  func azure functionapp publish "$app_name"
+  func azure functionapp publish "$app_name" --python
   az functionapp config appsettings set --name "$app_name" \
     --resource-group "$resource_group_name" \
     --settings TF_ENABLE_ONEDNN_OPTS=1 COGNITO_USER_POOL_REGION="$COGNITO_USER_POOL_REGION" COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" COGNITO_INVOKER_CLIENT_ID="$COGNITO_INVOKER_CLIENT_ID" COGNITO_REQUIRED_SCOPE="client-functions/invoke"
