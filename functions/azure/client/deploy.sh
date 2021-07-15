@@ -2,9 +2,9 @@
 set -e
 
 for i in {1..5}; do
-  location="westeurope"
-  resource_group_name="fedless$i"
-  app_name="fedless-client-$i"
+  location="germanywestcentral"
+  resource_group_name="fedlessfl$i"
+  app_name="fedless-fl-client-$i"
   storage_name="storage$resource_group_name"
 
   az group create \
@@ -23,7 +23,7 @@ for i in {1..5}; do
     --name "$app_name" \
     --storage-account "$storage_name" \
     --os-type linux
-  sleep 5
+  sleep 20
   func azure functionapp publish "$app_name" --python
   az functionapp config appsettings set --name "$app_name" \
     --resource-group "$resource_group_name" \

@@ -17,8 +17,9 @@ def read_flower_mnist_log_file(path: Path):
     if len(round_start_lines) > 0:
         first_round_start_time_secs = pd.to_datetime(
             " ".join(round_start_lines[0].split(" ")[2:4])
-        )
+        ).timestamp()
     for l in progress_lines:
+        timestamp = pd.to_datetime(" ".join(l.split(" ")[2:4])).timestamp()
         x = l.split("fit progress: ")[-1]
         round, loss, metrics, time = eval(x)
         # print(first_round_start_time_secs, time - first_round_start_time_secs, time)
@@ -29,7 +30,7 @@ def read_flower_mnist_log_file(path: Path):
                 "metrics": metrics,
                 "accuracy": metrics.get("accuracy"),
                 "time_since_start": time,
-                "time": (time - first_round_start_time_secs)
+                "time": (timestamp - first_round_start_time_secs)
                 if len(entries) == 0
                 else (time - entries[-1]["time_since_start"]),
             }

@@ -10,15 +10,6 @@ from fedless.models import (
 if __name__ == "__main__":
     functions = []
 
-    for i in range(10):
-        config = FunctionInvocationConfig(
-            type="gcloud",
-            params=GCloudFunctionConfig(
-                url=f"https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-{i + 1}"
-            ),
-        )
-        functions.append({"function": config.dict()})
-
     # Azure
     for i in range(5):
         config = FunctionInvocationConfig(
@@ -42,6 +33,7 @@ if __name__ == "__main__":
         )
         functions.append({"function": config.dict()})
 
+    # Lambda
     for i in range(10):
         config = FunctionInvocationConfig(
             type="lambda",
@@ -63,5 +55,15 @@ if __name__ == "__main__":
     #    )
     #    functions.append({"function": config.dict()})
     #
+
+    # Gcloud
+    for i in range(200):
+        config = FunctionInvocationConfig(
+            type="gcloud",
+            params=GCloudFunctionConfig(
+                url=f"https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-{i + 1}"
+            ),
+        )
+        functions.append({"function": config.dict()})
 
     print(yaml.dump(functions))
