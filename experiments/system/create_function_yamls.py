@@ -45,19 +45,18 @@ if __name__ == "__main__":
         functions.append({"function": config.dict()})
 
     # LRZ Openwhisk
-    # for i in range(10):
-    #    config = FunctionInvocationConfig(
-    #        type="openwhisk-web",
-    #        params=OpenwhiskWebActionConfig(
-    #            endpoint=f"https://138.246.233.207:31001/api/v1/web/guest/default/client-{i + 1}.json",
-    #            token="PEETox0e/24aVK6+Xy9KERZMnnnwlHJa620wbk28",
-    #        ),
-    #    )
-    #    functions.append({"function": config.dict()})
-    #
+    for i in range(5):
+        config = FunctionInvocationConfig(
+            type="openwhisk-web",
+            params=OpenwhiskWebActionConfig(
+                endpoint=f"https://138.246.233.207:31001/api/v1/web/guest/default/client-indep-secure-{i+1}.json",
+                token="XCtAsCYFHFxk8xef18nRFVU5cc2Tj+Cmc5PoSOCD",
+            ),
+        )
+        functions.append({"function": config.dict()})
 
     # Gcloud
-    for i in range(200):
+    for i in range(170):
         config = FunctionInvocationConfig(
             type="gcloud",
             params=GCloudFunctionConfig(

@@ -26,7 +26,7 @@ for i in {1..10}; do
   ibmcloud fn action update \
     "client-indep-$i" \
     main.py \
-    --docker andreasgrafberger/fedless-openwhisk \
+    --docker andreasgrafberger/fedless-openwhisk:clients \
     --memory 2048 \
     --timeout 60000
 
