@@ -22,7 +22,7 @@ for curr_repeat in {1..3}; do
 		--stragglers "$allowed_stragglers" \
 		--rounds "$max_rounds" \
 		--max-accuracy "$accuracy_threshold" \
-		--timeout 310 \
+		--timeout 510 \
 		--out "$root_directory/out/fedless-shakespeare-flower-258-$clients_per_round" 
 		#--tum-proxy --aggregate-online
 	sleep 1
