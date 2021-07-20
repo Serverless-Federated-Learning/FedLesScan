@@ -26,11 +26,11 @@ session_id="$RANDOM"
 workers[0]='invasic;30'
 workers[1]='sk1;15'
 workers[2]='sk2;15'
-workers[2]='sksmall;5'
-workers[3]='lrz-1;5'
-workers[4]='lrz-2;5'
-workers[5]='lrz-3;5'
-workers[6]='lrz-4xlarge;20'
+workers[3]='sksmall;5'
+workers[4]='lrz-1;5'
+workers[5]='lrz-2;5'
+workers[6]='lrz-3;5'
+workers[7]='lrz-4xlarge;20'
 
 echo "Update server and client images (build and push)"
 docker build -f server.Dockerfile -t "flower-server" .

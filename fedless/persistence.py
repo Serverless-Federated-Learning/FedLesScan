@@ -254,7 +254,7 @@ class ClientResultDao(MongoDbDao):
             for result_dict in result_dicts:
                 if not result_dict or "file_id" not in result_dict:
                     continue
-                self._gridfs.delete({"_id": result_dict["file_id"]})
+                self._gridfs.delete(file_id=result_dict["file_id"])
             self._collection.delete_many(
                 filter={
                     "session_id": session_id,
