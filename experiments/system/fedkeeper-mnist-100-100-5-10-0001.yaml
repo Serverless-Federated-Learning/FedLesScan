@@ -1,0 +1,898 @@
+database:
+  host: '138.246.233.207'
+
+cluster:
+  apihost: 138.246.233.207:31001
+  auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+
+server:
+  evaluator:
+    type: openwhisk
+    params:
+      name: evaluator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/evaluator/main.py
+      image: andreasgrafberger/fedless-openwhisk:clients
+      memory: 2048
+      timeout: 60000
+
+  invoker:
+    type: openwhisk
+    params:
+      name: invoker
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/invoker/main.py
+      image: andreasgrafberger/fedless-openwhisk:clients
+      memory: 256
+      timeout: 60000
+
+  aggregator:
+    type: openwhisk
+    params:
+      name: aggregator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/aggregator/main.py
+      image: andreasgrafberger/fedless-openwhisk:clients
+      memory: 4096
+      timeout: 60000
+
+
+clients:
+  hyperparams:
+    epochs: 5
+    batch_size: 10
+    optimizer:
+      class_name: "Adam"
+      config:
+        name: "Adam"
+        learning_rate: 0.001
+    metrics:
+      - accuracy
+  functions:
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-1
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-2
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-3
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-4
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-5
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-6
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-7
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-8
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-9
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-10
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-11
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-12
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-13
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-14
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-15
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-16
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-17
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-18
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-19
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-20
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-21
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-22
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-23
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-24
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-25
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-26
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-27
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-28
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-29
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-30
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-31
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-32
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-33
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-34
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-35
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-36
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-37
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-38
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-39
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-40
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-41
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-42
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-43
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-44
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-45
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-46
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-47
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-48
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-49
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-50
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-51
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-52
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-53
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-54
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-55
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-56
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-57
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-58
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-59
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-60
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-61
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-62
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-63
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-64
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-65
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-66
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-67
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-68
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-69
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-70
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-71
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-72
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-73
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-74
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-75
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-76
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-77
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-78
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-79
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-80
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-81
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-82
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-83
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-84
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-85
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-86
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-87
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-88
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-89
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-90
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-91
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-92
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-93
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-94
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-95
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-96
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-97
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-98
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-99
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-100
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-101
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-102
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-103
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-104
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-105
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-106
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-107
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-108
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-109
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-110
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-111
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-112
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-113
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-114
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-115
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-116
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-117
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-118
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-119
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-120
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-121
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-122
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-123
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-124
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-125
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-126
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-127
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-128
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-129
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-130
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-131
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-132
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-133
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-134
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-135
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-136
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-137
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-138
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-139
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-140
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-141
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-142
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-143
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-144
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-145
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-146
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-147
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-148
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-149
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-150
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-151
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-152
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-153
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-154
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-155
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-156
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-157
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-158
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-159
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-160
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-161
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-162
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-163
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-164
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-165
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-166
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-167
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-168
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-169
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-170
+        type: gcloud
