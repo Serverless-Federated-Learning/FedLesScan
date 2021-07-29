@@ -1,0 +1,1090 @@
+database:
+  host: '138.246.233.207'
+
+cluster:
+  apihost: 138.246.233.207:31001
+  auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+
+cognito:
+  user_pool_id: eu-west-1_Ay4jDCguX
+  region_name: eu-west-1
+  auth_endpoint: https://fedless-pool-2.auth.eu-west-1.amazoncognito.com/oauth2/token
+  invoker_client_id: 16q863gk2kggfen78uf5aa2o23
+  invoker_client_secret: fg7bq2dr4p1idovtcspn8ablf76bd3g9nu0d2o11ldl2bnbhqtl
+
+server:
+  evaluator:
+    type: openwhisk
+    params:
+      name: evaluator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/evaluator/main.py
+      image: andreasgrafberger/fedless-openwhisk:clients
+      memory: 2048
+      timeout: 60000
+
+  aggregator:
+    type: openwhisk
+    params:
+      name: aggregator
+      file: /Users/andreas/workspace/thesis-code/functions/openwhisk/aggregator/main.py
+      image: andreasgrafberger/fedless-openwhisk:clients
+      memory: 4096
+      timeout: 60000
+
+
+clients:
+  hyperparams:
+    epochs: 5
+    batch_size: 10
+    optimizer:
+      class_name: "Adam"
+      config:
+        name: "Adam"
+        learning_rate: 0.001
+    metrics:
+      - accuracy
+    local_privacy:
+      l2_norm_clip: 1.0
+      noise_multiplier: 1.0
+      num_microbatches: 0
+  functions:
+    - function:
+        params:
+          trigger_url: https://fedless-client-1.azurewebsites.net/api/client-indep-secure
+          type: azure
+        type: azure
+    - function:
+        params:
+          trigger_url: https://fedless-client-2.azurewebsites.net/api/client-indep-secure
+          type: azure
+        type: azure
+    - function:
+        params:
+          trigger_url: https://fedless-client-3.azurewebsites.net/api/client-indep-secure
+          type: azure
+        type: azure
+    - function:
+        params:
+          trigger_url: https://fedless-client-4.azurewebsites.net/api/client-indep-secure
+          type: azure
+        type: azure
+    - function:
+        params:
+          trigger_url: https://fedless-client-5.azurewebsites.net/api/client-indep-secure
+          type: azure
+        type: azure
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-1.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-2.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-3.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-4.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-5.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-6.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-7.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-8.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-9.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://eu-de.functions.cloud.ibm.com/api/v1/web/09b13c7b-7fcf-455e-b974-3b2348dc0152/default/client-indep-secure-10.json
+          self_signed_cert: false
+          token: vxA/+lrxBi2CUmdpmrdPKgz8VT49vqY8aSnK33fW
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-1
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-2
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-3
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-4
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-5
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-6
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-7
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-8
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-9
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          api_key: null
+          apigateway: https://6ptskoqcbf.execute-api.eu-central-1.amazonaws.com/client-indep-secure-10
+          type: lambda
+        type: lambda
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-indep-secure-1.json
+          self_signed_cert: true
+          token: XCtAsCYFHFxk8xef18nRFVU5cc2Tj+Cmc5PoSOCD
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-indep-secure-2.json
+          self_signed_cert: true
+          token: XCtAsCYFHFxk8xef18nRFVU5cc2Tj+Cmc5PoSOCD
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-indep-secure-3.json
+          self_signed_cert: true
+          token: XCtAsCYFHFxk8xef18nRFVU5cc2Tj+Cmc5PoSOCD
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-indep-secure-4.json
+          self_signed_cert: true
+          token: XCtAsCYFHFxk8xef18nRFVU5cc2Tj+Cmc5PoSOCD
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          endpoint: https://138.246.233.207:31001/api/v1/web/guest/default/client-indep-secure-5.json
+          self_signed_cert: true
+          token: XCtAsCYFHFxk8xef18nRFVU5cc2Tj+Cmc5PoSOCD
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-1
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-2
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-3
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-4
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-5
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-6
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-7
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-8
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-9
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-10
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-11
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-12
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-13
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-14
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-15
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-16
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-17
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-18
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-19
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-20
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-21
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-22
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-23
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-24
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-25
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-26
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-27
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-28
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-29
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-30
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-31
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-32
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-33
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-34
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-35
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-36
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-37
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-38
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-39
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-40
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-41
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-42
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-43
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-44
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-45
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-46
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-47
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-48
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-49
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-50
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-51
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-52
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-53
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-54
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-55
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-56
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-57
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-58
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-59
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-60
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-61
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-62
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-63
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-64
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-65
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-66
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-67
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-68
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-69
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-70
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-71
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-72
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-73
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-74
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-75
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-76
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-77
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-78
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-79
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-80
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-81
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-82
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-83
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-84
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-85
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-86
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-87
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-88
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-89
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-90
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-91
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-92
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-93
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-94
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-95
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-96
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-97
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-98
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-99
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-100
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-101
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-102
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-103
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-104
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-105
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-106
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-107
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-108
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-109
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-110
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-111
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-112
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-113
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-114
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-115
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-116
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-117
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-118
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-119
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-120
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-121
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-122
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-123
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-124
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-125
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-126
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-127
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-128
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-129
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-130
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-131
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-132
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-133
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-134
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-135
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-136
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-137
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-138
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-139
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-140
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-141
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-142
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-143
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-144
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-145
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-146
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-147
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-148
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-149
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-150
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-151
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-152
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-153
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-154
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-155
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-156
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-157
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-158
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-159
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-160
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-161
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-162
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-163
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-164
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-165
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-166
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-167
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-168
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-169
+        type: gcloud
+    - function:
+        params:
+          type: gcloud
+          url: https://europe-west3-federatedlearning-319719.cloudfunctions.net/http-indep-secure-170
+        type: gcloud
