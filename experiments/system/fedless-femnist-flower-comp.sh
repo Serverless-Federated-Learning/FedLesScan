@@ -11,6 +11,7 @@ max_rounds=100
 
 # shellcheck disable=SC2034
 for curr_repeat in {1..3}; do
+	# shellcheck disable=SC2043
 	for clients_per_round in 75; do
 		python3 -m fedless.benchmark.scripts \
 			-d "femnist" \

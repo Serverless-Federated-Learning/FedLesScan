@@ -135,6 +135,11 @@ FILE_SERVER = "http://138.246.235.163:31715"
     type=int,
     default=10,
 )
+@click.option(
+    "--invocation-delay",
+    type=float,
+    default=None,
+)
 def run(
     dataset: str,
     config: str,
@@ -151,6 +156,7 @@ def run(
     proxy_in_evaluator: bool,
     aggregate_online: bool,
     test_batch_size: int,
+    invocation_delay: float,
 ):
     session = str(uuid.uuid4())
     log_dir = Path(out) if out else Path(config).parent
@@ -225,6 +231,7 @@ def run(
             },
             save_dir=log_dir,
             proxies=proxies,
+            invocation_delay=invocation_delay,
         )
     elif strategy == "fedless":
         strategy = FedlessStrategy(
