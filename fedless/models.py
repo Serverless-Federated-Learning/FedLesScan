@@ -67,7 +67,6 @@ class TestMetrics(BaseModel):
     cardinality: int = Field(
         description="tf.data.INFINITE_CARDINALITY if the dataset contains an infinite number of elements or "
         "tf.data.UNKNOWN_CARDINALITY if the analysis fails to determine the number of elements in the dataset "
-        "(e.g. when the dataset source is a file). "
         "Source: https://www.tensorflow.org/api_docs/python/tf/data/Dataset#cardinality"
     )
     metrics: Dict = Field(description="Dictionary mapping from metric name to value")
@@ -241,7 +240,7 @@ class InvocationResult(BaseModel):
 
 class MongodbConnectionConfig(BaseSettings):
     """
-    Data class holding info to connection to a MongoDB server.
+    Data class holding connection info for a MongoDB instance
     Automatically tries to fill in missing values from environment variables
     """
 
