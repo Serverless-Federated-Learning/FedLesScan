@@ -139,10 +139,10 @@ def read_flower_mnist_log_file(path: Path):
                 "loss": loss,
                 "metrics": metrics,
                 "accuracy": metrics.get("accuracy"),
-                "time_since_start": time,
+                "time-total": time,
                 "time": (timestamp - first_round_start_time_secs)
                 if len(entries) == 0
-                else (time - entries[-1]["time_since_start"]),
+                else (time - entries[-1]["time-total"]),
             }
         )
     times_agg_eval = []
@@ -158,14 +158,14 @@ def read_flower_mnist_log_file(path: Path):
             times_agg_eval.append((t_end - t_start).total_seconds())
     # "time_agg_eval": time_agg_eval,
     df = pd.DataFrame.from_records(entries)
-    df["time_agg_eval"] = times_agg_eval
+    df["time-aggregation"] = times_agg_eval
     new_dtypes = {
         "time": float,
         "loss": float,
         "accuracy": float,
-        "time_since_start": float,
+        "time-total": float,
         "round": int,
-        "time_agg_eval": float,
+        "time-aggregation": float,
     }
     if not df.empty:
         df = df.astype(new_dtypes)
@@ -226,10 +226,10 @@ def read_flower_leaf_log_file(f_err: Path, f_out: Path):
         timing_entries.append(
             {
                 "time": total_time,
-                "time_eval": (t_eval_end - t_eval_start).total_seconds(),
-                "time_agg_eval": (t_eval_end - t_fit_end).total_seconds(),
-                "time_clients_fit": (t_fit_end - t_fit_start).total_seconds(),
-                "time_since_start": (t_eval_end - t_start_training).total_seconds(),
+                "time-eval": (t_eval_end - t_eval_start).total_seconds(),
+                "time-aggregation": (t_eval_end - t_fit_end).total_seconds(),
+                "time-clients": (t_fit_end - t_fit_start).total_seconds(),
+                "time-total": (t_eval_end - t_start_training).total_seconds(),
             }
         )
         # total_seconds
@@ -254,7 +254,7 @@ def process_flower_logs(root: Union[str, Path]):
                 local_epochs,
                 seed,
             ) = f.name.split("_")
-            batch_size = 5
+            batch_size = 10
         elif (len(f.name.split("_"))) == 7:  # Local Client Log
             (
                 _,
