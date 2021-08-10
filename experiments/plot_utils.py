@@ -1,3 +1,5 @@
+import glob
+import json
 import re
 from pathlib import Path
 from typing import Dict, Union
@@ -279,10 +281,10 @@ def process_flower_logs(root: Union[str, Path]):
             * len(logs_df),
             names=[
                 "dataset",
-                "clients_in_round",
-                "clients_total",
-                "local_epochs",
-                "batch_size",
+                "clients-round",
+                "clients-total",
+                "local-epochs",
+                "batch-size",
                 "seed",
             ],
         )
@@ -296,3 +298,125 @@ def process_flower_logs(root: Union[str, Path]):
             df.index = df.index.set_levels(df.index.levels[i].astype(int), level=i)
         dfs.append(df)
     return pd.concat(dfs).sort_index()
+
+
+def read_fedless_logs(glob_pattern, ignore_dp: bool = True):
+    timing_dfs = []
+    client_timing_dfs = []
+    for folder in glob.glob(glob_pattern):
+        folder = Path(folder)
+        try:
+            tokens = folder.name.split("-")
+            if "dp" in tokens:
+                if ignore_dp:
+                    print(f"Ignoring experiment folder {folder} because ignore_dp=True")
+                    continue
+                tokens = [t for t in tokens if t != "dp"]
+            strategy = tokens[0]
+            dataset = tokens[1]
+            clients_total = int(tokens[2])
+            clients_in_round = int(tokens[3])
+            local_epochs = int(tokens[4])
+            batch_size = int(tokens[5])
+            lr = int(tokens[6])
+        except ValueError as e:
+            print(e)
+            print(f"Error loading {folder}")
+            continue
+        for timing_file in folder.glob("timing*.csv"):
+            seed = timing_file.name.split("_")[1].split(".")[0]
+            df = pd.read_csv(timing_file)
+            index = pd.MultiIndex.from_tuples(
+                [
+                    (
+                        dataset,
+                        clients_in_round,
+                        clients_total,
+                        local_epochs,
+                        batch_size,
+                        lr,
+                        seed,
+                    )
+                ]
+                * len(df),
+                names=[
+                    "dataset",
+                    "clients-round",
+                    "clients-total",
+                    "local-epochs",
+                    "batch-size",
+                    "lr",
+                    "seed",
+                ],
+            )
+            df = pd.DataFrame(df.values, index=index, columns=df.columns)
+            df.rename(
+                columns={
+                    "round_id": "round",
+                    "global_test_accuracy": "accuracy",
+                    "global_test_loss": "loss",
+                    "round_seconds": "time",
+                    "clients_finished_seconds": "time-clients",
+                    "aggregator_seconds": "time-aggregation",
+                    "num_clients_round": "clients",
+                },
+                inplace=True,
+            )
+            new_dtypes = {
+                "session_id": str,
+                "round": int,
+                "accuracy": float,
+                "loss": float,
+                "time": float,
+                "time-clients": float,
+                "time-aggregation": float,
+                "clients": int,
+            }
+            if not df.empty:
+                df = df.astype(new_dtypes)
+            timing_dfs.append(df)
+        for client_file in folder.glob("clients*.csv"):
+            seed = client_file.name.split("_")[1].split(".")[0]
+            df = pd.read_csv(client_file)
+            index = pd.MultiIndex.from_tuples(
+                [
+                    (
+                        dataset,
+                        int(clients_in_round),
+                        int(clients_total),
+                        int(local_epochs),
+                        int(batch_size),
+                        lr,
+                        seed,
+                    )
+                ]
+                * len(df),
+                names=[
+                    "dataset",
+                    "clients-round",
+                    "clients-total",
+                    "local-epochs",
+                    "batch-size",
+                    "lr",
+                    "seed",
+                ],
+            )
+            df = pd.DataFrame(df.values, index=index, columns=df.columns)
+            new_dtypes = {"seconds": float, "round": int}
+            if not df.empty:
+                df = df.astype(new_dtypes)
+            client_timing_dfs.append(df)
+
+    timing_df = pd.concat(timing_dfs).sort_index()
+    client_df = pd.concat(client_timing_dfs).sort_index()
+
+    # Add column with FaaS platform name
+    client_df["state"] = client_df["round"].map(lambda r: "cold" if (r < 1) else "warm")
+    client_df["function"] = client_df["function"].map(lambda x: json.loads(x))
+    client_df["platform"] = client_df["function"].map(
+        lambda x: x["type"]
+        if x["type"] != "openwhisk-web"
+        else ("ibm" if "ibm" in x["params"]["endpoint"] else "lrz")
+    )
+
+    return timing_df, client_df
