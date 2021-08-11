@@ -300,7 +300,7 @@ def process_flower_logs(root: Union[str, Path]):
     return pd.concat(dfs).sort_index()
 
 
-def read_fedless_logs(glob_pattern, ignore_dp: bool = True):
+def read_fedless_logs(glob_pattern, ignore_dp: bool = True, ignore_flower: bool = True):
     timing_dfs = []
     client_timing_dfs = []
     for folder in glob.glob(glob_pattern):
@@ -312,6 +312,13 @@ def read_fedless_logs(glob_pattern, ignore_dp: bool = True):
                     print(f"Ignoring experiment folder {folder} because ignore_dp=True")
                     continue
                 tokens = [t for t in tokens if t != "dp"]
+            if "flower" in tokens:
+                if ignore_flower:
+                    print(
+                        f"Ignoring experiment folder {folder} because ignore_flower=True"
+                    )
+                    continue
+                tokens = [t for t in tokens if t != "flower"]
             strategy = tokens[0]
             dataset = tokens[1]
             clients_total = int(tokens[2])
