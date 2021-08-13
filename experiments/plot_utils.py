@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from tensorflow_privacy import get_privacy_spent
 
 GCLOUD_FUNCTION_TIERS = [
     (128, 0.2, 0.000000231),
@@ -429,5 +430,173 @@ def read_fedless_logs(glob_pattern, ignore_dp: bool = True, ignore_flower: bool 
     return timing_df, client_df
 
 
-def read_privacy_simulation_results(result_dir):
-    pass
+def read_privacy_simulation_results(result_dir: Path):
+    parameters = [
+        "devices",
+        "epochs",
+        "local-epochs",
+        "local-batch-size",
+        "clients-round",
+        "l2-norm",
+        "noise-multiplier",
+        "ldp",
+        "microbatches",
+        "time-start",
+    ]
+
+    dfs = []
+    for f in result_dir.glob("results_100_*_5_16_25_*.csv"):
+
+        parameter_values = f.stem.lstrip("results_").split("_")
+        (
+            devices,
+            epochs,
+            local_epochs,
+            local_batch_size,
+            clients_round,
+            l2_norm,
+            noise_multiplier,
+            ldp,
+            microbatches,
+            time_start,
+        ) = parameter_values
+
+        assert len(parameter_values) == len(parameters)
+
+        df = pd.read_csv(f)
+        index = pd.MultiIndex.from_tuples(
+            [
+                (
+                    local_batch_size,
+                    l2_norm,
+                    noise_multiplier,
+                    ldp,
+                    microbatches,
+                    time_start,
+                )
+            ]
+            * len(df),
+            names=[
+                "local-batch-size",
+                "l2-norm",
+                "noise-multiplier",
+                "ldp",
+                "microbatches",
+                "time-start",
+            ],
+        )
+        df = pd.DataFrame(df.values, index=index, columns=df.columns)
+        df = df.reset_index()
+        df["ldp"] = df["ldp"].apply(eval)
+        df = df.rename(
+            columns={
+                "local_epochs": "local-epochs",
+                "clients_per_round": "clients-round",
+                "clients_call_duration": "time-clients",
+                "clients_histories": "clients-histories",
+                "privacy_params": "privacy-params",
+                "privacy_guarantees": "privacy-guarantees",
+                "test_loss": "loss",
+                "test_accuracy": "accuracy",
+            }
+        )
+        new_dtypes = {
+            "devices": int,
+            "epochs": int,
+            "local-epochs": int,
+            "local-batch-size": int,
+            "clients-round": int,
+            "l2-norm": float,
+            "noise-multiplier": float,
+            "ldp": bool,
+            "microbatches": int,
+            "time-start": str,
+            "time-clients": float,
+            "accuracy": float,
+            "loss": float,
+        }
+        if not df.empty:
+            df = df.astype(new_dtypes)
+        df[df["microbatches"] == 0]["microbatches"] = "16"
+        df = df.set_index(
+            ["local-batch-size", "ldp", "microbatches", "time-start", "epoch"]
+        )
+        # "l2-norm", "noise-multiplier",
+        dfs.append(df)
+
+    df = pd.concat(dfs).sort_index()
+
+    # Extract and format privacy parameters
+    df["privacy-params"] = df[["l2-norm", "noise-multiplier"]].apply(
+        lambda x: f'{x["l2-norm"]}, {x["noise-multiplier"]}'
+        if all(x.notnull())
+        else None,
+        axis=1,
+    )
+    priv_guarant_deser = (
+        df["privacy-guarantees"].map(lambda x: x.replace("'", "")).map(json.loads)
+    )
+    priv_guarant_deser_dict = priv_guarant_deser.map(lambda x: x[0] if x else None)
+    df["eps-round-clients"] = priv_guarant_deser_dict.map(
+        lambda x: x["eps"] if x and "eps" in x else None
+    )
+    df["delta-round-clients"] = priv_guarant_deser_dict.map(
+        lambda x: x["delta"] if x and "eps" in x else None
+    )
+    df["eps-delta-round-client"] = df[
+        ["eps-round-clients", "delta-round-clients"]
+    ].apply(
+        lambda x: f'({x["eps-round-clients"]}, {x["delta-round-clients"]})'
+        if all(x.notnull())
+        else None,
+        axis=1,
+    )
+
+    # RDP Accountant
+    client_pick_prob = df["clients-round"] / df["devices"]
+    df["rdp-round-clients"] = priv_guarant_deser_dict.map(
+        lambda x: x["rdp"] if x and "rdp" in x else None
+    ).apply(np.asarray)
+    df["orders-round-clients"] = priv_guarant_deser_dict.map(
+        lambda x: x["orders"] if x and "orders" in x else None
+    ).apply(np.asarray)
+    df["rdp-cumsum"] = df.groupby("time-start")["rdp-round-clients"].transform(
+        pd.Series.cumsum
+    )
+    df["cum-privacy"] = df[
+        ["orders-round-clients", "rdp-cumsum", "delta-round-clients"]
+    ].apply(
+        lambda row: get_privacy_spent(row[0], row[1], target_delta=row[2])
+        if all(row.notnull())
+        else None,
+        axis=1,
+    )
+    df["cum-eps"] = df["cum-privacy"].apply(lambda x: x[0] if x else None)
+    df["cum-eps-div"] = df["cum-eps"] * client_pick_prob
+
+    # Naive Accounting
+    df["cum-eps-naive"] = df.groupby("time-start")["eps-round-clients"].transform(
+        pd.Series.cumsum
+    )
+    df["cum-eps-naive-div"] = df["cum-eps-naive"] * client_pick_prob
+    df["delta-round-clients-cumsum"] = df.groupby("time-start")[
+        "delta-round-clients"
+    ].transform(pd.Series.cumsum)
+    df["delta-round-clients-cumsum-div"] = (
+        df["delta-round-clients-cumsum"] * client_pick_prob
+    )
+    #    dfp["eps_round_"] = dfp["privacy_guarantees"].map(lambda client_results: np.array(client_results[0]["eps"]))
+    #    dfp["eps_naive_cumsum"] = dfp["eps_round_"].cumsum()
+    #    dfp["delta_naive_cumsum"] = dfp["delta"].cumsum()
+    #    dfp["eps_naive_cumsum_div"] = dfp["eps_naive_cumsum"] * client_pick_prob
+    #    dfp["delta_naive_cumsum_div"] = dfp["delta_naive_cumsum"] * client_pick_prob
+    #    privacy_dfs.append(df)
+    #    privacy_params.append(params)
+    # except KeyError:
+    #    pass
+
+    return (
+        df.reset_index()
+        .set_index(["ldp", "microbatches", "l2-norm", "noise-multiplier"])
+        .sort_index()
+    )
