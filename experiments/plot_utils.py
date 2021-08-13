@@ -427,3 +427,7 @@ def read_fedless_logs(glob_pattern, ignore_dp: bool = True, ignore_flower: bool 
     )
 
     return timing_df, client_df
+
+
+def read_privacy_simulation_results(result_dir):
+    pass
