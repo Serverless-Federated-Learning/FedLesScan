@@ -1,5 +1,5 @@
 pydantic==1.8
-tensorflow==2.5
+tensorflow>=2.5.1
 numpy==1.19.5
 requests>=2.25,<2.30
 twine==3.3.0
