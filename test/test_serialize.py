@@ -5,8 +5,11 @@ from typing import Tuple, Dict
 from unittest.mock import patch, MagicMock
 
 import h5py
+import keras
 import pydantic
 from _pytest.monkeypatch import MonkeyPatch
+from keras import layers
+from keras.utils.losses_utils import ReductionV2
 from pydantic import ValidationError
 
 from fedless.models import (
@@ -17,6 +20,8 @@ from fedless.models import (
     ModelLoaderConfig,
     PayloadModelLoaderConfig,
     ModelSerializerConfig,
+    BinaryStringFormat,
+    SerializedModel,
 )
 from fedless.serialization import (
     H5FullModelSerializer,
@@ -29,6 +34,7 @@ from fedless.serialization import (
     ModelLoadError,
     SerializationError,
     SimpleModelLoader,
+    serialize_model,
 )
 from .common import (
     get_error_function,
@@ -275,8 +281,23 @@ def test_deserialize_parameters_correct():
         serializer=WeightsSerializerConfig(
             type="npz", params=NpzWeightsSerializerConfig(compressed=True)
         ),
+        string_format=BinaryStringFormat.BASE64,
     )
 
+    parameters = deserialize_parameters(params_serialized)
+    assert are_weights_equal(parameters, weights)
+
+
+def test_deserialize_parameters_works_without_string_format_by_default():
+    weights = [np.random.rand(10, 10, 15), np.random.rand(99, 4, 3)]
+    serializer = NpzWeightsSerializer()
+    blob_bytes = serializer.serialize(weights)
+    params_serialized = SerializedParameters(
+        blob=blob_bytes,
+        serializer=WeightsSerializerConfig(
+            type="npz", params=NpzWeightsSerializerConfig()
+        ),
+    )
     parameters = deserialize_parameters(params_serialized)
     assert are_weights_equal(parameters, weights)
 
@@ -415,6 +436,26 @@ def test_payload_model_loader_works_correctly(
     assert model == simple_model
 
 
+@patch("fedless.serialization.ModelSerializerBuilder")
+def test_payload_model_loader_works_for_raw_bytes(
+    serializer_builder_mock, simple_model
+):
+    serializer_stub = MagicMock(SerializerStub())
+    serializer_stub.deserialize.return_value = simple_model
+    serializer_builder_mock.from_config.return_value = serializer_stub
+
+    loader = PayloadModelLoader.from_config(
+        PayloadModelLoaderConfig(
+            payload=b"abc-test", serializer=ModelSerializerConfig(type="h5")
+        )
+    )
+
+    model: tf.keras.Model = loader.load()
+
+    serializer_stub.deserialize.assert_called_with(b"abc-test")
+    assert model == simple_model
+
+
 @patch("fedless.serialization.Base64StringConverter")
 @patch("fedless.serialization.ModelSerializerBuilder")
 def test_payload_model_loader_throws_model_error_when_serializer_fails(
@@ -508,3 +549,32 @@ def test_simple_model_loader_throws_correct_errors(
             model=simple_model.to_json(),
             compiled=False,
         ).load()
+
+
+def test_serialize_model_throws_error():
+    model = tf.keras.Sequential(
+        [
+            tf.keras.layers.Dense(5, input_shape=(3,)),
+            tf.keras.layers.Dense(4, activation="relu"),
+            tf.keras.layers.Softmax(),
+        ]
+    )
+    with pytest.raises(SerializationError):
+        serialize_model(model)
+
+
+def test_serialize_model():
+    model = tf.keras.Sequential(
+        [
+            tf.keras.layers.Dense(5, input_shape=(3,)),
+            tf.keras.layers.Dense(4, activation="relu"),
+            tf.keras.layers.Softmax(),
+        ]
+    )
+    opt = tf.keras.optimizers.Adam(lr=0.2)
+    loss = tf.keras.losses.SparseCategoricalCrossentropy(reduction=ReductionV2.NONE)
+    model.compile(loss=loss, optimizer=opt, metrics=["Accuracy"])
+    result = serialize_model(model)
+    assert result.model_json == model.to_json()
+    assert tf.keras.optimizers.get(result.optimizer).lr == 0.2
+    assert tf.keras.losses.get(result.loss).reduction == ReductionV2.NONE

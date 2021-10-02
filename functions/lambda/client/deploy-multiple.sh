@@ -5,7 +5,7 @@ serverless_file_content=$(sed -n '/functions:/q;p' serverless.yml)
 echo "$serverless_file_content" > serverless.all.yml
 echo "functions:" >> serverless.all.yml
 
-for i in {1..50}; do
+for i in {1..20}; do
 
   function_config_obj="""
   client-function-$i:

@@ -1,9 +1,11 @@
 import os
 import time
-from collections import defaultdict
-from typing import Iterator, Tuple
 
-import pandas as pd
+import numpy as np
+from keras.losses import sparse_categorical_crossentropy
+from tensorflow_privacy.privacy.membership_inference_attack.data_structures import (
+    AttackType,
+)
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Disable tensorflow logs
 
@@ -11,6 +13,7 @@ from multiprocessing import Pool, set_start_method
 import random
 
 import click
+import pandas as pd
 
 from fedless.data import DatasetLoaderBuilder
 from fedless.aggregation import FedAvgAggregator
@@ -30,8 +33,6 @@ from fedless.models import (
     WeightsSerializerConfig,
     NpzWeightsSerializerConfig,
     LocalDifferentialPrivacyParams,
-    ClientResult,
-    LocalPrivacyGuarantees,
 )
 from fedless.serialization import (
     serialize_model,
@@ -40,37 +41,55 @@ from fedless.serialization import (
 )
 
 
-class NaiveAccounter:
-    def __init__(self):
-        self._client_guarantees = defaultdict(list)
-        self._current_guarantees = dict()
+def simulate_mia(train, test, model):
+    from tensorflow_privacy.privacy.membership_inference_attack import (
+        membership_inference_attack,
+    )
+    from tensorflow_privacy.privacy.membership_inference_attack.data_structures import (
+        AttackInputData,
+    )
 
-    def update(self, results: Iterator[Tuple[MNISTConfig, LocalPrivacyGuarantees]]):
-        for data_config, guarantees in results:
-
-            print(data_config, guarantees)
-            key = data_config.json()
-            self._client_guarantees[key].append(guarantees)
-
-            if not key in self._current_guarantees:
-                self._current_guarantees[key] = (guarantees.eps, guarantees.delta)
-            else:
-                eps, delta = self._current_guarantees[key]
-                if delta != guarantees.delta:
-                    print("Warning, eps is wrong!")
-                self._current_guarantees[key] = (guarantees.eps + eps, guarantees.delta)
-            print(key, self._current_guarantees[key])
+    x_train = train.map(lambda x, y: x)
+    x_test = test.map(lambda x, y: x)
+    y_train = list(train.map(lambda x, y: y).as_numpy_iterator())
+    y_test = list(test.map(lambda x, y: y).as_numpy_iterator())
+    train_predict = model.predict(x_train.batch(128))
+    test_predict = model.predict(x_test.batch(128))
+    loss_train = sparse_categorical_crossentropy(y_train, train_predict).numpy()
+    loss_test = sparse_categorical_crossentropy(y_test, test_predict).numpy()
+    attacks_result = membership_inference_attack.run_attacks(
+        AttackInputData(
+            loss_train=loss_train,
+            loss_test=loss_test,
+            labels_train=np.asanyarray(y_train),
+            labels_test=np.asanyarray(y_test),
+        ),
+        attack_types=[
+            AttackType.THRESHOLD_ATTACK,
+            # AttackType.RANDOM_FOREST,
+            AttackType.LOGISTIC_REGRESSION,
+            # AttackType.MULTI_LAYERED_PERCEPTRON,
+        ],
+    )
+    print(attacks_result.summary())
+    results = attacks_result.get_result_with_max_attacker_advantage()
+    return {
+        "mia-auc": results.get_auc(),
+        "mia-attacker-advantage": results.get_attacker_advantage(),
+    }
 
 
 @click.command()
 @click.option("--devices", type=int, default=100)
-@click.option("--epochs", type=int, default=100)
-@click.option("--local-epochs", type=int, default=2)
-@click.option("--local-batch-size", type=int, default=128)
-@click.option("--clients-per-round", type=int, default=2)
-@click.option("--l2-norm-clip", type=float, default=4.0)
+@click.option("--epochs", type=int, default=200)
+@click.option("--local-epochs", type=int, default=10)
+@click.option("--local-batch-size", type=int, default=10)
+@click.option("--clients-per-round", type=int, default=5)
+@click.option("--l2-norm-clip", type=float, default=1.0)
 @click.option("--noise-multiplier", type=float, default=1.0)
-@click.option("--local-dp/--no-local-dp", type=bool, default=True)
+@click.option("--num-microbatches", type=int, default=0)
+@click.option("--local-dp/--no-local-dp", type=bool, default=False)
+@click.option("--mia/--no-mia", type=bool, default=False)
 def run(
     devices,
     epochs,
@@ -79,14 +98,16 @@ def run(
     clients_per_round,
     l2_norm_clip,
     noise_multiplier,
+    num_microbatches,
     local_dp,
+    mia,
 ):
     # Setup
     privacy_params = (
         LocalDifferentialPrivacyParams(
             l2_norm_clip=l2_norm_clip,
             noise_multiplier=noise_multiplier,
-            num_microbatches=1,
+            num_microbatches=num_microbatches or None,
         )
         if l2_norm_clip != 0.0 and noise_multiplier != 0.0 and local_dp
         else None
@@ -102,13 +123,14 @@ def run(
         create_mnist_train_data_loader_configs(n_devices=devices, n_shards=200)
     )
     test_config = DatasetLoaderConfig(type="mnist", params=MNISTConfig(split="test"))
+    mia_train_set = DatasetLoaderBuilder.from_config(data_configs[0]).load()
     test_set = DatasetLoaderBuilder.from_config(test_config).load()
     model = create_mnist_cnn()
     serialized_model = serialize_model(model)
     weight_bytes = NpzWeightsSerializer().serialize(model.get_weights())
-    weight_string = Base64StringConverter.to_str(weight_bytes)
-    params = SerializedParameters(
-        blob=weight_string,
+    # weight_string = Base64StringConverter.to_str(weight_bytes)
+    global_params = SerializedParameters(
+        blob=weight_bytes,
         serializer=WeightsSerializerConfig(
             type="npz", params=NpzWeightsSerializerConfig()
         ),
@@ -117,13 +139,12 @@ def run(
     round_results = []
     test_accuracy = -1.0
     epoch = 0
-    accounter = NaiveAccounter()
     start_time = time.time()
     while test_accuracy < 0.95 and epoch < epochs:
         model_loader = ModelLoaderConfig(
             type="simple",
             params=SimpleModelLoaderConfig(
-                params=params,
+                params=global_params,
                 model=serialized_model.model_json,
                 compiled=True,
                 optimizer=serialized_model.optimizer,
@@ -153,29 +174,25 @@ def run(
         with Pool() as p:
             results = p.starmap(default_handler, invocation_params)
         clients_finished_time = time.time()
-        # for result in results:
-        #    print(result.history)
 
-        if local_dp:
-            accounter.update(
-                zip(
-                    data_configs_for_round,
-                    map(lambda result: result.privacy_guarantees, results),
-                )
-            )
-
-        new_parameters = FedAvgAggregator().aggregate(results)
-        new_parameters_bytes = NpzWeightsSerializer().serialize(new_parameters)
-        new_parameters_string = Base64StringConverter.to_str(new_parameters_bytes)
-        params = SerializedParameters(
-            blob=new_parameters_string,
+        new_parameters, _ = FedAvgAggregator().aggregate(results)
+        new_parameters_bytes = NpzWeightsSerializer(compressed=False).serialize(
+            new_parameters
+        )
+        # new_parameters_string = Base64StringConverter.to_str(new_parameters_bytes)
+        global_params = SerializedParameters(
+            blob=new_parameters_bytes,
             serializer=WeightsSerializerConfig(
-                type="npz", params=NpzWeightsSerializerConfig()
+                type="npz", params=NpzWeightsSerializerConfig(compressed=False)
             ),
         )
 
         model.set_weights(new_parameters)
         test_eval = model.evaluate(test_set.batch(32), return_dict=True, verbose=False)
+
+        mia_results = simulate_mia(mia_train_set, test_set, model) if mia else {}
+        print(mia_results)
+
         test_accuracy = test_eval["accuracy"]
         epoch += 1
         print(f"Epoch {epoch}/{epochs}: {test_eval}")
@@ -196,12 +213,13 @@ def run(
                     for result in results
                     if result.privacy_guarantees
                 ],
+                **mia_results,
             }
         )
 
         pd.DataFrame.from_records(round_results).to_csv(
             f"results_{devices}_{epochs}_{local_epochs}_{local_batch_size}"
-            f"_{clients_per_round}_{l2_norm_clip}_{noise_multiplier}_{local_dp}_{start_time}.csv"
+            f"_{clients_per_round}_{l2_norm_clip}_{noise_multiplier}_{local_dp}_{num_microbatches}_{start_time}.csv"
         )
 
 

@@ -1,16 +1,23 @@
 import abc
 import json
+import logging
+import os
+import tempfile
 from functools import reduce
 from json import JSONDecodeError
 from pathlib import Path
 from typing import Union, Dict, Iterator, List, Optional, Tuple
 
+import numpy as np
 import requests
 import tensorflow as tf
 from pydantic import validate_arguments, AnyHttpUrl
 from requests import RequestException
 
+from fedless.cache import cache
 from fedless.models import LEAFConfig, DatasetLoaderConfig, LeafDataset, MNISTConfig
+
+logger = logging.getLogger(__name__)
 
 
 class DatasetNotLoadedError(Exception):
@@ -147,6 +154,7 @@ class LEAF(DatasetLoader):
         except (IOError, OSError) as e:
             raise DatasetNotLoadedError(e) from e
 
+    @cache
     def load(self) -> tf.data.Dataset:
         """
         Load dataset
@@ -164,12 +172,25 @@ class MNIST(DatasetLoader):
         self,
         indices: Optional[List[int]] = None,
         split: str = "train",
+        proxies: Optional[Dict] = None,
     ):
         self.split = split
         self.indices = indices
+        self.proxies = proxies or {}
 
+    @cache
     def load(self) -> tf.data.Dataset:
-        (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+        response = requests.get(
+            "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz",
+            proxies=self.proxies,
+        )
+        fp, path = tempfile.mkstemp()
+        with os.fdopen(fp, "wb") as f:
+            f.write(response.content)
+
+        with np.load(path, allow_pickle=True) as f:
+            x_train, y_train = f["x_train"], f["y_train"]
+            x_test, y_test = f["x_test"], f["y_test"]
 
         if self.split.lower() == "train":
             features, labels = x_train, y_train
@@ -208,7 +229,9 @@ class DatasetLoaderBuilder:
             )
         elif config.type == "mnist":
             params: MNISTConfig = config.params
-            return MNIST(split=params.split, indices=params.indices)
+            return MNIST(
+                split=params.split, indices=params.indices, proxies=params.proxies
+            )
         else:
             raise NotImplementedError(
                 f"Dataset loader {config.type} is not implemented"

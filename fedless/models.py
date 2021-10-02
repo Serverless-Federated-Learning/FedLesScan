@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Union, Dict, List, Tuple, Any
+from typing import Optional, Union, Dict, List
 from urllib import parse
 
 import numpy as np
@@ -9,10 +9,9 @@ from pydantic import (
     BaseModel,
     AnyHttpUrl,
     validator,
-    AnyUrl,
     BaseSettings,
     PositiveInt,
-    SecretStr,
+    StrictBytes,
 )
 from pydantic.fields import ModelField
 
@@ -68,7 +67,6 @@ class TestMetrics(BaseModel):
     cardinality: int = Field(
         description="tf.data.INFINITE_CARDINALITY if the dataset contains an infinite number of elements or "
         "tf.data.UNKNOWN_CARDINALITY if the analysis fails to determine the number of elements in the dataset "
-        "(e.g. when the dataset source is a file). "
         "Source: https://www.tensorflow.org/api_docs/python/tf/data/Dataset#cardinality"
     )
     metrics: Dict = Field(description="Dictionary mapping from metric name to value")
@@ -85,11 +83,12 @@ class NpzWeightsSerializerConfig(BaseModel):
     """Configuration parameters for this serializer"""
 
     type: str = Field("npz", const=True)
-    compressed: bool = True
+    compressed: bool = False
 
 
 class BinaryStringFormat(str, Enum):
     BASE64 = "base64"
+    NONE = "none"
 
 
 class LeafDataset(str, Enum):
@@ -107,7 +106,7 @@ class LeafDataset(str, Enum):
 class LocalDifferentialPrivacyParams(BaseModel):
     l2_norm_clip: float
     noise_multiplier: float
-    num_microbatches: int
+    num_microbatches: Optional[int]
 
 
 class Hyperparams(BaseModel):
@@ -149,6 +148,7 @@ class MNISTConfig(BaseModel):
     type: str = Field("mnist", const=True)
     indices: List[int] = None
     split: str = "train"
+    proxies: Optional[Dict] = None
 
 
 class DatasetLoaderConfig(BaseModel):
@@ -178,7 +178,7 @@ class OpenwhiskActionConfig(BaseModel):
 class OpenwhiskWebActionConfig(BaseModel):
     type: str = Field("openwhisk-web", const=True)
     self_signed_cert: bool = True
-    endpoint: AnyUrl
+    endpoint: str
     token: Optional[str]
 
 
@@ -197,6 +197,20 @@ class GCloudFunctionConfig(BaseModel):
     url: str
 
 
+class OpenFaasFunctionConfig(BaseModel):
+    """OpenFaas function"""
+
+    type: str = Field("openfaas", const=True)
+    url: str
+
+
+class AzureFunctionHTTPConfig(BaseModel):
+    """Azure function"""
+
+    type: str = Field("azure", const=True)
+    trigger_url: str
+
+
 class FunctionInvocationConfig(BaseModel):
     """Necessary information to invoke a function"""
 
@@ -206,6 +220,8 @@ class FunctionInvocationConfig(BaseModel):
         ApiGatewayLambdaFunctionConfig,
         GCloudFunctionConfig,
         OpenwhiskWebActionConfig,
+        AzureFunctionHTTPConfig,
+        OpenFaasFunctionConfig,
     ]
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
@@ -219,11 +235,12 @@ class InvocationResult(BaseModel):
     session_id: str
     round_id: int
     client_id: str
+    test_metrics: Optional[TestMetrics] = None
 
 
 class MongodbConnectionConfig(BaseSettings):
     """
-    Data class holding info to connection to a MongoDB server.
+    Data class holding connection info for a MongoDB instance
     Automatically tries to fill in missing values from environment variables
     """
 
@@ -266,9 +283,9 @@ class WeightsSerializerConfig(BaseModel):
 class SerializedParameters(BaseModel):
     """Parameters as serialized blob with information on how to deserialize it"""
 
-    blob: str
+    blob: Union[StrictBytes, str]
     serializer: WeightsSerializerConfig
-    string_format: BinaryStringFormat = BinaryStringFormat.BASE64
+    string_format: BinaryStringFormat = BinaryStringFormat.NONE
 
 
 class LocalPrivacyGuarantees(BaseModel):
@@ -305,7 +322,7 @@ class PayloadModelLoaderConfig(BaseModel):
     """Configuration parameters required for :class:`PayloadModelLoader`"""
 
     type: str = Field("payload", const=True)
-    payload: str
+    payload: Union[StrictBytes, str]
     serializer: ModelSerializerConfig = ModelSerializerConfig(type="h5")
 
 
@@ -354,6 +371,7 @@ class ClientConfig(BaseModel):
     data: DatasetLoaderConfig
     hyperparams: Hyperparams
     test_data: Optional[DatasetLoaderConfig]
+    compress_model: bool = False
 
 
 class InvokerParams(BaseModel):
@@ -363,7 +381,9 @@ class InvokerParams(BaseModel):
     round_id: int
     client_id: str
     database: MongodbConnectionConfig
+    evaluate_only: bool = False
     http_headers: Optional[Dict] = None
+    http_proxies: Optional[Dict] = None
 
 
 class ClientInvocationParams(BaseModel):
@@ -380,14 +400,18 @@ class AggregatorFunctionParams(BaseModel):
     round_id: int
     database: MongodbConnectionConfig
     serializer: WeightsSerializerConfig = WeightsSerializerConfig(
-        type="npz", params=NpzWeightsSerializerConfig(compressed=True)
+        type="npz", params=NpzWeightsSerializerConfig(compressed=False)
     )
+    online: bool = False
+    test_data: Optional[DatasetLoaderConfig]
+    test_batch_size: int = 512
 
 
 class AggregatorFunctionResult(BaseModel):
     new_round_id: int
     num_clients: int
     test_results: Optional[List[TestMetrics]]
+    global_test_results: Optional[TestMetrics]
 
 
 class EvaluatorParams(BaseModel):
@@ -395,7 +419,7 @@ class EvaluatorParams(BaseModel):
     round_id: int
     database: MongodbConnectionConfig
     test_data: DatasetLoaderConfig
-    batch_size: int = 10
+    batch_size: int = 128
     metrics: List[str] = ["accuracy"]
 
 
@@ -454,7 +478,6 @@ class GCloudFunctionDeploymentConfig(BaseModel):
 
 
 class FunctionDeploymentConfig(BaseModel):
-
     type: str
     params: Union[OpenwhiskFunctionDeploymentConfig]
 

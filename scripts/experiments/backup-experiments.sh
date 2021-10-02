@@ -23,7 +23,7 @@ echo "Zipping directory $out_directory"
 zip -r "$save_dir.zip" "$out_directory"
 
 echo "Saving files from $out_directory"
-aws s3 cp "$save_dir.zip" "s3://$bucket_name/$save_dir" --region "$bucket_region"
+aws s3 cp "$save_dir.zip" "s3://$bucket_name/$save_dir.zip" --region "$bucket_region"
 
 echo "Removing temporary zip file"
 rm "$save_dir.zip"

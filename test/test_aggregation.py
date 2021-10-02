@@ -8,12 +8,14 @@ from fedless.aggregation import (
     FedAvgAggregator,
     UnknownCardinalityError,
     StreamFedAvgAggregator,
+    chunks,
 )
 from fedless.models import (
     ClientResult,
     NpzWeightsSerializerConfig,
     WeightsSerializerConfig,
     SerializedParameters,
+    BinaryStringFormat,
 )
 from fedless.serialization import NpzWeightsSerializer, Base64StringConverter
 
@@ -46,16 +48,29 @@ def dummy_client_results(dummy_parameters, dummy_cardinalities):
     results = []
     for i, params in enumerate(dummy_parameters):
         weights_bytes = NpzWeightsSerializer().serialize(params)
-        blob = Base64StringConverter.to_str(weights_bytes)
-        result = ClientResult(
-            parameters=SerializedParameters(
-                blob=blob,
-                serializer=WeightsSerializerConfig(
-                    type="npz", params=NpzWeightsSerializerConfig()
+        if i % 2 == 0:
+            blob = Base64StringConverter.to_str(weights_bytes)
+            result = ClientResult(
+                parameters=SerializedParameters(
+                    blob=blob,
+                    serializer=WeightsSerializerConfig(
+                        type="npz", params=NpzWeightsSerializerConfig()
+                    ),
+                    string_format=BinaryStringFormat.BASE64,
                 ),
-            ),
-            cardinality=dummy_cardinalities[i],
-        )
+                cardinality=dummy_cardinalities[i],
+            )
+        else:
+            result = ClientResult(
+                parameters=SerializedParameters(
+                    blob=weights_bytes,
+                    serializer=WeightsSerializerConfig(
+                        type="npz", params=NpzWeightsSerializerConfig()
+                    ),
+                    string_format=BinaryStringFormat.NONE,
+                ),
+                cardinality=dummy_cardinalities[i],
+            )
 
         results.append(result)
     return results
@@ -74,7 +89,6 @@ def dummy_expected_result():
 def test_fedavg_aggregate_calculation(
     dummy_parameters, dummy_cardinalities, dummy_expected_result
 ):
-
     aggregator = FedAvgAggregator()
     final_params = aggregator._aggregate(
         parameters=dummy_parameters, weights=dummy_cardinalities
@@ -87,7 +101,7 @@ def test_fedavg_aggregate_calculation(
 
 def test_fedavg_aggregate_function(dummy_client_results, dummy_expected_result):
     aggregator = FedAvgAggregator()
-    final_params = aggregator.aggregate(client_results=dummy_client_results)
+    final_params, _ = aggregator.aggregate(client_results=dummy_client_results)
     assert all(
         [np.allclose(a, b) for a, b in zip_longest(final_params, dummy_expected_result)]
     )
@@ -105,7 +119,7 @@ def test_fedavg_recovers_on_invalid_cardinality(
 ):
     dummy_client_results[0].cardinality = tf.data.INFINITE_CARDINALITY
 
-    final_params = FedAvgAggregator().aggregate(
+    final_params, _ = FedAvgAggregator().aggregate(
         client_results=dummy_client_results, default_cardinality=1.0
     )
     assert all(
@@ -113,9 +127,20 @@ def test_fedavg_recovers_on_invalid_cardinality(
     )
 
 
-def test_streamfedavg_aggregate_function(dummy_client_results, dummy_expected_result):
-    aggregator = StreamFedAvgAggregator()
-    final_params = aggregator.aggregate(client_results=dummy_client_results)
+@pytest.mark.parametrize("chunk_size", [1, 2, 10, 50])
+def test_streamfedavg_aggregate_function(
+    dummy_client_results, dummy_expected_result, chunk_size
+):
+    aggregator = StreamFedAvgAggregator(chunk_size=chunk_size)
+    final_params, _ = aggregator.aggregate(client_results=dummy_client_results)
     assert all(
         [np.allclose(a, b) for a, b in zip_longest(final_params, dummy_expected_result)]
     )
+
+
+def test_chunks():
+    iterator = list(x for x in range(10))
+    assert list(chunks(iterator, 3)) == [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
+    assert list(chunks(iterator, 2)) == [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]
+    assert list(chunks(iterator, 1)) == [[i] for i in range(10)]
+    assert list(chunks(iterator, 20)) == [[i for i in range(10)]]

@@ -12,7 +12,7 @@ required_scope="client-functions/invoke"
 wsk -i action update \
   authorizer \
   authorizer.py \
-  --docker andreasgrafberger/fedless-openwhisk \
+  --docker andreasgrafberger/fedless-openwhisk:clients \
   --memory 256 \
   --timeout 2000 \
   --web raw \

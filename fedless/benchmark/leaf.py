@@ -1,4 +1,4 @@
-from typing import Iterable, Optional, Dict, List
+from typing import Iterable, Optional, Dict, List, Iterator
 
 from tensorflow import keras
 
@@ -6,9 +6,11 @@ from fedless.data import LEAF
 from fedless.models import LeafDataset, LEAFConfig
 
 
-def create_femnist_cnn(num_classes: int = 62, small: bool = False):
+def create_femnist_cnn(
+    num_classes: int = 62, small: bool = False
+) -> keras.models.Sequential:
     model = keras.Sequential()
-    model.add(keras.layers.Input((28 * 28,)))
+    model.add(keras.layers.InputLayer((28 * 28,)))
     model.add(keras.layers.Reshape((28, 28, 1)))
     model.add(
         keras.layers.Convolution2D(
@@ -42,7 +44,7 @@ def create_shakespeare_lstm(
     embedding_size: int = 8,
 ):
     model = keras.Sequential()
-    keras.Input(shape=(sequence_length, vocab_size))
+    keras.layers.InputLayer((sequence_length, vocab_size))
     model.add(
         keras.layers.Embedding(
             vocab_size,
@@ -56,20 +58,26 @@ def create_shakespeare_lstm(
     return model
 
 
-def split_shakespear_source_by_users(
-    url: str, http_params: Optional[Dict] = None
-) -> Iterable[LEAFConfig]:
-    loader = LEAF(dataset=LeafDataset.SHAKESPEARE, location=url)
+def split_source_by_users(config: LEAFConfig) -> Iterable[LEAFConfig]:
+    loader = LEAF(
+        dataset=config.dataset,
+        location=config.location,
+        http_params=config.http_params,
+        user_indices=config.user_indices,
+    )
     loader.load()
 
     for i, _ in enumerate(loader.users):
-        yield LEAFConfig(
-            dataset=LeafDataset.SHAKESPEARE,
-            location=url,
-            http_params=http_params,
-            user_indices=[i],
-        )
+        if not config.user_indices or i in config.user_indices:
+            yield LEAFConfig(
+                dataset=config.dataset,
+                location=config.location,
+                http_params=config.http_params,
+                user_indices=[i],
+            )
 
 
-def split_source_by_users(source_urls: List[LEAFConfig]):
-    return source_urls
+def split_sources_by_users(source_urls: List[LEAFConfig]) -> Iterator[LEAFConfig]:
+    for source in source_urls:
+        for config in split_source_by_users(source):
+            yield config

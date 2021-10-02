@@ -6,7 +6,7 @@ wsk -i action update \
   create_resource_server \
   handlers.py \
   --main create_resource_server \
-  --docker andreasgrafberger/fedless-openwhisk \
+  --docker andreasgrafberger/fedless-openwhisk:clients \
   --memory 1024 \
   --timeout 60000 \
   --web raw \

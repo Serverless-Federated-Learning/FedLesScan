@@ -1,4 +1,5 @@
 import json
+import logging
 from json import JSONDecodeError
 from typing import Iterable, Optional, Dict, Union
 
@@ -19,7 +20,12 @@ from fedless.models import (
     SimpleModelLoaderConfig,
     GCloudFunctionConfig,
     OpenwhiskWebActionConfig,
+    AzureFunctionHTTPConfig,
+    SerializedParameters,
+    BinaryStringFormat,
+    OpenFaasFunctionConfig,
 )
+from fedless.serialization import Base64StringConverter
 from fedless.persistence import (
     ClientConfigDao,
     PersistenceError,
@@ -27,6 +33,8 @@ from fedless.persistence import (
     ModelDao,
     ClientResultDao,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class InvocationError(Exception):
@@ -51,7 +59,11 @@ def function_invoker_handler(
     client_id: str,
     database: MongodbConnectionConfig,
     http_headers: Optional[Dict] = None,
+    http_proxies: Optional[Dict] = None,
 ) -> InvocationResult:
+    logger.debug(
+        f"Invoker called for session {session_id} and client {client_id} for round {round_id}"
+    )
     db = pymongo.MongoClient(
         host=database.host,
         port=database.port,
@@ -67,8 +79,13 @@ def function_invoker_handler(
         results_dao = ClientResultDao(db=db)
 
         # Load model and latest weights
+        logger.debug(f"Loading model from database")
         model = model_dao.load(session_id=session_id)
-        latest_params = parameter_dao.load_latest(session_id)
+        latest_params: SerializedParameters = parameter_dao.load_latest(session_id)
+        if isinstance(latest_params.blob, bytes):
+            logger.debug(f"Making model parameters serializable")
+            latest_params.blob = Base64StringConverter.to_str(latest_params.blob)
+            latest_params.string_format = BinaryStringFormat.BASE64
         model = ModelLoaderConfig(
             type="simple",
             params=SimpleModelLoaderConfig(
@@ -81,8 +98,9 @@ def function_invoker_handler(
             ),
         )
 
+        logger.debug(f"Load client config from db")
         # Load client configuration and prepare call statements
-        client_config = config_dao.load(id=client_id)
+        client_config = config_dao.load(client_id=client_id)
         client_params = ClientInvocationParams(
             data=client_config.data,
             model=model,
@@ -91,15 +109,19 @@ def function_invoker_handler(
         )
 
         # Call client
+        logger.debug(f"Calling function")
         session = retry_session(backoff_factor=1.0)
-        session.headers = http_headers or {}
+        session.headers.update(http_headers or {})
+        session.proxies.update(http_proxies or {})
         client_result = invoke_sync(
             function_config=client_config.function,
             data=client_params.dict(),
             session=session,
         )
 
+        logger.debug(f"Finished calling function")
         if isinstance(client_result, dict) and "parameters" in client_result:
+            logger.debug(f"Storing results to db")
             results_dao.save(
                 session_id=session_id,
                 round_id=round_id,
@@ -107,6 +129,7 @@ def function_invoker_handler(
                 result=client_result,
             )
         else:
+            logger.error(f"Client invocation failed with response {client_result}")
             raise InvocationError(
                 f"Client invocation failed with response {client_result}"
             )
@@ -147,13 +170,18 @@ def invoke_sync(
         params: OpenwhiskWebActionConfig = function_config.params
         if params.token:
             session.headers.update({"X-require-whisk-auth": params.token})
-        return invoke_http_function_sync(
+        response_dict = invoke_http_function_sync(
             url=params.endpoint,
             data=data,
             session=session,
             timeout=timeout,
             verify_certificate=not params.self_signed_cert,
         )
+        response_dict = response_dict.get("body", response_dict)
+
+        if not isinstance(response_dict, dict):
+            return json.loads(response_dict)
+        return response_dict
     elif function_config.type == "lambda":
         params: ApiGatewayLambdaFunctionConfig = function_config.params
         if params.api_key:
@@ -163,6 +191,16 @@ def invoke_sync(
         )
     elif function_config.type == "gcloud":
         params: GCloudFunctionConfig = function_config.params
+        return invoke_http_function_sync(
+            url=params.url, data=data, session=session, timeout=timeout
+        )
+    elif function_config.type == "azure":
+        params: AzureFunctionHTTPConfig = function_config.params
+        return invoke_http_function_sync(
+            url=params.trigger_url, data=data, session=session, timeout=timeout
+        )
+    elif function_config.type == "openfaas":
+        params: OpenFaasFunctionConfig = function_config.params
         return invoke_http_function_sync(
             url=params.url, data=data, session=session, timeout=timeout
         )
@@ -192,6 +230,7 @@ def invoke_http_function_sync(
             data=data,
             headers={"Content-Type": "application/json"},
             verify=verify_certificate,
+            proxies=session.proxies,
             timeout=timeout,
         )
         if (
@@ -236,6 +275,7 @@ def invoke_wsk_action_async(
             data=data,
             headers={"Content-Type": "application/json"},
             verify=verify_certificate,
+            proxies=session.proxies,
         )
         response.raise_for_status()
         response_dict = response.json()
@@ -261,6 +301,7 @@ def _fetch_openwhisk_activation_result(
         response = session.get(
             url=f"https://{auth_token}@{api_host}/api/v1/namespaces/_/activations/{activation_id}/result",
             verify=verify_certificate,
+            proxies=session.proxies,
         )
 
         if (
@@ -296,7 +337,7 @@ def poll_openwhisk_activation_result(
     """Poll result for given activation id (blocking)"""
 
     _fetch_and_retry = backoff.on_predicate(
-        backoff.constant, max_time=max_time, interval=interval
+        backoff.constant, max_time=max_time, interval=interval, logger=None
     )(_fetch_openwhisk_activation_result)
     result = _fetch_and_retry(
         activation_id=activation_id,
@@ -361,12 +402,23 @@ def retry_session(
     if prefixes is None:
         prefixes = ["http://", "https://"]
     if status_list is None:
-        status_list = {413, 421, 423, 429, 500, 502, 503, 504}
+        status_list = {
+            413,
+            421,
+            423,
+            429,
+            500,
+            502,
+            503,
+        }  # Optionally include 504 for Gateway Timeout
 
     session = session or requests.Session()
 
     retry = Retry(
-        total=retries,
+        status=retries,
+        read=0,
+        connect=0,
+        total=None,
         status_forcelist=status_list,
         method_whitelist=allowed_methods,
         backoff_factor=backoff_factor,

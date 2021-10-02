@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import abc
 import base64
 import binascii
@@ -10,6 +11,7 @@ import h5py
 import numpy as np
 import tensorflow as tf
 
+from fedless.cache import cache
 from fedless.models import (
     ModelSerializerConfig,
     WeightsSerializerConfig,
@@ -81,6 +83,8 @@ def deserialize_parameters(serialized_params: SerializedParameters) -> Parameter
 
     if serialized_params.string_format == BinaryStringFormat.BASE64:
         blob_bytes = Base64StringConverter.from_str(serialized_params.blob)
+    elif serialized_params.string_format == BinaryStringFormat.NONE:
+        blob_bytes = serialized_params.blob
     else:
         raise SerializationError(
             f"Binary string format {serialized_params.string_format} not known"
@@ -278,7 +282,7 @@ class WeightsSerializer(abc.ABC):
 class NpzWeightsSerializer(WeightsSerializer):
     """Serialize model parameters as numpy npz object"""
 
-    def __init__(self, compressed: bool = True):
+    def __init__(self, compressed: bool = False):
         self.compressed = compressed
 
     def get_config(self) -> WeightsSerializerConfig:
@@ -341,7 +345,7 @@ class PayloadModelLoader(ModelLoader):
     Not advisable for large models.
     """
 
-    def __init__(self, payload: str, serializer: ModelSerializer):
+    def __init__(self, payload: Union[str, bytes], serializer: ModelSerializer):
         self.payload = payload
         self.serializer = serializer
 
@@ -358,7 +362,10 @@ class PayloadModelLoader(ModelLoader):
         :raises ModelLoadError if payload is invalid or other error occurred during deserialization
         """
         try:
-            raw_bytes = Base64StringConverter.from_str(self.payload)
+            if isinstance(self.payload, str):
+                raw_bytes = Base64StringConverter.from_str(self.payload)
+            else:
+                raw_bytes = self.payload
             return self.serializer.deserialize(raw_bytes)
         except SerializationError as e:
             raise ModelLoadError("Model could not be deserialized") from e
@@ -378,7 +385,7 @@ class SimpleModelLoader(ModelLoader):
         loss: Optional[Union[str, Dict]] = None,
         metrics: Optional[List[str]] = None,
     ):
-        self.parameters = parameters
+        self._parameters = parameters
         self.model = model
         self.compiled = compiled
         self.optimizer = optimizer
@@ -398,13 +405,10 @@ class SimpleModelLoader(ModelLoader):
             metrics=config.metrics,
         )
 
-    def load(self) -> tf.keras.Model:
-        """Reconstruct model from config, deserialize parameters, and optionally compile model"""
+    @cache
+    def _load_except_weights(self) -> tf.keras.Model:
         try:
             model: tf.keras.Model = tf.keras.models.model_from_json(self.model)
-            weights = deserialize_parameters(self.parameters)
-
-            model.set_weights(weights)
 
             # Compile if specified
             if self.compiled:
@@ -428,6 +432,14 @@ class SimpleModelLoader(ModelLoader):
                 "Malformed or otherwise invalid model architecture. "
                 "Check if model config is malformed or shapes of parameters do not match"
             )
+
+    def load(self) -> tf.keras.Model:
+        """Reconstruct model from config, deserialize parameters, and optionally compile model"""
+        try:
+            model = self._load_except_weights()
+            weights = deserialize_parameters(self._parameters)
+            model.set_weights(weights)
+            return model
         except SerializationError as e:
             raise ModelLoadError("Weights could not be deserialized") from e
 

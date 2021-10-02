@@ -1,7 +1,7 @@
-import json
 from contextlib import AbstractContextManager
-from typing import Any, Union, Callable, Iterator, List
+from typing import Any, Union, Callable, Iterator
 
+import bson
 import pymongo
 from gridfs import GridFS
 from gridfs.errors import GridFSError
@@ -143,7 +143,7 @@ class ClientResultDao(MongoDbDao):
                 f"Force overwrite with overwrite=True"
             )
         try:
-            file_id = self._gridfs.put(json.dumps(result), encoding="utf-8")
+            file_id = self._gridfs.put(bson.encode(result))
             self._collection.replace_one(
                 {
                     "session_id": session_id,
@@ -195,7 +195,7 @@ class ClientResultDao(MongoDbDao):
                 f"and round {round_id} not found."
             )
         try:
-            return ClientResult.parse_raw(results_file.read())
+            return ClientResult.parse_obj(bson.decode(results_file.read()))
         finally:
             results_file.close()
 
@@ -232,9 +232,37 @@ class ClientResultDao(MongoDbDao):
                     f"and round {round_id} not found."
                 )
             try:
-                yield ClientResult.parse_raw(results_file.read())
+                yield ClientResult.parse_obj(bson.decode(results_file.read()))
             finally:
                 results_file.close()
+
+    @wrap_pymongo_errors
+    def delete_results_for_round(
+        self,
+        session_id: str,
+        round_id: int,
+    ):
+        try:
+            result_dicts = iter(
+                self._collection.find(
+                    filter={
+                        "session_id": session_id,
+                        "round_id": round_id,
+                    },
+                )
+            )
+            for result_dict in result_dicts:
+                if not result_dict or "file_id" not in result_dict:
+                    continue
+                self._gridfs.delete(file_id=result_dict["file_id"])
+            self._collection.delete_many(
+                filter={
+                    "session_id": session_id,
+                    "round_id": round_id,
+                }
+            )
+        except ConnectionFailure as e:
+            raise StorageConnectionError(e) from e
 
     @wrap_pymongo_errors
     def count_results_for_round(
@@ -286,13 +314,13 @@ class ClientConfigDao(MongoDbDao):
             raise StorageConnectionError(e) from e
 
     @wrap_pymongo_errors
-    def load(self, id: str) -> ClientConfig:
+    def load(self, client_id: str) -> ClientConfig:
         try:
-            obj_dict = self._collection.find_one(filter={"client_id": id})
+            obj_dict = self._collection.find_one(filter={"client_id": client_id})
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
         if obj_dict is None:
-            raise DocumentNotLoadedException(f"Client with id {id} not found")
+            raise DocumentNotLoadedException(f"Client with id {client_id} not found")
         return ClientConfig.parse_obj(obj_dict)
 
     @wrap_pymongo_errors
@@ -346,7 +374,7 @@ class ParameterDao(MongoDbDao):
                 f"Force overwrite with overwrite=True"
             )
         try:
-            file_id = self._gridfs.put(params.json(), encoding="utf-8")
+            file_id = self._gridfs.put(bson.encode(params.dict()), encoding="utf-8")
             self._collection.replace_one(
                 {"session_id": session_id, "round_id": round_id},
                 {
@@ -386,7 +414,7 @@ class ParameterDao(MongoDbDao):
                 f"GridFS file with parameters for session {session_id} and round {round_id} not found"
             )
         try:
-            return SerializedParameters.parse_raw(parameter_file.read())
+            return SerializedParameters.parse_obj(bson.decode(parameter_file.read()))
         finally:
             parameter_file.close()
 
@@ -420,7 +448,7 @@ class ParameterDao(MongoDbDao):
                 f"GridFS file with parameters for session {session_id} not found"
             )
         try:
-            return SerializedParameters.parse_raw(parameter_file.read())
+            return SerializedParameters.parse_obj(bson.decode(parameter_file.read()))
         finally:
             parameter_file.close()
 
@@ -487,7 +515,11 @@ class ModelDao(MongoDbDao):
     def load(self, session_id: str) -> SerializedModel:
         try:
             obj_dict = self._collection.find_one(filter={"session_id": session_id})
-            obj_dict = obj_dict["model"]
+            obj_dict = (
+                obj_dict["model"]
+                if obj_dict is not None and "model" in obj_dict
+                else None
+            )
 
             if obj_dict is None:
                 raise DocumentNotLoadedException(f"Client with id {id} not found")

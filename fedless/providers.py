@@ -3,12 +3,14 @@ import base64
 import binascii
 import json
 import logging
+import subprocess
 import traceback
 from abc import ABC, abstractmethod
 from json.decoder import JSONDecodeError
 from typing import Dict, Callable, Union, Tuple, List, Iterable
 
 import pydantic
+import azure.functions
 from pydantic import BaseModel
 
 from fedless.models import (
@@ -71,6 +73,48 @@ def create_gcloud_http_user_error_response(
     )
 
 
+def create_azure_success_response(
+    body: str, status: int = 200
+) -> azure.functions.HttpResponse:
+    return azure.functions.HttpResponse(
+        body=body, status_code=status, headers={"Content-Type": "application/json"}
+    )
+
+
+def create_azure_user_error_response(
+    exception: Exception, status: int = 400
+) -> azure.functions.HttpResponse:
+    return azure.functions.HttpResponse(
+        body=json.dumps(format_exception_for_user(exception)),
+        status_code=status,
+        headers={"Content-Type": "application/json"},
+    )
+
+
+def azure_handler(
+    caught_exceptions: Iterable[Exception],
+) -> Callable[[Callable], Callable]:
+    """Azure function compatible decorator to parse input, catch certain exceptions and respond to them with 400 errors."""
+
+    def decorator(func):
+        def patched_func(req: azure.functions.HttpRequest):
+            try:
+                # try:
+                #     body = req.get_json()
+                # except ValueError as e:
+                #     return create_azure_user_error_response(e)
+                result: Union[pydantic.BaseModel, str] = func(req)
+                if isinstance(result, str):
+                    return create_azure_success_response(result)
+                return create_azure_success_response(result.json())
+            except tuple(caught_exceptions) as e:
+                return create_azure_user_error_response(e)
+
+        return patched_func
+
+    return decorator
+
+
 def lambda_proxy_handler(
     caught_exceptions: Iterable[Exception],
 ) -> Callable[[Callable], Callable]:
@@ -112,6 +156,30 @@ def gcloud_http_error_handler(
                 return create_gcloud_http_success_response(result.json())
             except tuple(caught_exceptions) as e:
                 return create_gcloud_http_user_error_response(e)
+
+        return patched_func
+
+    return decorator
+
+
+def openfaas_action_handler(
+    caught_exceptions: Iterable[Exception],
+) -> Callable[
+    [Callable[["flask.Request"], Union[pydantic.BaseModel, str]]],
+    Callable[["flask.Request"], Dict],
+]:
+    """Decorator for OpenFaas Function handlers to,
+    catch certain exceptions and respond to them with 400 errors."""
+
+    def decorator(func):
+        def patched_func(*args, **kwargs):
+            try:
+                result: Union[pydantic.BaseModel, str] = func(*args, **kwargs)
+                if isinstance(result, str):
+                    return create_http_success_response(result)
+                return create_http_success_response(result.json())
+            except tuple(caught_exceptions) as e:
+                return create_http_user_error_response(e)
 
         return patched_func
 
@@ -161,11 +229,11 @@ def openwhisk_action_handler(
 
 
 async def check_program_installed(name: str):
-    process = await asyncio.create_subprocess_exec(
-        "command", "-v", name, stdout=asyncio.subprocess.PIPE
-    )
-    await process.communicate()
-    return process.returncode == 0
+    # process = await asyncio.create_subprocess_exec(
+    #    "hash", name, stdout=asyncio.subprocess.PIPE
+    # )
+    exitcode, _ = subprocess.getstatusoutput(f"hash {name}")
+    return exitcode == 0
 
 
 class FaaSProvider(ABC):
