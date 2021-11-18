@@ -14,5 +14,5 @@ python setup.py bdist_wheel
 # Building image
 echo "Build and Push Image"
 docker build -f ./images/lambda/base/Dockerfile -t fedless-lambda-git  .
-docker tag fedless-lambda-git andreasgrafberger/fedless:lambda
-docker push andreasgrafberger/fedless:lambda
+docker tag fedless-lambda-git mohamedazab/fedless:lambda
+docker push mohamedazab/fedless:lambda

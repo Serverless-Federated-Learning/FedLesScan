@@ -1,4 +1,4 @@
-FROM docker.io/andreasgrafberger/fedless:lambda
+FROM docker.io/mohamedazab/fedless:lambda
 
 COPY app.py   ./
 CMD ["app.handler"]
