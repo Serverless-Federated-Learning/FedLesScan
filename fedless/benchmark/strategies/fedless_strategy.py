@@ -12,7 +12,7 @@ from requests import Session
 
 from fedless.benchmark.common import fetch_cognito_auth_token
 from fedless.benchmark.models import CognitoConfig
-from fedless.benchmark.strategies.base import ServerlessFlStrategy
+from fedless.benchmark.strategies.serverless_strategy import ServerlessFlStrategy
 from fedless.invocation import retry_session, InvocationError
 from fedless.models import (
     ClientConfig,
@@ -108,6 +108,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                     if self.invocation_delay:
                         await asyncio.sleep(random.uniform(0.0, self.invocation_delay))
                     t_start = time.time()
+                    logger.info(f"***->>> invoking client ${client_id} with time out ${self.client_timeout}")
                     res = await self.invoke_async(
                         function,
                         data,

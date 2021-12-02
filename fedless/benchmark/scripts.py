@@ -16,11 +16,11 @@ from fedless.benchmark.fedkeeper import (
 )
 from fedless.benchmark.leaf import create_femnist_cnn, create_shakespeare_lstm
 from fedless.benchmark.models import (
+    CognitoConfig,
     ExperimentConfig,
     FedkeeperClientsConfig,
 )
-from fedless.benchmark.strategies.fedless import FedlessStrategy
-from fedless.benchmark.strategies.fedkeeper import FedkeeperStrategy
+from fedless.benchmark.strategies.strategy_selector import selectStrategy
 from fedless.models import (
     ClientConfig,
     MongodbConnectionConfig,
@@ -64,7 +64,7 @@ FILE_SERVER = "http://138.246.235.163:31715"
 @click.option(
     "-s",
     "--strategy",
-    type=click.Choice(["fedkeeper", "fedless"], case_sensitive=False),
+    type=click.Choice(["fedkeeper", "fedless","fedless_mock"], case_sensitive=False),
     required=True,
 )
 @click.option(
@@ -206,58 +206,34 @@ def run(
         package=config.cluster.package,
     )
 
-    if strategy == "fedkeeper":
-        strategy = FedkeeperStrategy(
-            session=session,
-            provider=cluster,
-            clients=clients,
-            invoker_config=config.server.invoker,
-            evaluator_config=config.server.evaluator,
-            aggregator_config=config.server.aggregator,
-            mongodb_config=config.database,
-            allowed_stragglers=stragglers,
-            client_timeout=timeout,
-            global_test_data=(
-                create_mnist_test_config(
-                    proxies=(proxies if proxy_in_evaluator else None)
-                )
-                if dataset.lower() == "mnist"
-                else None
-            ),
-            use_separate_invokers=separate_invokers,
-            aggregator_params={
-                "online": aggregate_online,
-                "test_batch_size": test_batch_size,
-            },
-            save_dir=log_dir,
-            proxies=proxies,
-            invocation_delay=invocation_delay,
-        )
-    elif strategy == "fedless":
-        strategy = FedlessStrategy(
-            session=session,
-            cognito=config.cognito,
-            provider=cluster,
-            clients=clients,
-            evaluator_config=config.server.evaluator,
-            aggregator_config=config.server.aggregator,
-            mongodb_config=config.database,
-            allowed_stragglers=stragglers,
-            client_timeout=timeout,
-            save_dir=log_dir,
-            aggregator_params={
-                "online": aggregate_online,
-                "test_batch_size": test_batch_size,
-            },
-            global_test_data=(
-                create_mnist_test_config(
-                    proxies=(proxies if proxy_in_evaluator else None)
-                )
-                if dataset.lower() == "mnist"
-                else None
-            ),
-            proxies=proxies,
-        )
+
+
+    inv_params = {
+        "session":session,
+        "cognito":config.cognito,
+        "provider":cluster,
+        "clients":clients,
+            "evaluator_config":config.server.evaluator,
+        "aggregator_config":config.server.aggregator,
+        "mongodb_config":config.database,
+        "allowed_stragglers":stragglers,
+        "client_timeout":timeout,
+        "save_dir":log_dir,
+        "aggregator_params":{
+            "online": aggregate_online,
+            "test_batch_size": test_batch_size,
+        },
+        "global_test_data":(
+            create_mnist_test_config(
+                proxies=(proxies if proxy_in_evaluator else None)
+            )
+            if dataset.lower() == "mnist"
+            else None
+        ),
+        "proxies":proxies,
+    }
+    strategy = selectStrategy(strategy,inv_params)
+  
 
     asyncio.run(strategy.deploy_all_functions())
     asyncio.run(

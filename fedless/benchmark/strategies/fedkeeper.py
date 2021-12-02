@@ -10,7 +10,7 @@ import urllib3
 from pydantic import ValidationError
 from requests import Session
 
-from fedless.benchmark.strategies.base import ServerlessFlStrategy
+from fedless.benchmark.strategies.serverless_strategy import ServerlessFlStrategy
 from fedless.invocation import retry_session, InvocationError
 from fedless.models import (
     ClientConfig,
