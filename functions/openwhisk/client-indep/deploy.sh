@@ -5,7 +5,7 @@ set -e
 # Generate random token
 token=$(openssl rand -base64 30)
 
-for i in {1..20}; do
+for i in {1..5}; do
   action_name="client-indep-$i"
 
   wsk -i action update \

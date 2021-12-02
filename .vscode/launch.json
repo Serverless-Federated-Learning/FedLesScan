@@ -1,0 +1,44 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "pythonArgs": [
+                "-X",
+                "dev"
+            ],
+            "subProcess": true,
+            "name": "Python: run mnist-demo",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/fedless/benchmark/scripts.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-d",
+                "mnist",
+                "-s",
+                "fedless",
+                "-c",
+                "${workspaceFolder}/experiment/mnist-demo.yaml",
+                "--clients",
+                "5",
+                "--clients-in-round",
+                "2",
+                "--stragglers",
+                "0",
+                "--max-accuracy",
+                "0.6",
+                "--out",
+                "${workspaceFolder}/out/fedkeeper-mnist-demo",
+                "--rounds",
+                "2",
+                "--timeout",
+                "900",
+                "--separate-invokers"
+                // "--tum-proxy"
+            ]
+        }
+    ]
+}
