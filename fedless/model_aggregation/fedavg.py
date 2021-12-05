@@ -15,8 +15,8 @@ import random
 import click
 import pandas as pd
 
-from fedless.data import DatasetLoaderBuilder
-from fedless.aggregation import FedAvgAggregator
+from fedless.datasets.data import DatasetLoaderBuilder
+from fedless.model_aggregation.aggregation import FedAvgAggregator
 from fedless.benchmark.fedkeeper import (
     create_mnist_train_data_loader_configs,
     create_mnist_cnn,

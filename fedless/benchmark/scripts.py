@@ -20,7 +20,7 @@ from fedless.benchmark.models import (
     ExperimentConfig,
     FedkeeperClientsConfig,
 )
-from fedless.benchmark.strategies.strategy_selector import selectStrategy
+from fedless.strategies.strategy_selector import selectStrategy
 from fedless.models import (
     ClientConfig,
     MongodbConnectionConfig,
@@ -32,7 +32,7 @@ from fedless.models import (
     LEAFConfig,
     MNISTConfig,
 )
-from fedless.persistence import ClientConfigDao, ParameterDao, ModelDao
+from fedless.persistence.client_daos import (ClientConfigDao, ParameterDao, ModelDao)
 from fedless.providers import OpenwhiskCluster
 from fedless.serialization import (
     serialize_model,

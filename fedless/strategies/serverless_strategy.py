@@ -13,7 +13,7 @@ from pydantic import ValidationError
 from requests import Session
 
 from fedless.benchmark.common import run_in_executor
-from fedless.benchmark.strategies.fl_strategy import FLStrategy
+from fedless.strategies.fl_strategy import FLStrategy
 from fedless.invocation import retry_session, invoke_sync
 from fedless.models import (
     TestMetrics,
@@ -175,7 +175,6 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         # Invoke clients
         t_clients_start = time.time()
-        # todo replace call clients here
         succs, errors = await self.call_clients(round, clients)
         for err in errors:
             print(err)

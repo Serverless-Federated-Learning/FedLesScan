@@ -26,13 +26,13 @@ from fedless.models import (
     OpenFaasFunctionConfig,
 )
 from fedless.serialization import Base64StringConverter
-from fedless.persistence import (
+from fedless.persistence.client_daos import (
     ClientConfigDao,
-    PersistenceError,
     ParameterDao,
     ModelDao,
     ClientResultDao,
 )
+from fedless.persistence.mongodb_base_connector import PersistenceError
 
 logger = logging.getLogger(__name__)
 

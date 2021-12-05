@@ -2,7 +2,7 @@ from typing import Iterable, Optional, Dict, List, Iterator
 
 from tensorflow import keras
 
-from fedless.data import LEAF
+from fedless.datasets.data import LEAF
 from fedless.models import LeafDataset, LEAFConfig
 
 

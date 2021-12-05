@@ -7,7 +7,7 @@ import numpy as np
 import pymongo
 import tensorflow as tf
 
-from fedless.data import DatasetLoaderBuilder
+from fedless.datasets.data import DatasetLoaderBuilder
 from fedless.models import (
     Parameters,
     ClientResult,

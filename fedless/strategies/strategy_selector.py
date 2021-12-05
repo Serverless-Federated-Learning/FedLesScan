@@ -1,5 +1,5 @@
-from fedless.benchmark.strategies.fedkeeper import FedkeeperStrategy
-from fedless.benchmark.strategies.fedless_strategy import FedlessStrategy
+from fedless.strategies.fedkeeper import FedkeeperStrategy
+from fedless.strategies.fedless_strategy import FedlessStrategy
 from fedless.mocks.mock_fedless_strategy import MockFedlessStrategy
 
 

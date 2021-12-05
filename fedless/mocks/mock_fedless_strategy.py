@@ -12,7 +12,7 @@ from requests import Session
 
 from fedless.benchmark.common import fetch_cognito_auth_token
 from fedless.benchmark.models import CognitoConfig
-from fedless.benchmark.strategies.serverless_strategy import ServerlessFlStrategy
+from fedless.strategies.serverless_strategy import ServerlessFlStrategy
 from fedless.invocation import retry_session, InvocationError
 from fedless.mocks.mock_client import MockClient
 from fedless.models import (

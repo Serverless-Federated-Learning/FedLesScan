@@ -17,7 +17,7 @@ from tensorflow_privacy.privacy.analysis.compute_dp_sgd_privacy_lib import (
     apply_dp_sgd_analysis,
 )
 
-from fedless.data import (
+from fedless.datasets.data import (
     DatasetLoader,
     DatasetLoaderBuilder,
     DatasetNotLoadedError,
@@ -36,13 +36,13 @@ from fedless.models import (
     InvocationResult,
     BinaryStringFormat,
 )
-from fedless.persistence import (
-    PersistenceError,
+from fedless.persistence.client_daos import (
     ClientConfigDao,
     ModelDao,
     ParameterDao,
     ClientResultDao,
 )
+from fedless.persistence.mongodb_base_connector import PersistenceError
 from fedless.serialization import (
     ModelLoadError,
     ModelLoader,
