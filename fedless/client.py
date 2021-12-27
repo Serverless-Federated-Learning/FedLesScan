@@ -2,6 +2,7 @@ import logging
 import math
 import sys
 from typing import Optional
+import time
 
 import pymongo
 import tensorflow.keras as keras
@@ -38,6 +39,7 @@ from fedless.models import (
 )
 from fedless.persistence.client_daos import (
     ClientConfigDao,
+    ClientHistoryDao,
     ModelDao,
     ParameterDao,
     ClientResultDao,
@@ -90,7 +92,10 @@ def fedless_mongodb_handler(
         model_dao = ModelDao(db=db)
         parameter_dao = ParameterDao(db=db)
         results_dao = ClientResultDao(db=db)
-
+        client_history_dao = ClientHistoryDao(db=db)
+        
+        
+        start_time  = time.time()
         logger.debug(f"Loading model from database")
         # Load model and latest weights
         model = model_dao.load(session_id=session_id)
@@ -158,7 +163,16 @@ def fedless_mongodb_handler(
             test_data_loader=None,
             verbose=verbose,
         )
-
+        
+        end_time  = time.time()
+        elapsed_time = end_time - start_time
+        
+        
+        
+        client_history = client_history_dao.load(client_id)
+        client_history.training_times.append(elapsed_time)
+        client_history_dao.save(client_history)
+        
         logger.debug(f"Storing client results in database. Starting now...")
         results_dao.save(
             session_id=session_id,

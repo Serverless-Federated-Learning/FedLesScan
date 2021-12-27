@@ -13,6 +13,7 @@ from pydantic import ValidationError
 from requests import Session
 
 from fedless.benchmark.common import run_in_executor
+from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 from fedless.strategies.fl_strategy import FLStrategy
 from fedless.invocation import retry_session, invoke_sync
 from fedless.models import (
@@ -43,6 +44,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionDeploymentConfig,
         aggregator_config: FunctionDeploymentConfig,
+        selectionStrategy: IntelligentClientSelection,
         client_timeout: float = 300,
         allowed_stragglers: int = 0,
         global_test_data: Optional[DatasetLoaderConfig] = None,
@@ -51,8 +53,9 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
         invocation_delay: float = None,
+        
     ):
-        super().__init__(clients=clients)
+        super().__init__(clients=clients,selectionStrategy=selectionStrategy)
         urllib3.disable_warnings()
         self.session: str = session or str(uuid.uuid4())
         self.provider = provider

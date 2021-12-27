@@ -20,9 +20,11 @@ from fedless.benchmark.models import (
     ExperimentConfig,
     FedkeeperClientsConfig,
 )
+from fedless.strategies.Intelligent_selection import DBScanClientSelection, RandomClientSelection
 from fedless.strategies.strategy_selector import selectStrategy
 from fedless.models import (
     ClientConfig,
+    ClientPersistentHistory,
     MongodbConnectionConfig,
     DatasetLoaderConfig,
     BinaryStringFormat,
@@ -32,7 +34,7 @@ from fedless.models import (
     LEAFConfig,
     MNISTConfig,
 )
-from fedless.persistence.client_daos import (ClientConfigDao, ParameterDao, ModelDao)
+from fedless.persistence.client_daos import (ClientConfigDao, ClientHistoryDao, ParameterDao, ModelDao)
 from fedless.providers import OpenwhiskCluster
 from fedless.serialization import (
     serialize_model,
@@ -206,8 +208,9 @@ def run(
         package=config.cluster.package,
     )
 
-
-
+    # TODO make it a cmd arg or select it based on strategy
+    clientSelectionStrat =  DBScanClientSelection(config, session)
+    # clientSelectionStrat =  RandomClientSelection()
     inv_params = {
         "session":session,
         "cognito":config.cognito,
@@ -215,6 +218,7 @@ def run(
         "clients":clients,
             "evaluator_config":config.server.evaluator,
         "aggregator_config":config.server.aggregator,
+        "selectionStrategy":clientSelectionStrat,
         "mongodb_config":config.database,
         "allowed_stragglers":stragglers,
         "client_timeout":timeout,
@@ -232,6 +236,7 @@ def run(
         ),
         "proxies":proxies,
     }
+    
     strategy = selectStrategy(strategy,inv_params)
   
 
@@ -286,7 +291,7 @@ def store_client_configs(
     database: MongodbConnectionConfig,
 ) -> List[ClientConfig]:
     client_config_dao = ClientConfigDao(database)
-
+    client_history_dao = ClientHistoryDao(database)
     n_clients = sum(function.replicas for function in clients.functions)
     clients_unrolled = list(f for f in clients.functions for _ in range(f.replicas))
     logger.info(
@@ -311,11 +316,21 @@ def store_client_configs(
             test_data=test_config,
             hyperparams=hp,
         )
+        
+        client_history = ClientPersistentHistory(
+            client_id=client_id,
+            session_id = session,
+        )
+        
 
         logger.info(
             f"Initializing client {client_id} of type " f"{client.function.type}"
         )
         client_config_dao.save(client_config)
+        logger.info(
+            f"Initializing client_history for {client_id} of type " f"{client.function.type}"
+        )
+        client_history_dao.save(client_history)
         final_configs.append(client_config)
     logger.info(
         f"Configured and stored all {len(data_configs)} clients configurations..."

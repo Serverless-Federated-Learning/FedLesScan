@@ -13,13 +13,15 @@ from fedless.models import (
     TestMetrics,
 )
 from fedless.providers import FaaSProvider
+from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 
 logger = logging.getLogger(__name__)
 
 
 class FLStrategy(ABC):
-    def __init__(self, clients):
+    def __init__(self, clients, selectionStrategy: IntelligentClientSelection):
         self.clients = clients
+        self.selectionStrategy = selectionStrategy
 
     def aggregate_metrics(
         self, metrics: List[TestMetrics], metric_names: Optional[List[str]] = None
@@ -49,9 +51,6 @@ class FLStrategy(ABC):
         :return: (loss, accuracy, metrics) tuple
         """
 
-    def sample_clients(self, clients: int, pool: List) -> List:
-        return random.sample(pool, clients)
-
     async def fit(
         self,
         n_clients_in_round: int,
@@ -60,7 +59,8 @@ class FLStrategy(ABC):
     ):
         for round in range(max_rounds):
             #TODO straggler identification scheme here
-            clients = self.sample_clients(n_clients_in_round, self.clients)
+            # clients = self.sample_clients(n_clients_in_round, self.clients)
+            clients = self.selectionStrategy.select_clients(n_clients_in_round, self.clients, round, max_rounds)
             logger.info(f"Sampled {len(clients)} for round {round}")
             #TODO straggler mitigation scheme
             loss, accuracy, metrics = await self.fit_round(round, clients)

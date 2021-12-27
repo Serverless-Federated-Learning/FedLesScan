@@ -373,6 +373,12 @@ class ClientConfig(BaseModel):
     test_data: Optional[DatasetLoaderConfig]
     compress_model: bool = False
 
+class ClientPersistentHistory(BaseModel):
+    client_id:str
+    session_id:str
+    training_times: list = []
+    ema: float = 0
+    latest_updated: int = -1
 
 class InvokerParams(BaseModel):
     """Parameters to run invoker function similarly as proposed by FedKeeper"""

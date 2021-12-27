@@ -8,6 +8,7 @@ from pymongo.errors import ConnectionFailure
 
 from fedless.persistence.mongodb_base_connector import DocumentAlreadyExistsException, DocumentNotLoadedException, MongoDbDao, PersistenceError, PersistenceValueError, StorageConnectionError, wrap_pymongo_errors
 from fedless.models import (
+    ClientPersistentHistory,
     ClientResult,
     MongodbConnectionConfig,
     ClientConfig,
@@ -203,6 +204,50 @@ class ClientResultDao(MongoDbDao):
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
 
+
+class ClientHistoryDao(MongoDbDao):
+    
+    def __init__(
+        self,
+        db: Union[str, MongodbConnectionConfig, pymongo.MongoClient],
+        collection: str = "client_history",
+        database: str = "fedless"):
+        super().__init__(db, collection, database=database)
+        
+    @wrap_pymongo_errors
+    def save(self, client: ClientPersistentHistory, overwrite: bool = True) -> Any:
+        if (
+            not overwrite
+            and self._collection.find_one({"client_id": client.client_id}) is not None
+        ):
+            raise DocumentAlreadyExistsException(
+                f"Client with id {client.client_id} already exists. Force overwrite with overwrite=True"
+            )
+        try:
+            self._collection.replace_one(
+                {"client_id": client.client_id}, client.dict(), upsert=True
+            )
+        except ConnectionFailure as e:
+            raise StorageConnectionError(e) from e
+
+    @wrap_pymongo_errors
+    def load(self, client_id: str) -> ClientPersistentHistory:
+        try:
+            obj_dict = self._collection.find_one(filter={"client_id": client_id})
+        except ConnectionFailure as e:
+            raise StorageConnectionError(e) from e
+        if obj_dict is None:
+            raise DocumentNotLoadedException(f"Client with id {client_id} not found")
+        return ClientPersistentHistory.parse_obj(obj_dict)
+
+    @wrap_pymongo_errors
+    def load_all(self, session_id: str) -> Iterator[ClientPersistentHistory]:
+        try:
+            obj_dicts = iter(self._collection.find(filter={"session_id": session_id}))
+        except ConnectionFailure as e:
+            raise StorageConnectionError(e) from e
+        for client_dict in obj_dicts:
+            yield ClientPersistentHistory.parse_obj(client_dict)
 
 class ClientConfigDao(MongoDbDao):
     """Store clients  in a mongodb database"""

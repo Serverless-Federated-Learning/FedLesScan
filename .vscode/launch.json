@@ -23,7 +23,7 @@
                 "-c",
                 "${workspaceFolder}/experiment/mnist-demo.yaml",
                 "--clients",
-                "5",
+                "10",
                 "--clients-in-round",
                 "3",
                 "--stragglers",
@@ -33,7 +33,7 @@
                 "--out",
                 "${workspaceFolder}/out/fedkeeper-mnist-demo",
                 "--rounds",
-                "1",
+                "2",
                 "--timeout",
                 "900",
                 "--separate-invokers"

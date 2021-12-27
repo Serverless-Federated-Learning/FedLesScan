@@ -9,6 +9,7 @@ from typing import List, Optional, Dict, Tuple
 import urllib3
 from pydantic import ValidationError
 from requests import Session
+from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 
 from fedless.strategies.serverless_strategy import ServerlessFlStrategy
 from fedless.invocation import retry_session, InvocationError
@@ -35,6 +36,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionDeploymentConfig,
         aggregator_config: FunctionDeploymentConfig,
+        selectionStrategy: IntelligentClientSelection,
         client_timeout: float = 300,
         global_test_data: Optional[DatasetLoaderConfig] = None,
         aggregator_params: Optional[Dict] = None,
@@ -54,6 +56,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             aggregator_params=aggregator_params,
             evaluator_config=evaluator_config,
             aggregator_config=aggregator_config,
+            selectionStrategy = selectionStrategy,
             client_timeout=client_timeout,
             allowed_stragglers=allowed_stragglers,
             save_dir=save_dir,
