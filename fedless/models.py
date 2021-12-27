@@ -379,6 +379,7 @@ class ClientPersistentHistory(BaseModel):
     training_times: list = []
     ema: float = 0
     latest_updated: int = -1
+    missed_rounds: list = []
 
 class InvokerParams(BaseModel):
     """Parameters to run invoker function similarly as proposed by FedKeeper"""

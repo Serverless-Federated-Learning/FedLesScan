@@ -6,6 +6,7 @@ import numpy as np
 
 import random
 from requests.sessions import session
+from sklearn import cluster
 
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
@@ -70,33 +71,49 @@ class DBScanClientSelection(IntelligentClientSelection):
     
     def sort_clusters(self, clients:list,labels:list):
         n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-        # dict of {cluster_idx: (ema,len(cluster))}
+        # dict of {cluster_idx: (ema,[client_list])}
         cluster_number_map = {}
         for idx in range(len(labels)):
             client_cluster_idx = labels[idx]
             client_ema = clients[idx].ema
             if client_cluster_idx in cluster_number_map: 
                 old_cluster_data = cluster_number_map[client_cluster_idx]
-                cluster_number_map[client_cluster_idx] = (old_cluster_data[0]+client_ema,old_cluster_data[1]+1)
+                # append new client
+                old_cluster_data[1].append(clients[idx])
+                cluster_number_map[client_cluster_idx] = (old_cluster_data[0] + client_ema, old_cluster_data[1])
             else:
-                cluster_number_map[client_cluster_idx] = (client_ema,1)
-        
-        sorted_clusters = dict(sorted(cluster_number_map, key= lambda x:x[1][1])) 
-        
-        return sorted_clusters
+                cluster_number_map[client_cluster_idx] = (client_ema,[clients[idx]])
+        # sort clusters based on avg ema per cluster 
+        return dict(sorted(cluster_number_map.items(), key= lambda x:x[1][0]/len(x[1][1]))) 
         # pass
-       
+    
+    def filter_rookies(self, clients:list):
+        rookies = []
+        rest_clients = []
+        for client in clients:
+            if len(client.training_times)==0 and len(client.missed_rounds) == 0:
+                rookies.append(client)
+            else:
+                rest_clients.append(client)
+            #   filter(lambda item: len(item.training_times)==0 and len(item.missed_rounds) == 0,clients)  
+        return rookies,rest_clients
         
-    def db_fit(self, n_clients_in_round: int, pool: List, round,max_rounds) -> List:
+                
+    def db_fit(self, n_clients_in_round: int, pool: List, round,max_rounds) -> list:
         # Generate sample data
-        history_dao = ClientHistoryDao(db = self.config.database_config)
+        history_dao = ClientHistoryDao(db = self.config.database)
         # all data of the session
-        all_data = history_dao.load_all(session_id=self.session)
-        # did not run pool
+        all_data = list(history_dao.load_all(session_id=self.session))
+        
+        # try and run rookies first
+        rookie_clients,rest_clients = self.filter_rookies(all_data)    
+        if len(rookie_clients)>= n_clients_in_round:
+            return random.sample(rookie_clients,n_clients_in_round)
+        
+        n_clients_from_clustering = n_clients_in_round-len(rookie_clients)
         
         training_data = []
-        clients_ids = []
-        for client_data in all_data:
+        for client_data in rest_clients:
             client_training_times = client_data.training_times
             client_ema = client_data.ema
             client_latest_updated = client_data.latest_updated
@@ -107,17 +124,16 @@ class DBScanClientSelection(IntelligentClientSelection):
             if client_latest_updated < rounds_completed-1:
                 latest_ema = self.compute_ema(training_times = client_training_times, latest_ema = client_ema,latest_updated = client_latest_updated)
                 # load client data and update it
-                client_history = history_dao.load(client_data.client_id)
+                # client_history = history_dao.load(client_data.client_id)
                 # compute ema
-                client_history.ema = latest_ema
+                # client_history.ema = latest_ema
                 # update latest index used in ema zero based
-                client_history.latest_updated = rounds_completed -1
-                history_dao.save(client_history)
-            # assume untrained clients have zero training time
-            # this way we can run all clients at least once then decisions can be made based on fairness
-            
+                # client_history.latest_updated = rounds_completed -1
+                # history_dao.save(client_history)
+                client_data.ema = latest_ema
+                client_data.latest_updated = rounds_completed - 1
+                history_dao.save(client_data)
             training_data.append([latest_ema])
-            clients_ids.append(client_data.client_id)
         
         # generate this data from db
         X = StandardScaler().fit_transform(training_data)
@@ -125,17 +141,36 @@ class DBScanClientSelection(IntelligentClientSelection):
         # Compute DBSCAN 
         db = DBSCAN(eps=0.5, min_samples=2).fit(X)
         labels = db.labels_
+        sorted_clusters = self.sort_clusters(rest_clients,labels)
+        cluster_idx_list = np.arange(start = 0, stop = len(sorted_clusters))
+        perc = (round/max_rounds)*100
+        start_cluster_idx = np.percentile(cluster_idx_list,perc,interpolation='nearest')
         
-        sorted_clusters = self.sort_clusters(all_data,labels)
-        number_of_clusters = len(sorted_clusters)
-        #TODO
-        runnable_cluster_idx = (round*number_of_clusters)//max_rounds
-        
-        
+        return rookie_clients + self.sample_starting_from(sorted_clusters,start_cluster_idx, n_clients_from_clustering)
 
         
         
-        return random.sample(pool, n_clients_in_round)
+    
+    def sample_starting_from(self,sorted_clusters,start_cluster_idx:int, n_clients_from_clustering:int)->list:
+        # return clients which run the least
+        cluster_list = list(sorted_clusters.items())
+        returned_samples = []
+        while n_clients_from_clustering>0:
+            cluster = cluster_list[start_cluster_idx]
+            cluster_clients = cluster[1][1]
+            cluster_size = len(cluster_clients)
+            if cluster_size >= n_clients_from_clustering:
+                cluster_clients_sorted = sorted(cluster_clients,key = lambda client: len(client.training_times))
+                return cluster_clients_sorted[:n_clients_from_clustering]
+            else:
+                n_clients_from_clustering-= cluster_size
+                returned_samples+= cluster_clients
+                
+            start_cluster_idx+=1
+        return returned_samples            
+        # return random.sample(pool, n_clients_in_round)
+        
+        pass
         
 # db = DBScanClientSelection()     
 # db.select_clients([],[])

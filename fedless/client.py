@@ -167,11 +167,8 @@ def fedless_mongodb_handler(
         end_time  = time.time()
         elapsed_time = end_time - start_time
         
+    
         
-        
-        client_history = client_history_dao.load(client_id)
-        client_history.training_times.append(elapsed_time)
-        client_history_dao.save(client_history)
         
         logger.debug(f"Storing client results in database. Starting now...")
         results_dao.save(
@@ -180,6 +177,11 @@ def fedless_mongodb_handler(
             client_id=client_id,
             result=client_result,
         )
+        logger.debug(f"Storing client history in database...")
+        client_history = client_history_dao.load(client_id)
+        client_history.training_times.append(elapsed_time)
+        client_history_dao.save(client_history)
+        
         logger.debug(f"Finished writing to database")
 
         return InvocationResult(
