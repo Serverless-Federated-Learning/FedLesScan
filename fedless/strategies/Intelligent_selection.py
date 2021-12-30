@@ -165,8 +165,9 @@ class DBScanClientSelection(IntelligentClientSelection):
             else:
                 n_clients_from_clustering-= cluster_size
                 returned_samples+= cluster_clients
-                
-            start_cluster_idx+=1
+            # if clusters are done go back and fetch from the faster clients    
+            start_cluster_idx = (start_cluster_idx+1) % len(cluster_list)
+            
         return returned_samples            
         # return random.sample(pool, n_clients_in_round)
         
