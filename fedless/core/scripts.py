@@ -10,11 +10,9 @@ import click
 import tensorflow as tf
 
 from fedless.core.common import parse_yaml_file
-from fedless.core.mnist import (
-    create_mnist_cnn,
-    create_mnist_train_data_loader_configs,
-)
-from fedless.core.leaf import create_femnist_cnn, create_shakespeare_lstm
+from fedless.datasets.mnist.data_loader import create_mnist_train_data_loader_configs
+from fedless.datasets.mnist.model import create_mnist_cnn
+from fedless.datasets.leaf.model import create_femnist_cnn, create_shakespeare_lstm
 from fedless.core.models import (
     CognitoConfig,
     ExperimentConfig,
