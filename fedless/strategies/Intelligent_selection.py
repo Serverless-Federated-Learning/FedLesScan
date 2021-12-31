@@ -108,10 +108,11 @@ class DBScanClientSelection(IntelligentClientSelection):
         # try and run rookies first
         rookie_clients,rest_clients = self.filter_rookies(all_data)    
         if len(rookie_clients)>= n_clients_in_round:
+            logger.info(f'selected rookies {n_clients_in_round} of {len(rookie_clients)}')
             return random.sample(rookie_clients,n_clients_in_round)
         
         n_clients_from_clustering = n_clients_in_round-len(rookie_clients)
-        
+        logger.info(f'selected rookies {len(rookie_clients)}, remaining {n_clients_from_clustering}')
         training_data = []
         for client_data in rest_clients:
             client_training_times = client_data.training_times
@@ -123,24 +124,14 @@ class DBScanClientSelection(IntelligentClientSelection):
             # the ema is not up to date
             if client_latest_updated < rounds_completed-1:
                 latest_ema = self.compute_ema(training_times = client_training_times, latest_ema = client_ema,latest_updated = client_latest_updated)
-                # load client data and update it
-                # client_history = history_dao.load(client_data.client_id)
-                # compute ema
-                # client_history.ema = latest_ema
-                # update latest index used in ema zero based
-                # client_history.latest_updated = rounds_completed -1
-                # history_dao.save(client_history)
+
                 client_data.ema = latest_ema
                 client_data.latest_updated = rounds_completed - 1
                 history_dao.save(client_data)
             training_data.append([latest_ema])
         
-        # generate this data from db
-        X = StandardScaler().fit_transform(training_data)
-        # #############################################################################
-        # Compute DBSCAN 
-        db = DBSCAN(eps=0.5, min_samples=2).fit(X)
-        labels = db.labels_
+        # todo convert to mins
+        labels = self.perform_clustering(training_data=training_data,eps_step=0.1)
         sorted_clusters = self.sort_clusters(rest_clients,labels)
         cluster_idx_list = np.arange(start = 0, stop = len(sorted_clusters))
         perc = (round/max_rounds)*100
@@ -148,6 +139,34 @@ class DBScanClientSelection(IntelligentClientSelection):
         
         return rookie_clients + self.sample_starting_from(sorted_clusters,start_cluster_idx, n_clients_from_clustering)
 
+    def perform_clustering(self, training_data, eps_step):
+        best_labels = None
+        best_score = 0
+        X = StandardScaler().fit_transform(training_data)
+        for eps in np.arange(0.01,1,eps_step):
+            logger.info("trying eps in range ", eps)
+            db = DBSCAN(eps=eps, min_samples=2).fit(X)
+            labels = db.labels_
+            
+            if best_labels is None:
+                best_labels = labels
+            # Number of clusters in labels, ignoring noise if present.
+            n_lables = len(set(labels))
+            n_clusters_ = n_lables - (1 if -1 in labels else 0)
+            if n_clusters_ ==1:
+                logger.info("stopping, samples are all in one cluster")
+                break
+            n_noise_ = list(labels).count(-1)
+            if n_lables<=len(X)-1 and n_lables>1:
+                clustering_score = metrics.calinski_harabasz_score(X, labels)
+                logger.info("clustering score ", clustering_score)
+                if clustering_score >best_score:
+                    best_score  = clustering_score
+                    best_labels = labels
+                    logger.info("updated clustering score ", clustering_score, n_lables,n_noise_)
+            else:
+                logger.info("number of clusters not enough ", n_lables, n_noise_)
+        return best_labels
         
         
     
