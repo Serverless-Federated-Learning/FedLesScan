@@ -194,7 +194,9 @@ class DBScanClientSelection(IntelligentClientSelection):
                         n_noise_,
                     )
             else:
-                logger.info("number of clusters not enough ", n_lables, n_noise_)
+                logger.info(
+                    f"number of clusters not enough , labels = {n_lables}, noise = {n_noise_}"
+                )
         return best_labels
 
     def sample_starting_from(
