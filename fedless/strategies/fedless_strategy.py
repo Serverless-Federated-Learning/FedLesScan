@@ -57,7 +57,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             aggregator_params=aggregator_params,
             evaluator_config=evaluator_config,
             aggregator_config=aggregator_config,
-            selectionStrategy = selectionStrategy,
+            selectionStrategy=selectionStrategy,
             client_timeout=client_timeout,
             allowed_stragglers=allowed_stragglers,
             save_dir=save_dir,
@@ -111,7 +111,9 @@ class FedlessStrategy(ServerlessFlStrategy):
                     if self.invocation_delay:
                         await asyncio.sleep(random.uniform(0.0, self.invocation_delay))
                     t_start = time.time()
-                    logger.info(f"***->>> invoking client ${client_id} with time out ${self.client_timeout}")
+                    logger.info(
+                        f"***->>> invoking client ${client_id} with time out ${self.client_timeout}"
+                    )
                     res = await self.invoke_async(
                         function,
                         data,

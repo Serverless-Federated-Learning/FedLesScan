@@ -6,7 +6,15 @@ from gridfs import GridFS
 from gridfs.errors import GridFSError
 from pymongo.errors import ConnectionFailure
 
-from fedless.persistence.mongodb_base_connector import DocumentAlreadyExistsException, DocumentNotLoadedException, MongoDbDao, PersistenceError, PersistenceValueError, StorageConnectionError, wrap_pymongo_errors
+from fedless.persistence.mongodb_base_connector import (
+    DocumentAlreadyExistsException,
+    DocumentNotLoadedException,
+    MongoDbDao,
+    PersistenceError,
+    PersistenceValueError,
+    StorageConnectionError,
+    wrap_pymongo_errors,
+)
 from fedless.models import (
     ClientPersistentHistory,
     ClientResult,
@@ -15,8 +23,6 @@ from fedless.models import (
     SerializedParameters,
     SerializedModel,
 )
-
-
 
 
 class ClientResultDao(MongoDbDao):
@@ -206,14 +212,14 @@ class ClientResultDao(MongoDbDao):
 
 
 class ClientHistoryDao(MongoDbDao):
-    
     def __init__(
         self,
         db: Union[str, MongodbConnectionConfig, pymongo.MongoClient],
         collection: str = "client_history",
-        database: str = "fedless"):
+        database: str = "fedless",
+    ):
         super().__init__(db, collection, database=database)
-        
+
     @wrap_pymongo_errors
     def save(self, client: ClientPersistentHistory, overwrite: bool = True) -> Any:
         if (
@@ -248,6 +254,7 @@ class ClientHistoryDao(MongoDbDao):
             raise StorageConnectionError(e) from e
         for client_dict in obj_dicts:
             yield ClientPersistentHistory.parse_obj(client_dict)
+
 
 class ClientConfigDao(MongoDbDao):
     """Store clients  in a mongodb database"""

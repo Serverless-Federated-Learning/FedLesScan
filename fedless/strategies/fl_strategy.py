@@ -58,11 +58,13 @@ class FLStrategy(ABC):
         max_accuracy: Optional[float] = None,
     ):
         for round in range(max_rounds):
-            #TODO straggler identification scheme here
+            # TODO straggler identification scheme here
             # clients = self.sample_clients(n_clients_in_round, self.clients)
-            clients = self.selectionStrategy.select_clients(n_clients_in_round, self.clients, round, max_rounds)
+            clients = self.selectionStrategy.select_clients(
+                n_clients_in_round, self.clients, round, max_rounds
+            )
             logger.info(f"Sampled {len(clients)} for round {round}")
-            #TODO straggler mitigation scheme
+            # TODO straggler mitigation scheme
             loss, accuracy, metrics = await self.fit_round(round, clients)
             logger.info(
                 f"Round {round} finished. Global loss={loss}, accuracy={accuracy}"

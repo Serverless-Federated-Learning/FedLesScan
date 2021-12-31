@@ -1,5 +1,6 @@
 from tensorflow import keras
 
+
 def create_mnist_cnn(num_classes=10):
     model = keras.models.Sequential(
         [

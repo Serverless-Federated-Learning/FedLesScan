@@ -34,8 +34,6 @@ from fedless.providers import FaaSProvider
 logger = logging.getLogger(__name__)
 
 
-
-
 class ServerlessFlStrategy(FLStrategy, ABC):
     def __init__(
         self,
@@ -53,9 +51,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
         invocation_delay: float = None,
-        
     ):
-        super().__init__(clients=clients,selectionStrategy=selectionStrategy)
+        super().__init__(clients=clients, selectionStrategy=selectionStrategy)
         urllib3.disable_warnings()
         self.session: str = session or str(uuid.uuid4())
         self.provider = provider

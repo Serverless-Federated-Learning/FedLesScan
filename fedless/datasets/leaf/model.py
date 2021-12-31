@@ -6,7 +6,6 @@ from fedless.datasets.data import LEAF
 from fedless.models import LeafDataset, LEAFConfig
 
 
-
 def create_femnist_cnn(
     num_classes: int = 62, small: bool = False
 ) -> keras.models.Sequential:

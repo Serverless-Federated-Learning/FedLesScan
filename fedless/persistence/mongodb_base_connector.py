@@ -16,6 +16,7 @@ from fedless.models import (
     SerializedModel,
 )
 
+
 class PersistenceError(Exception):
     """Base exception for persistence errors"""
 
@@ -51,8 +52,6 @@ def wrap_pymongo_errors(func: Callable) -> Callable:
             raise PersistenceError(e) from e
 
     return wrapped_function
-
-
 
 
 class MongoDbDao(AbstractContextManager):

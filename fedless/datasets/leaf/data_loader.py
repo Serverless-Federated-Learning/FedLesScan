@@ -6,8 +6,6 @@ from fedless.datasets.data import LEAF
 from fedless.models import LeafDataset, LEAFConfig
 
 
-
-
 def split_source_by_users(config: LEAFConfig) -> Iterable[LEAFConfig]:
     loader = LEAF(
         dataset=config.dataset,

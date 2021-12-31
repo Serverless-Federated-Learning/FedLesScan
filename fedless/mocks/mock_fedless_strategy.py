@@ -58,7 +58,7 @@ class MockFedlessStrategy(ServerlessFlStrategy):
             aggregator_params=aggregator_params,
             evaluator_config=evaluator_config,
             aggregator_config=aggregator_config,
-            selectionStrategy = selectionStrategy,
+            selectionStrategy=selectionStrategy,
             client_timeout=client_timeout,
             allowed_stragglers=allowed_stragglers,
             save_dir=save_dir,
@@ -75,14 +75,16 @@ class MockFedlessStrategy(ServerlessFlStrategy):
         self._evaluator = await self.provider.deploy(self.evaluator_config.params)
 
     # function with closure for easier logging
-    async def _inv_mock(self, data:InvokerParams, session:Session, round, client_id):
+    async def _inv_mock(self, data: InvokerParams, session: Session, round, client_id):
         try:
             if self.invocation_delay:
                 await asyncio.sleep(random.uniform(0.0, self.invocation_delay))
             t_start = time.time()
-            logger.info(f"***->>> invoking client ${client_id} with time out ${self.client_timeout}")
+            logger.info(
+                f"***->>> invoking client ${client_id} with time out ${self.client_timeout}"
+            )
             cl = MockClient(data)
-            res =  await cl.runClient()
+            res = await cl.runClient()
             # res = await self.invoke_async(
             #     function,
             #     data,
@@ -97,7 +99,7 @@ class MockFedlessStrategy(ServerlessFlStrategy):
                     "client_id": client_id,
                     "session_id": self.session,
                     "invocation_time": t_start,
-                    "function": {"function":"mock"},
+                    "function": {"function": "mock"},
                     "seconds": dt_call,
                     "eval": data.evaluate_only,
                     "round": round,
@@ -125,7 +127,6 @@ class MockFedlessStrategy(ServerlessFlStrategy):
                 http_proxies=self.proxies,
                 evaluate_only=evaluate_only,
             )
-
 
             tasks.append(
                 asyncio.create_task(

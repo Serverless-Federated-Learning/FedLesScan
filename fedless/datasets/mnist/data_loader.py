@@ -37,5 +37,3 @@ def create_mnist_train_data_loader_configs(
         yield DatasetLoaderConfig(
             type="mnist", params=MNISTConfig(indices=indices.tolist(), proxies=proxies)
         )
-
-

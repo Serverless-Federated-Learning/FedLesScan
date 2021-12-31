@@ -56,7 +56,7 @@ class FedkeeperStrategy(ServerlessFlStrategy):
             aggregator_params=aggregator_params,
             evaluator_config=evaluator_config,
             aggregator_config=aggregator_config,
-            selectionStrategy = selectionStrategy,
+            selectionStrategy=selectionStrategy,
             client_timeout=client_timeout,
             allowed_stragglers=allowed_stragglers,
             save_dir=save_dir,

@@ -18,7 +18,10 @@ from fedless.core.models import (
     ExperimentConfig,
     FedkeeperClientsConfig,
 )
-from fedless.strategies.Intelligent_selection import DBScanClientSelection, RandomClientSelection
+from fedless.strategies.Intelligent_selection import (
+    DBScanClientSelection,
+    RandomClientSelection,
+)
 from fedless.strategies.strategy_selector import selectStrategy
 from fedless.models import (
     ClientConfig,
@@ -32,7 +35,12 @@ from fedless.models import (
     LEAFConfig,
     MNISTConfig,
 )
-from fedless.persistence.client_daos import (ClientConfigDao, ClientHistoryDao, ParameterDao, ModelDao)
+from fedless.persistence.client_daos import (
+    ClientConfigDao,
+    ClientHistoryDao,
+    ParameterDao,
+    ModelDao,
+)
 from fedless.providers import OpenwhiskCluster
 from fedless.serialization import (
     serialize_model,
@@ -64,7 +72,7 @@ FILE_SERVER = "http://138.246.235.163:31715"
 @click.option(
     "-s",
     "--strategy",
-    type=click.Choice(["fedkeeper", "fedless","fedless_mock"], case_sensitive=False),
+    type=click.Choice(["fedkeeper", "fedless", "fedless_mock"], case_sensitive=False),
     required=True,
 )
 @click.option(
@@ -207,36 +215,33 @@ def run(
     )
 
     # TODO make it a cmd arg or select it based on strategy
-    clientSelectionStrat =  DBScanClientSelection(config, session)
+    clientSelectionStrat = DBScanClientSelection(config, session)
     # clientSelectionStrat =  RandomClientSelection()
     inv_params = {
-        "session":session,
-        "cognito":config.cognito,
-        "provider":cluster,
-        "clients":clients,
-            "evaluator_config":config.server.evaluator,
-        "aggregator_config":config.server.aggregator,
-        "selectionStrategy":clientSelectionStrat,
-        "mongodb_config":config.database,
-        "allowed_stragglers":stragglers,
-        "client_timeout":timeout,
-        "save_dir":log_dir,
-        "aggregator_params":{
+        "session": session,
+        "cognito": config.cognito,
+        "provider": cluster,
+        "clients": clients,
+        "evaluator_config": config.server.evaluator,
+        "aggregator_config": config.server.aggregator,
+        "selectionStrategy": clientSelectionStrat,
+        "mongodb_config": config.database,
+        "allowed_stragglers": stragglers,
+        "client_timeout": timeout,
+        "save_dir": log_dir,
+        "aggregator_params": {
             "online": aggregate_online,
             "test_batch_size": test_batch_size,
         },
-        "global_test_data":(
-            create_mnist_test_config(
-                proxies=(proxies if proxy_in_evaluator else None)
-            )
+        "global_test_data": (
+            create_mnist_test_config(proxies=(proxies if proxy_in_evaluator else None))
             if dataset.lower() == "mnist"
             else None
         ),
-        "proxies":proxies,
+        "proxies": proxies,
     }
-    
-    strategy = selectStrategy(strategy,inv_params)
-  
+
+    strategy = selectStrategy(strategy, inv_params)
 
     asyncio.run(strategy.deploy_all_functions())
     asyncio.run(
@@ -314,19 +319,19 @@ def store_client_configs(
             test_data=test_config,
             hyperparams=hp,
         )
-        
+
         client_history = ClientPersistentHistory(
             client_id=client_id,
-            session_id = session,
+            session_id=session,
         )
-        
 
         logger.info(
             f"Initializing client {client_id} of type " f"{client.function.type}"
         )
         client_config_dao.save(client_config)
         logger.info(
-            f"Initializing client_history for {client_id} of type " f"{client.function.type}"
+            f"Initializing client_history for {client_id} of type "
+            f"{client.function.type}"
         )
         client_history_dao.save(client_history)
         final_configs.append(client_config)
