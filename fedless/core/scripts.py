@@ -10,7 +10,7 @@ import click
 import tensorflow as tf
 
 from fedless.core.common import parse_yaml_file
-from fedless.core.fedkeeper import (
+from fedless.core.mnist import (
     create_mnist_cnn,
     create_mnist_train_data_loader_configs,
 )
