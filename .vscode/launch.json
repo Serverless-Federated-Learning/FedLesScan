@@ -13,7 +13,7 @@
             "name": "run mnist-demo",
             "type": "python",
             "request": "launch",
-            "module": "fedless.benchmark.scripts",
+            "module": "fedless.core.scripts",
             "console": "integratedTerminal",
             "args": [
                 "-d",
@@ -25,7 +25,7 @@
                 "--clients",
                 "10",
                 "--clients-in-round",
-                "3",
+                "4",
                 "--stragglers",
                 "1",
                 "--max-accuracy",
@@ -33,7 +33,7 @@
                 "--out",
                 "${workspaceFolder}/out/fedkeeper-mnist-demo",
                 "--rounds",
-                "2",
+                "3",
                 "--timeout",
                 "900",
                 "--separate-invokers"

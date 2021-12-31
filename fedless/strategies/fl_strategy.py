@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 
-from fedless.benchmark.common import run_in_executor
+from fedless.core.common import run_in_executor
 from fedless.invocation import retry_session, invoke_sync
 from fedless.models import (
     TestMetrics,

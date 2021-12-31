@@ -12,7 +12,7 @@ from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.datasets import make_blobs
 from sklearn.preprocessing import StandardScaler
-from fedless.benchmark.models import ExperimentConfig
+from fedless.core.models import ExperimentConfig
 
 from fedless.persistence.client_daos import ClientHistoryDao
 

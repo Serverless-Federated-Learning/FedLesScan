@@ -9,13 +9,13 @@ from typing import List, Union, Tuple, Optional, Dict
 import click
 import tensorflow as tf
 
-from fedless.benchmark.common import parse_yaml_file
-from fedless.benchmark.fedkeeper import (
+from fedless.core.common import parse_yaml_file
+from fedless.core.fedkeeper import (
     create_mnist_cnn,
     create_mnist_train_data_loader_configs,
 )
-from fedless.benchmark.leaf import create_femnist_cnn, create_shakespeare_lstm
-from fedless.benchmark.models import (
+from fedless.core.leaf import create_femnist_cnn, create_shakespeare_lstm
+from fedless.core.models import (
     CognitoConfig,
     ExperimentConfig,
     FedkeeperClientsConfig,

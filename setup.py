@@ -16,6 +16,6 @@ setup(
     python_requires=">=3.7",
     entry_points="""
         [console_scripts]
-        fedkeeper=fedless.benchmark.fedkeeper:cli
+        fedkeeper=fedless.core.fedkeeper:cli
     """,
 )

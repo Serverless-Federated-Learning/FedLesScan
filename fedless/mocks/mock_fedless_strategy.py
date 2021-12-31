@@ -10,8 +10,8 @@ import urllib3
 from pydantic import ValidationError
 from requests import Session
 
-from fedless.benchmark.common import fetch_cognito_auth_token
-from fedless.benchmark.models import CognitoConfig
+from fedless.core.common import fetch_cognito_auth_token
+from fedless.core.models import CognitoConfig
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 from fedless.strategies.serverless_strategy import ServerlessFlStrategy
 from fedless.invocation import retry_session, InvocationError

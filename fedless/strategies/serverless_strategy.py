@@ -12,7 +12,7 @@ import urllib3
 from pydantic import ValidationError
 from requests import Session
 
-from fedless.benchmark.common import run_in_executor
+from fedless.core.common import run_in_executor
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 from fedless.strategies.fl_strategy import FLStrategy
 from fedless.invocation import retry_session, invoke_sync

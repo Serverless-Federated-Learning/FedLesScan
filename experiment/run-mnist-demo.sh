@@ -12,7 +12,7 @@ rounds=10
 
 # shellcheck disable=SC2034
 for curr_repeat in {1..1}; do
-  python -m fedless.benchmark.scripts \
+  python -m fedless.core.scripts \
     -d "mnist" \
     -s "fedless_mock" \
     -c mnist-demo.yaml \
