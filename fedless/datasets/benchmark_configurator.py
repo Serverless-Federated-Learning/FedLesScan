@@ -80,7 +80,7 @@ def create_mnist_test_config(proxies) -> DatasetLoaderConfig:
     )
 
 
-FILE_SERVER = "http://138.246.235.163:31715"
+FILE_SERVER = "http://138.246.235.175:81"
 
 
 
@@ -102,7 +102,7 @@ def create_data_configs(
                 type="leaf",
                 params=LEAFConfig(
                     dataset=dataset,
-                    location=f"{FILE_SERVER}/data/leaf/data/{dataset}/data/"
+                    location=f"{FILE_SERVER}/datasets/leaf/data/{dataset}/data/"
                     f"train/user_{client_idx}_train_9.json",
                 ),
             )
@@ -110,7 +110,7 @@ def create_data_configs(
                 type="leaf",
                 params=LEAFConfig(
                     dataset=dataset,
-                    location=f"{FILE_SERVER}/data/leaf/data/{dataset}/data/"
+                    location=f"{FILE_SERVER}/datasets/leaf/data/{dataset}/data/"
                     f"test/user_{client_idx}_test_9.json",
                 ),
             )
