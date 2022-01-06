@@ -210,7 +210,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             logger.info(f"Computing test statistics from clients")
             if hasattr(self, "evaluate_clients"):
                 n_clients_in_round = len(clients)
-                eval_clients = self.sample_clients(n_clients_in_round, self.clients)
+                # randomly select clients form evaluation
+                eval_clients = random.sample( self.clients,n_clients_in_round)
                 logger.info(f"Selected {len(eval_clients)} for evaluation...")
                 metrics = await self.evaluate_clients(
                     agg_res.new_round_id, eval_clients
