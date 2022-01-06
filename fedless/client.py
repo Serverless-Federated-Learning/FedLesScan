@@ -18,7 +18,7 @@ from tensorflow_privacy.privacy.analysis.compute_dp_sgd_privacy_lib import (
     apply_dp_sgd_analysis,
 )
 
-from fedless.datasets.data import (
+from fedless.datasets.dataset_loaders import (
     DatasetLoader,
     DatasetLoaderBuilder,
     DatasetNotLoadedError,

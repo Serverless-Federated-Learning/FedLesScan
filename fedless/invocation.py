@@ -420,7 +420,7 @@ def retry_session(
         connect=0,
         total=None,
         status_forcelist=status_list,
-        method_whitelist=allowed_methods,
+        allowed_methods=allowed_methods,
         backoff_factor=backoff_factor,
     )
     adapter = HTTPAdapter(max_retries=retry)
