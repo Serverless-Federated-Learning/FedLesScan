@@ -14,5 +14,5 @@ python setup.py bdist_wheel
 # Building image
 echo "Build and Push Image"
 docker build -f ./images/flower/Dockerfile -t fedless-flower  .
-docker tag fedless-flower andreasgrafberger/fedless:flower
-docker push andreasgrafberger/fedless:flower
+docker tag fedless-flower mohamedazab/fedless:flower
+docker push mohamedazab/fedless:flower

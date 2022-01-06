@@ -5,7 +5,7 @@ set -e
 wsk -i action update \
   evaluator \
   main.py \
-  --docker andreasgrafberger/fedless-openwhisk:clients \
+  --docker mohamedazab/fedless-openwhisk:clients \
   --memory 2048 \
   --timeout 60000 \
   --web raw \

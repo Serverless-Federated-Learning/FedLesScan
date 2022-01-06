@@ -14,7 +14,7 @@ for i in {1..10}; do
   wsk -i action update \
     "authorizer-$i" \
     authorizer.py \
-    --docker andreasgrafberger/fedless-openwhisk:clients \
+    --docker mohamedazab/fedless-openwhisk:clients \
     --memory 256 \
     --timeout 2000 \
     --web raw \
@@ -26,7 +26,7 @@ for i in {1..10}; do
   wsk -i action update \
     "client-indep-$i" \
     main.py \
-    --docker andreasgrafberger/fedless-openwhisk:clients \
+    --docker mohamedazab/fedless-openwhisk:clients \
     --memory 2048 \
     --timeout 120000
 

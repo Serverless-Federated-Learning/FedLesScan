@@ -2,6 +2,7 @@ import logging
 import math
 import sys
 from typing import Optional
+import time
 
 import pymongo
 import tensorflow.keras as keras
@@ -17,7 +18,7 @@ from tensorflow_privacy.privacy.analysis.compute_dp_sgd_privacy_lib import (
     apply_dp_sgd_analysis,
 )
 
-from fedless.data import (
+from fedless.datasets.dataset_loaders import (
     DatasetLoader,
     DatasetLoaderBuilder,
     DatasetNotLoadedError,
@@ -36,13 +37,14 @@ from fedless.models import (
     InvocationResult,
     BinaryStringFormat,
 )
-from fedless.persistence import (
-    PersistenceError,
+from fedless.persistence.client_daos import (
     ClientConfigDao,
+    ClientHistoryDao,
     ModelDao,
     ParameterDao,
     ClientResultDao,
 )
+from fedless.persistence.mongodb_base_connector import PersistenceError
 from fedless.serialization import (
     ModelLoadError,
     ModelLoader,
@@ -90,7 +92,9 @@ def fedless_mongodb_handler(
         model_dao = ModelDao(db=db)
         parameter_dao = ParameterDao(db=db)
         results_dao = ClientResultDao(db=db)
+        client_history_dao = ClientHistoryDao(db=db)
 
+        start_time = time.time()
         logger.debug(f"Loading model from database")
         # Load model and latest weights
         model = model_dao.load(session_id=session_id)
@@ -159,6 +163,9 @@ def fedless_mongodb_handler(
             verbose=verbose,
         )
 
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+
         logger.debug(f"Storing client results in database. Starting now...")
         results_dao.save(
             session_id=session_id,
@@ -166,6 +173,11 @@ def fedless_mongodb_handler(
             client_id=client_id,
             result=client_result,
         )
+        logger.debug(f"Storing client history in database...")
+        client_history = client_history_dao.load(client_id)
+        client_history.training_times.append(elapsed_time)
+        client_history_dao.save(client_history)
+
         logger.debug(f"Finished writing to database")
 
         return InvocationResult(

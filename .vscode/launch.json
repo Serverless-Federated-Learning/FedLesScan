@@ -1,0 +1,79 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "pythonArgs": [
+                "-X",
+                "dev",
+            ],
+            "subProcess": true,
+            "name": "femnist-exp",
+            "type": "python",
+            "request": "launch",
+            "module": "fedless.core.scripts",
+            "console": "integratedTerminal",
+            "args": [
+                "-d",
+                "femnist",
+                "-s",
+                "fedless_mock",
+                "-c",
+                "${workspaceFolder}/experiment/femnist-demo.yaml",
+                "--clients",
+                "5",
+                "--clients-in-round",
+                "4",
+                "--stragglers",
+                "1",
+                "--max-accuracy",
+                "0.6",
+                "--out",
+                "${workspaceFolder}/out/femnist-demo",
+                "--rounds",
+                "3",
+                "--timeout",
+                "120",
+                // "--tum-proxy"
+            ]
+        },
+        {
+            "pythonArgs": [
+                "-X",
+                "dev",
+            ],
+            "subProcess": true,
+            "name": "mnist-exp",
+            "type": "python",
+            "request": "launch",
+            "module": "fedless.core.scripts",
+            "console": "integratedTerminal",
+            "args": [
+                "-d",
+                "mnist",
+                "-s",
+                "fedless_mock",
+                "-c",
+                "${workspaceFolder}/experiment/mnist-demo.yaml",
+                "--clients",
+                "10",
+                "--clients-in-round",
+                "4",
+                "--stragglers",
+                "1",
+                "--max-accuracy",
+                "0.6",
+                "--out",
+                "${workspaceFolder}/out/fedkeeper-mnist-demo",
+                "--rounds",
+                "3",
+                "--timeout",
+                "900",
+                "--separate-invokers"
+                // "--tum-proxy"
+            ]
+        }
+    ]
+}

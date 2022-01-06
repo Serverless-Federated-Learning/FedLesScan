@@ -374,6 +374,15 @@ class ClientConfig(BaseModel):
     compress_model: bool = False
 
 
+class ClientPersistentHistory(BaseModel):
+    client_id: str
+    session_id: str
+    training_times: list = []
+    ema: float = 0
+    latest_updated: int = -1
+    missed_rounds: list = []
+
+
 class InvokerParams(BaseModel):
     """Parameters to run invoker function similarly as proposed by FedKeeper"""
 
