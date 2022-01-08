@@ -11,9 +11,9 @@ from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.datasets import make_blobs
 from sklearn.preprocessing import StandardScaler
-from fedless.core.models import ExperimentConfig
 
 from fedless.persistence.client_daos import ClientHistoryDao
+from fedless.core.models import ExperimentConfig
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class RandomClientSelection(IntelligentClientSelection):
     def __init__(self):
         super().__init__(self.sample_clients)
 
-    def sample_clients(self, clients: int, pool: List) -> List:
+    def sample_clients(self, clients: int, pool: List, round, max_rounds) -> List:
         return random.sample(pool, clients)
 
 
@@ -123,7 +123,9 @@ class DBScanClientSelection(IntelligentClientSelection):
             logger.info(
                 f"selected rookies {n_clients_in_round} of {len(rookie_clients)}"
             )
-            return random.sample(rookie_clients, n_clients_in_round)
+            return self.select_candidates_from_pool(
+                random.sample(rookie_clients, n_clients_in_round), pool
+            )
 
         n_clients_from_clustering = n_clients_in_round - len(rookie_clients)
         logger.info(
@@ -159,16 +161,25 @@ class DBScanClientSelection(IntelligentClientSelection):
             cluster_idx_list, perc, interpolation="nearest"
         )
 
-        return rookie_clients + self.sample_starting_from(
+        round_candidates_history = rookie_clients + self.sample_starting_from(
             sorted_clusters, start_cluster_idx, n_clients_from_clustering
         )
+
+        return self.select_candidates_from_pool(round_candidates_history, pool)
+
+    def select_candidates_from_pool(self, round_candidates_history: list, pool):
+        round_candidates_ids = list(
+            map(lambda x: x.client_id, round_candidates_history)
+        )
+        round_candidates = filter(lambda x: x.client_id in round_candidates_ids, pool)
+        return list(round_candidates)
 
     def perform_clustering(self, training_data, eps_step):
         best_labels = None
         best_score = 0
         X = StandardScaler().fit_transform(training_data)
         for eps in np.arange(0.01, 1, eps_step):
-            logger.info("trying eps in range ", eps)
+            logger.info(f"trying eps in range 0.01-{eps} with step {eps_step}")
             db = DBSCAN(eps=eps, min_samples=2).fit(X)
             labels = db.labels_
 
@@ -183,15 +194,12 @@ class DBScanClientSelection(IntelligentClientSelection):
             n_noise_ = list(labels).count(-1)
             if n_lables <= len(X) - 1 and n_lables > 1:
                 clustering_score = metrics.calinski_harabasz_score(X, labels)
-                logger.info("clustering score ", clustering_score)
+                logger.info(f"clustering score : {clustering_score}")
                 if clustering_score > best_score:
                     best_score = clustering_score
                     best_labels = labels
                     logger.info(
-                        "updated clustering score ",
-                        clustering_score,
-                        n_lables,
-                        n_noise_,
+                        f"updated clustering score:{clustering_score}, n_labels = {n_lables}, n_noise = {n_noise_}"
                     )
             else:
                 logger.info(

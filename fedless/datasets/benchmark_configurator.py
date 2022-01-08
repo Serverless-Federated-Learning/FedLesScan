@@ -73,6 +73,7 @@ def init_store_model(
     parameters_dao.save(session_id=session, round_id=0, params=params)
     models_dao.save(session_id=session, model=serialized_model)
 
+
 # only for global test data
 def create_mnist_test_config(proxies) -> DatasetLoaderConfig:
     return DatasetLoaderConfig(
@@ -81,7 +82,6 @@ def create_mnist_test_config(proxies) -> DatasetLoaderConfig:
 
 
 FILE_SERVER = "http://138.246.235.175:81"
-
 
 
 # noinspection PydanticTypeChecker,PyTypeChecker
