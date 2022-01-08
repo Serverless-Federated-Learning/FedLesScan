@@ -21,7 +21,7 @@ server:
       name: aggregator
       file: /home/ubuntu/mitigating-stragglers-fl-project/functions/openwhisk/aggregator/main.py
       image: mohamedazab/fedless-openwhisk:clients
-      memory: 2048
+      memory: 4096
       # tod try 4gb memory 
       timeout: 60000
 
@@ -38,10 +38,34 @@ clients:
       - accuracy
   functions:
     - function:
-        replicas: 10
+        replicas: 5
         params:
           endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-1.json
           self_signed_cert: true
-          token: fA6cq3yRFyckMe18srV/5Sky4pCKiXQGVH5yfALa
+          token: 3NNuNLflWAtUjGRGGgmw74rCsuQctuyfjmmjiTwV
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        replicas: 5
+        params:
+          endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-2.json
+          self_signed_cert: true
+          token: 3NNuNLflWAtUjGRGGgmw74rCsuQctuyfjmmjiTwV
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        replicas: 5
+        params:
+          endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-3.json
+          self_signed_cert: true
+          token: 3NNuNLflWAtUjGRGGgmw74rCsuQctuyfjmmjiTwV
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        replicas: 5
+        params:
+          endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-4.json
+          self_signed_cert: true
+          token: 3NNuNLflWAtUjGRGGgmw74rCsuQctuyfjmmjiTwV
           type: openwhisk-web
         type: openwhisk-web
