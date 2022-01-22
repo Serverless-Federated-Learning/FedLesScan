@@ -42,7 +42,7 @@ clients:
         params:
           endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-1.json
           self_signed_cert: true
-          token: 3NNuNLflWAtUjGRGGgmw74rCsuQctuyfjmmjiTwV
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
           type: openwhisk-web
         type: openwhisk-web
     - function:
@@ -50,7 +50,7 @@ clients:
         params:
           endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-2.json
           self_signed_cert: true
-          token: 3NNuNLflWAtUjGRGGgmw74rCsuQctuyfjmmjiTwV
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
           type: openwhisk-web
         type: openwhisk-web
     - function:
@@ -58,7 +58,7 @@ clients:
         params:
           endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-3.json
           self_signed_cert: true
-          token: 3NNuNLflWAtUjGRGGgmw74rCsuQctuyfjmmjiTwV
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
           type: openwhisk-web
         type: openwhisk-web
     - function:
@@ -66,6 +66,6 @@ clients:
         params:
           endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-4.json
           self_signed_cert: true
-          token: 3NNuNLflWAtUjGRGGgmw74rCsuQctuyfjmmjiTwV
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
           type: openwhisk-web
         type: openwhisk-web
