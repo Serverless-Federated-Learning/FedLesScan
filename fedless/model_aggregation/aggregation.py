@@ -60,6 +60,7 @@ def default_aggregation_handler(
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
         logger.debug(f"Establishing database connection")
+        # TODO load all results in db not just in round
         previous_results: Iterator[ClientResult] = result_dao.load_results_for_round(
             session_id=session_id, round_id=round_id
         )

@@ -11,7 +11,7 @@ from fedless.models import Parameters, ClientResult, TestMetrics
 
 from fedless.serialization import deserialize_parameters
 
-from parameter_aggregator import ParameterAggregator
+from fedless.model_aggregation.parameter_aggregator import ParameterAggregator
 
 
 class FedAvgAggregator(ParameterAggregator):
@@ -20,6 +20,8 @@ class FedAvgAggregator(ParameterAggregator):
     ) -> List[np.ndarray]:
         # Partially from https://github.com/adap/flower/blob/
         # 570788c9a827611230bfa78f624a89a6630555fd/src/py/flwr/server/strategy/aggregate.py#L26
+        # weights is a list of the number of elements for each client
+        #
         num_examples_total = sum(weights)
         weighted_weights = [
             [layer * num_examples for layer in weights]
