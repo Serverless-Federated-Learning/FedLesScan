@@ -84,7 +84,7 @@ class MockFedlessStrategy(ServerlessFlStrategy):
                 f"***->>> invoking client ${client_id} with time out ${self.client_timeout}"
             )
             cl = MockClient(data)
-            res = await cl.runClient()
+            res = await cl.run_client()
             # res = await self.invoke_async(
             #     function,
             #     data,

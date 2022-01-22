@@ -8,7 +8,7 @@ class MockClient:
         self.config = config
         self.delay = delay
 
-    async def runClient(self):
+    async def run_client(self):
 
         return fedless_mongodb_handler(
             session_id=self.config.session_id,
