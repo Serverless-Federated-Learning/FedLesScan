@@ -5,6 +5,7 @@ import pymongo
 import tensorflow as tf
 
 from fedless.datasets.dataset_loaders import DatasetLoaderBuilder
+from fedless.model_aggregation.stall_aware_aggregation import StallAwareAggregator
 from fedless.models import (
     ClientResult,
     MongodbConnectionConfig,
@@ -59,17 +60,12 @@ def default_aggregation_handler(
 
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
-        logger.debug(f"Establishing database connection")
-        # TODO load all results in db not just in round
-        previous_results: Iterator[ClientResult] = result_dao.load_results_for_round(
-            session_id=session_id, round_id=round_id
-        )
-
-        if not previous_results:
-            raise InsufficientClientResults(
-                f"Found no client results for session {session_id} and round {round_id}"
-            )
-        aggregator = FedAvgAggregator()
+        # logger.debug(f"Establishing database connection")
+        # # TODO load all results in db not just in round
+       
+        # aggregator = FedAvgAggregator()
+        aggregator = StallAwareAggregator(round_id)
+        previous_dic, previous_results = aggregator.select_aggregation_candidates(mongo_client,session_id, round_id)
         if online:
             logger.debug(f"Using online aggregation")
             aggregator = StreamFedAvgAggregator()
@@ -82,7 +78,7 @@ def default_aggregation_handler(
             )
             logger.debug(f"Loading of {len(previous_results)} results finished")
         logger.debug(f"Starting aggregation...")
-        new_parameters, test_results = aggregator.aggregate(previous_results)
+        new_parameters, test_results = aggregator.aggregate(previous_results,previous_dic)
         logger.debug(f"Aggregation finished")
 
         global_test_metrics = None

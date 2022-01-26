@@ -1,4 +1,4 @@
-from typing import Any, Union, Iterator
+from typing import Any, List, Tuple, Union, Iterator
 
 import bson
 import pymongo
@@ -129,7 +129,6 @@ class ClientResultDao(MongoDbDao):
         finally:
             results_file.close()
 
-    @wrap_pymongo_errors
     def _retrieve_result_files(
         self, result_dicts, session_id: str, round_id
     ) -> Iterator[ClientResult]:
@@ -159,9 +158,9 @@ class ClientResultDao(MongoDbDao):
         self,
         session_id: str,
         round_id: int,
-    ) -> Iterator[ClientResult]:
+    ) -> Tuple[List,Iterator[ClientResult]]:
         try:
-            result_dicts = iter(
+            result_dicts = list(
                 self._collection.find(
                     filter={
                         "session_id": session_id,
@@ -171,21 +170,23 @@ class ClientResultDao(MongoDbDao):
             )
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
-        return self._retrieve_result_files(result_dicts, session_id, round_id)
+        files_iter = self._retrieve_result_files(result_dicts, session_id, round_id)
+        return result_dicts,files_iter
 
     @wrap_pymongo_errors
     def load_results_for_session(
         self,
         session_id: str,
         round_id: int,
-    ) -> Iterator[ClientResult]:
+    ) -> Tuple[List,Iterator[ClientResult]]:
         try:
-            result_dicts = iter(
+            result_dicts = list(
                 self._collection.find(filter={"session_id": session_id})
             )
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
-        return self._retrieve_result_files(result_dicts, session_id, round_id)
+        files_iter = self._retrieve_result_files(result_dicts, session_id, round_id)
+        return result_dicts,files_iter
 
     @wrap_pymongo_errors
     def delete_results_for_round(

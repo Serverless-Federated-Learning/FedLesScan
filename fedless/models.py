@@ -262,7 +262,7 @@ class ModelSerializerConfig(BaseModel):
     """Configuration object for arbitrary model serializers of type :class:`ModelSerializer`"""
 
     type: str
-    params: Optional[Union[H5FullModelSerializerConfig]]
+    params: Optional[H5FullModelSerializerConfig]
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
         params_validate_types_match
@@ -273,7 +273,7 @@ class WeightsSerializerConfig(BaseModel):
     """Configuration for parameters serializers of type :class:`WeightsSerializer`"""
 
     type: str
-    params: Union[NpzWeightsSerializerConfig]
+    params: NpzWeightsSerializerConfig
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
         params_validate_types_match
@@ -404,6 +404,10 @@ class ClientInvocationParams(BaseModel):
     test_data: Optional[DatasetLoaderConfig]
 
 
+class AggregationStrategy(str, Enum):
+    PER_ROUND = "per_round"
+    PER_SESSION = 'per_session'
+    
 class AggregatorFunctionParams(BaseModel):
     session_id: str
     round_id: int
@@ -414,7 +418,7 @@ class AggregatorFunctionParams(BaseModel):
     online: bool = False
     test_data: Optional[DatasetLoaderConfig]
     test_batch_size: int = 512
-
+    aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND
 
 class AggregatorFunctionResult(BaseModel):
     new_round_id: int
@@ -488,7 +492,7 @@ class GCloudFunctionDeploymentConfig(BaseModel):
 
 class FunctionDeploymentConfig(BaseModel):
     type: str
-    params: Union[OpenwhiskFunctionDeploymentConfig]
+    params: OpenwhiskFunctionDeploymentConfig
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
         params_validate_types_match
