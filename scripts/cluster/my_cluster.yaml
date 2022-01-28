@@ -46,3 +46,42 @@ controller:
 metrics:
   prometheusEnabled: true
   userMetricsEnabled: true
+
+
+
+
+# whisk:
+#   ingress:
+#     type: NodePort
+#     apiHostName: 192.168.129.86
+#     apiHostPort: 31001
+#   limits:
+#     actions:
+#       memory:
+#         max: "5g"
+#       time:
+#         max: "10m"
+#     activation:
+#       payload:
+#         max: "128000000"
+#   containerPool:
+#     userMemory: "4096m"
+#   loadbalancer:
+#     blackbox-fraction: "100%"
+
+# k8s:
+#   persistence:
+#     enabled: false
+# nginx:
+#   httpsNodePort: 31001
+# invoker:
+#   containerFactory:
+#     impl: "kubernetes"
+#     kubernetes:
+#       replicaCount: 2
+# controller:
+#   replicaCount: 2
+# metrics:
+#   prometheusEnabled: true
+# metrics:
+#   userMetricsEnabled: true

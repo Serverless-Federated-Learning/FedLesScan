@@ -23,7 +23,7 @@ kubectl label nodes --all openwhisk-role=invoker --overwrite
 
 
 # Create helm release
-helm upgrade owdev ./helm/openwhisk -n openwhisk --create-namespace --install -f mycluster.yaml
+helm upgrade owdev ./helm/openwhisk -n openwhisk --create-namespace --install -f ../my_cluster.yaml
 
 ## Create new user and delete default guest user
 #kubectl -n openwhisk -ti exec owdev-wskadmin -- wskadmin user create admin-1
