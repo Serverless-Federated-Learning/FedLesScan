@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Tuple, Union
 import tensorflow as tf
 
 from fedless.datasets.leaf.model import create_femnist_cnn, create_shakespeare_lstm
-from fedless.datasets.mnist.data_loader import create_mnist_train_data_loader_configs
+from fedless.datasets.mnist.dataset_loader import create_mnist_train_data_loader_configs
 from fedless.datasets.mnist.model import create_mnist_cnn
 from fedless.models import (
     BinaryStringFormat,

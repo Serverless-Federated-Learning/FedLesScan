@@ -17,7 +17,7 @@ import pandas as pd
 
 from fedless.datasets.dataset_loaders import DatasetLoaderBuilder
 from fedless.model_aggregation.aggregation import FedAvgAggregator
-from fedless.datasets.mnist.data_loader import create_mnist_train_data_loader_configs
+from fedless.datasets.mnist.dataset_loader import create_mnist_train_data_loader_configs
 from fedless.datasets.mnist.model import create_mnist_cnn
 from fedless.client import default_handler
 from fedless.models import (
