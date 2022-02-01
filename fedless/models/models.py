@@ -5,53 +5,20 @@ from urllib import parse
 
 import numpy as np
 from pydantic import (
+    AnyHttpUrl,
     Field,
     BaseModel,
-    AnyHttpUrl,
     validator,
     BaseSettings,
     PositiveInt,
     StrictBytes,
 )
-from pydantic.fields import ModelField
+# from pydantic.fields import ModelField
 
-
-def params_validate_types_match(
-    params: BaseModel, values: Dict, field: Optional[ModelField] = None
-):
-    """
-    Custom pydantic validator used together with :func:`pydantic.validator`.
-    Can be used for :class:`BaseModel`'s that contain both a type and params attribute.
-    It checks if the parameter set contains a type attribute and if it matches the type
-    specified in the model itself.
-
-    :param params: Model of parameter set
-    :param values: Dictionary with previously checked attributes. Has to contain key "type"
-    :params field: Supplied by pydantic, set to None for easier testability
-    :return: params if they are valid
-    :raises ValueError, TypeError
-    """
-    # Do not throw error but accept empty params. This allows one to
-    # not specify params if the type allows it and e.g. just uses default values
-    if field and not field.required and params is None:
-        return params
-
-    try:
-        expected_type = values["type"]
-        params_type = getattr(params, "type")
-    except KeyError:
-        raise ValueError(f'Required field "type" not given.')
-    except AttributeError:
-        raise ValueError(
-            f'Field "type" is missing in the class definition of model {params.__class__}'
-        )
-
-    if expected_type != params_type:
-        raise TypeError(
-            f"Given values for parameters of type {params_type} do not match the expected type {expected_type}"
-        )
-    return params
-
+from fedless.models.validation_func import params_validate_types_match
+from fedless.models.function_models import FunctionInvocationConfig
+from fedless.datasets.leaf.dataset_loader import LEAFConfig
+from fedless.datasets.mnist.dataset_loader import MNISTConfig
 
 Parameters = List[np.ndarray]
 
@@ -91,18 +58,6 @@ class BinaryStringFormat(str, Enum):
     NONE = "none"
 
 
-class LeafDataset(str, Enum):
-    """
-    Officially supported datasets
-    """
-
-    FEMNIST = "femnist"
-    REDDIT = "reddit"
-    CELEBA = "celeba"
-    SHAKESPEARE = "shakespeare"
-    SENT140 = "sent140"
-
-
 class LocalDifferentialPrivacyParams(BaseModel):
     l2_norm_clip: float
     noise_multiplier: float
@@ -132,97 +87,19 @@ class Hyperparams(BaseModel):
     local_privacy: Optional[LocalDifferentialPrivacyParams]
 
 
-class LEAFConfig(BaseModel):
-    """Configuration parameters for LEAF dataset loader"""
-
-    type: str = Field("leaf", const=True)
-    dataset: LeafDataset
-    location: Union[AnyHttpUrl, Path]
-    http_params: Dict = None
-    user_indices: Optional[List[int]] = None
-
-
-class MNISTConfig(BaseModel):
-    """Configuration parameters for sharded MNIST dataset"""
-
-    type: str = Field("mnist", const=True)
-    indices: List[int] = None
-    split: str = "train"
-    proxies: Optional[Dict] = None
-
+# class DatasetConfig(BaseModel):
+#     """configuration for arbitary dataset"""
+#     type: str
+#     location: Union[AnyHttpUrl, Path]
+    
 
 class DatasetLoaderConfig(BaseModel):
     """Configuration for arbitrary dataset loaders"""
 
     type: str
     params: Union[LEAFConfig, MNISTConfig]
-
-    _params_type_matches_type = validator("params", allow_reuse=True)(
-        params_validate_types_match
-    )
-
-
-class OpenwhiskActionConfig(BaseModel):
-    """Info to describe different functions deployed in an openwhisk cluster"""
-
-    type: str = Field("openwhisk", const=True)
-
-    namespace: str = "guest"
-    package: str = "default"
-    name: str
-    auth_token: str
-    api_host: str
-    self_signed_cert: bool
-
-
-class OpenwhiskWebActionConfig(BaseModel):
-    type: str = Field("openwhisk-web", const=True)
-    self_signed_cert: bool = True
-    endpoint: str
-    token: Optional[str]
-
-
-class ApiGatewayLambdaFunctionConfig(BaseModel):
-    """Lambda function deployed via Api Gateway. All requests time out after 30 seconds due to fixed limit"""
-
-    type: str = Field("lambda", const=True)
-    apigateway: str
-    api_key: Optional[str]
-
-
-class GCloudFunctionConfig(BaseModel):
-    """Google cloud function"""
-
-    type: str = Field("gcloud", const=True)
-    url: str
-
-
-class OpenFaasFunctionConfig(BaseModel):
-    """OpenFaas function"""
-
-    type: str = Field("openfaas", const=True)
-    url: str
-
-
-class AzureFunctionHTTPConfig(BaseModel):
-    """Azure function"""
-
-    type: str = Field("azure", const=True)
-    trigger_url: str
-
-
-class FunctionInvocationConfig(BaseModel):
-    """Necessary information to invoke a function"""
-
-    type: str
-    params: Union[
-        OpenwhiskActionConfig,
-        ApiGatewayLambdaFunctionConfig,
-        GCloudFunctionConfig,
-        OpenwhiskWebActionConfig,
-        AzureFunctionHTTPConfig,
-        OpenFaasFunctionConfig,
-    ]
+    #TODO check parsing datasets based on type
+    # params: DatasetConfig
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
         params_validate_types_match
@@ -403,30 +280,6 @@ class ClientInvocationParams(BaseModel):
     hyperparams: Hyperparams
     test_data: Optional[DatasetLoaderConfig]
 
-
-class AggregationStrategy(str, Enum):
-    PER_ROUND = "per_round"
-    PER_SESSION = 'per_session'
-    
-class AggregatorFunctionParams(BaseModel):
-    session_id: str
-    round_id: int
-    database: MongodbConnectionConfig
-    serializer: WeightsSerializerConfig = WeightsSerializerConfig(
-        type="npz", params=NpzWeightsSerializerConfig(compressed=False)
-    )
-    online: bool = False
-    test_data: Optional[DatasetLoaderConfig]
-    test_batch_size: int = 512
-    aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND
-
-class AggregatorFunctionResult(BaseModel):
-    new_round_id: int
-    num_clients: int
-    test_results: Optional[List[TestMetrics]]
-    global_test_results: Optional[TestMetrics]
-
-
 class EvaluatorParams(BaseModel):
     session_id: str
     round_id: int
@@ -438,62 +291,3 @@ class EvaluatorParams(BaseModel):
 
 class EvaluatorResult(BaseModel):
     metrics: TestMetrics
-
-
-class OpenwhiskClusterConfig(BaseModel):
-    type: str = Field("openwhisk", const=True)
-    apihost: str
-    auth: str
-    insecure: bool = True
-    namespace: str = "guest"
-    package: str = "default"
-
-
-class GCloudProjectConfig(BaseModel):
-    type: str = Field("gcloud", const=True)
-    account: str
-    project: str
-
-
-class FaaSProviderConfig(BaseModel):
-    type: str
-    params: Union[OpenwhiskClusterConfig, GCloudProjectConfig]
-
-    _params_type_matches_type = validator("params", allow_reuse=True)(
-        params_validate_types_match
-    )
-
-
-class OpenwhiskFunctionDeploymentConfig(BaseModel):
-    type: str = Field("openwhisk", const=True)
-    name: str
-    main: Optional[str]
-    file: str
-    image: str
-    memory: int
-    timeout: int
-    web: str = "raw"
-    web_secure: bool = False
-
-
-class GCloudFunctionDeploymentConfig(BaseModel):
-    type: str = Field("gcloud", const=True)
-    name: str
-    directory: str
-    memory: int
-    timeout: int
-    wheel_url: str
-    entry_point: Optional[str] = None
-    runtime: str = "python38"
-    max_instances: int = 100
-    trigger_http: bool = True
-    allow_unauthenticated: bool = True
-
-
-class FunctionDeploymentConfig(BaseModel):
-    type: str
-    params: OpenwhiskFunctionDeploymentConfig
-
-    _params_type_matches_type = validator("params", allow_reuse=True)(
-        params_validate_types_match
-    )

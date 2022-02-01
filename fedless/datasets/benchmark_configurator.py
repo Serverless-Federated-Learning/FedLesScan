@@ -1,3 +1,4 @@
+import abc
 import logging
 import sys
 
@@ -8,15 +9,14 @@ from typing import Dict, List, Optional, Tuple, Union
 
 # import click
 import tensorflow as tf
+from fedless.datasets.dataset_loaders import DatasetLoader
 
 from fedless.datasets.leaf.model import create_femnist_cnn, create_shakespeare_lstm
-from fedless.datasets.mnist.dataset_loader import create_mnist_train_data_loader_configs
+from fedless.datasets.mnist.helpers import create_mnist_train_data_loader_configs
 from fedless.datasets.mnist.model import create_mnist_cnn
 from fedless.models import (
     BinaryStringFormat,
     DatasetLoaderConfig,
-    LEAFConfig,
-    MNISTConfig,
     MongodbConnectionConfig,
     NpzWeightsSerializerConfig,
     SerializedParameters,
@@ -28,6 +28,10 @@ from fedless.serialization import (
     NpzWeightsSerializer,
     serialize_model,
 )
+from fedless.datasets.mnist.dataset_loader import MNISTConfig
+from fedless.datasets.leaf.dataset_loader import LEAFConfig
+from fedless.datasets.leaf.dataset_loader import LEAF
+from fedless.datasets.mnist.dataset_loader import MNIST
 
 logger = logging.getLogger(__name__)
 
@@ -118,3 +122,33 @@ def create_data_configs(
         return configs
     else:
         raise NotImplementedError(f"Dataset {dataset} not supported")
+
+
+
+class DatasetLoaderBuilder:
+    """Convenience class to construct loaders from config"""
+
+    @staticmethod
+    def from_config(config: DatasetLoaderConfig) -> DatasetLoader:
+        """
+        Construct loader from config
+        :raises NotImplementedError if the loader does not exist
+        """
+        if config.type == "leaf":
+            params: LEAFConfig = config.params
+            return LEAF(
+                dataset=params.dataset,
+                location=params.location,
+                http_params=params.http_params,
+                user_indices=params.user_indices,
+            )
+        elif config.type == "mnist":
+            params: MNISTConfig = config.params
+            # location is added by default here
+            return MNIST(
+                split=params.split, indices=params.indices, proxies=params.proxies
+            )
+        else:
+            raise NotImplementedError(
+                f"Dataset loader {config.type} is not implemented"
+            )

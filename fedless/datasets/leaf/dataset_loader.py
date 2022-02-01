@@ -2,7 +2,6 @@ from typing import Iterable, Optional, Dict, List, Iterator
 
 
 from fedless.datasets.dataset_loaders import DatasetFormatError, DatasetLoader, DatasetNotLoadedError, merge_datasets
-from fedless.models import LeafDataset, LEAFConfig
 
 import json
 from json import JSONDecodeError
@@ -11,35 +10,33 @@ from typing import Union, Dict, Iterator, List, Optional, Tuple
 
 import requests
 import tensorflow as tf
-from pydantic import validate_arguments, AnyHttpUrl
+from pydantic import BaseModel, validate_arguments, AnyHttpUrl
 from requests import RequestException
 
 from fedless.cache import cache
 
+from enum import Enum
+from pydantic import (Field)
 
-def split_source_by_users(config: LEAFConfig) -> Iterable[LEAFConfig]:
-    loader = LEAF(
-        dataset=config.dataset,
-        location=config.location,
-        http_params=config.http_params,
-        user_indices=config.user_indices,
-    )
-    loader.load()
+class LeafDataset(str, Enum):
+    """
+    Officially supported datasets
+    """
 
-    for i, _ in enumerate(loader.users):
-        if not config.user_indices or i in config.user_indices:
-            yield LEAFConfig(
-                dataset=config.dataset,
-                location=config.location,
-                http_params=config.http_params,
-                user_indices=[i],
-            )
+    FEMNIST = "femnist"
+    REDDIT = "reddit"
+    CELEBA = "celeba"
+    SHAKESPEARE = "shakespeare"
+    SENT140 = "sent140"
 
+class LEAFConfig(BaseModel):
+    """Configuration parameters for LEAF dataset loader"""
 
-def split_sources_by_users(source_urls: List[LEAFConfig]) -> Iterator[LEAFConfig]:
-    for source in source_urls:
-        for config in split_source_by_users(source):
-            yield config
+    type: str = Field("leaf", const=True)
+    dataset: LeafDataset
+    location: Union[AnyHttpUrl, Path]
+    http_params: Dict = None
+    user_indices: Optional[List[int]] = None
 
 
 class LEAF(DatasetLoader):
@@ -160,3 +157,29 @@ class LEAF(DatasetLoader):
             return merge_datasets(sources)
         except TypeError as e:
             raise DatasetFormatError(e) from e
+
+
+
+def split_source_by_users(config: LEAFConfig) -> Iterable[LEAFConfig]:
+    loader = LEAF(
+        dataset=config.dataset,
+        location=config.location,
+        http_params=config.http_params,
+        user_indices=config.user_indices,
+    )
+    loader.load()
+
+    for i, _ in enumerate(loader.users):
+        if not config.user_indices or i in config.user_indices:
+            yield LEAFConfig(
+                dataset=config.dataset,
+                location=config.location,
+                http_params=config.http_params,
+                user_indices=[i],
+            )
+
+
+def split_sources_by_users(source_urls: List[LEAFConfig]) -> Iterator[LEAFConfig]:
+    for source in source_urls:
+        for config in split_source_by_users(source):
+            yield config

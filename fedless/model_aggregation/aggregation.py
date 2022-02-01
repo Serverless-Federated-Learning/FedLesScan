@@ -4,7 +4,7 @@ from typing import Iterator, Optional, List
 import pymongo
 import tensorflow as tf
 
-from fedless.datasets.dataset_loaders import DatasetLoaderBuilder
+from fedless.datasets.benchmark_configurator import DatasetLoaderBuilder
 from fedless.model_aggregation.stall_aware_aggregation import StallAwareAggregator
 from fedless.models import (
     ClientResult,

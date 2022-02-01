@@ -5,46 +5,25 @@ from tensorflow import keras
 from fedless.datasets.dataset_loaders import DatasetLoader, DatasetNotLoadedError
 import tensorflow as tf
 from typing import  Dict, Iterator, List, Optional
-from fedless.models import (
-    DatasetLoaderConfig,
-    MNISTConfig,
-)
+
 
 import requests
 import tempfile
 import os
 from fedless.cache import cache
 
+from pydantic import (BaseModel, Field)
 
-# Helper functions to create dataset shards / model
 
 
-def create_mnist_train_data_loader_configs(
-    n_devices: int, n_shards: int, proxies: Optional[Dict] = None
-) -> Iterator[DatasetLoaderConfig]:
-    if n_shards % n_devices != 0:
-        raise ValueError(
-            f"Can not equally distribute {n_shards} dataset shards among {n_devices} devices..."
-        )
+class MNISTConfig(BaseModel):
+    """Configuration parameters for sharded MNIST dataset"""
 
-    (_, y_train), (_, _) = keras.datasets.mnist.load_data()
-    num_train_examples, *_ = y_train.shape
-
-    sorted_labels_idx = np.argsort(y_train, kind="stable")
-    sorted_labels_idx_shards = np.split(sorted_labels_idx, n_shards)
-    shards_per_device = len(sorted_labels_idx_shards) // n_devices
-    np.random.shuffle(sorted_labels_idx_shards)
-
-    for client_idx in range(n_devices):
-        client_shards = sorted_labels_idx_shards[
-            client_idx * shards_per_device : (client_idx + 1) * shards_per_device
-        ]
-        indices = np.concatenate(client_shards)
-        # noinspection PydanticTypeChecker,PyTypeChecker
-        yield DatasetLoaderConfig(
-            type="mnist", params=MNISTConfig(indices=indices.tolist(), proxies=proxies)
-        )
-
+    type: str = Field("mnist", const=True)
+    indices: List[int] = None
+    split: str = "train"
+    proxies: Optional[Dict] = None
+    location: str = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
 
 
 class MNIST(DatasetLoader):
@@ -53,15 +32,17 @@ class MNIST(DatasetLoader):
         indices: Optional[List[int]] = None,
         split: str = "train",
         proxies: Optional[Dict] = None,
+        location: str = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
     ):
         self.split = split
         self.indices = indices
         self.proxies = proxies or {}
+        self.location = location
 
     @cache
     def load(self) -> tf.data.Dataset:
         response = requests.get(
-            "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz",
+            self.location,
             proxies=self.proxies,
         )
         fp, path = tempfile.mkstemp()
