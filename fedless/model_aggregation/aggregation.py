@@ -62,10 +62,12 @@ def default_aggregation_handler(
         parameter_dao = ParameterDao(mongo_client)
         # logger.debug(f"Establishing database connection")
         # # TODO load all results in db not just in round
-       
+
         # aggregator = FedAvgAggregator()
         aggregator = StallAwareAggregator(round_id)
-        previous_dic, previous_results = aggregator.select_aggregation_candidates(mongo_client,session_id, round_id)
+        previous_dic, previous_results = aggregator.select_aggregation_candidates(
+            mongo_client, session_id, round_id
+        )
         if online:
             logger.debug(f"Using online aggregation")
             aggregator = StreamFedAvgAggregator()
@@ -78,7 +80,9 @@ def default_aggregation_handler(
             )
             logger.debug(f"Loading of {len(previous_results)} results finished")
         logger.debug(f"Starting aggregation...")
-        new_parameters, test_results = aggregator.aggregate(previous_results,previous_dic)
+        new_parameters, test_results = aggregator.aggregate(
+            previous_results, previous_dic
+        )
         logger.debug(f"Aggregation finished")
 
         global_test_metrics = None

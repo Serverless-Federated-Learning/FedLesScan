@@ -1,7 +1,7 @@
 import abc
 import logging
 from functools import reduce
-from typing import Iterator 
+from typing import Iterator
 
 import tensorflow as tf
 
@@ -25,6 +25,7 @@ def merge_datasets(datasets: Iterator[tf.data.Dataset]) -> tf.data.Dataset:
     :raises TypeError in tf.data.Dataset.concatenate
     """
     return reduce(tf.data.Dataset.concatenate, datasets)
+
 
 class DatasetLoader(abc.ABC):
     """Load arbitrary datasets"""

@@ -7,7 +7,6 @@ from pydantic import (
 from fedless.models.validation_func import params_validate_types_match
 
 
-
 class OpenwhiskActionConfig(BaseModel):
     """Info to describe different functions deployed in an openwhisk cluster"""
 

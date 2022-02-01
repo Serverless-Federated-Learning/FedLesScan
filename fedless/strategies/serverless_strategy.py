@@ -118,9 +118,9 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         if not self._evaluator:
             raise ValueError()
         return self._evaluator
-    
+
     # Mock function call TODO:remove
-    def call_mock_aggregator(self, round:int)-> AggregatorFunctionResult:
+    def call_mock_aggregator(self, round: int) -> AggregatorFunctionResult:
         params = AggregatorFunctionParams(
             session_id=self.session,
             round_id=round,
@@ -134,7 +134,6 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             return AggregatorFunctionResult.parse_obj(result)
         except ValidationError as e:
             raise ValueError(f"Aggregator returned invalid result.") from e
-        
 
     def call_aggregator(self, round: int) -> AggregatorFunctionResult:
         params = AggregatorFunctionParams(

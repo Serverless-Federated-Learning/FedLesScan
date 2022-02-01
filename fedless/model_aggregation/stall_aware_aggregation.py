@@ -6,7 +6,10 @@ from typing import Iterator, Optional, List, Tuple
 import numpy as np
 import tensorflow as tf
 
-from fedless.model_aggregation.exceptions import InsufficientClientResults, UnknownCardinalityError
+from fedless.model_aggregation.exceptions import (
+    InsufficientClientResults,
+    UnknownCardinalityError,
+)
 from fedless.models import Parameters, ClientResult, TestMetrics
 from fedless.persistence.client_daos import ClientResultDao, ParameterDao
 
@@ -16,17 +19,26 @@ from fedless.model_aggregation.parameter_aggregator import ParameterAggregator
 
 logger = logging.getLogger(__name__)
 
+
 class StallAwareAggregator(ParameterAggregator):
     def __init__(self, current_round):
         self.current_round = current_round
         super().__init__()
-    def _score_clients(self,client_result:List[dict]):
-        #todo get the score by client_round/current_round
-        scores = map(lambda client_dict:(client_dict["round_id"]+1)/(self.current_round+1),client_result)
+
+    def _score_clients(self, client_result: List[dict]):
+        # todo get the score by client_round/current_round
+        scores = map(
+            lambda client_dict: (client_dict["round_id"] + 1)
+            / (self.current_round + 1),
+            client_result,
+        )
         return list(scores)
-        
+
     def _aggregate(
-        self,client_feats:List[dict], parameters: List[List[np.ndarray]], weights: List[float]
+        self,
+        client_feats: List[dict],
+        parameters: List[List[np.ndarray]],
+        weights: List[float],
     ) -> List[np.ndarray]:
         # Partially from https://github.com/adap/flower/blob/
         # 570788c9a827611230bfa78f624a89a6630555fd/src/py/flwr/server/strategy/aggregate.py#L26
@@ -37,8 +49,10 @@ class StallAwareAggregator(ParameterAggregator):
         client_scores = self._score_clients(client_feats)
         # scale by the client scores
         weighted_weights = [
-            [layer * num_examples*client_score for layer in weights]
-            for weights, num_examples,client_score in zip(parameters, weights,client_scores)
+            [layer * num_examples * client_score for layer in weights]
+            for weights, num_examples, client_score in zip(
+                parameters, weights, client_scores
+            )
         ]
 
         # noinspection PydanticTypeChecker,PyTypeChecker
@@ -48,7 +62,7 @@ class StallAwareAggregator(ParameterAggregator):
         ]
         return weights_prime
 
-    def select_aggregation_candidates(self,mongo_client,session_id, round_id):
+    def select_aggregation_candidates(self, mongo_client, session_id, round_id):
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
         logger.debug(f"Establishing database connection")
@@ -60,13 +74,12 @@ class StallAwareAggregator(ParameterAggregator):
             raise InsufficientClientResults(
                 f"Found no client results for session {session_id} and round {round_id}"
             )
-        return round_dicts,round_candidates
-
+        return round_dicts, round_candidates
 
     def aggregate(
         self,
         client_results: Iterator[ClientResult],
-        client_feats:List[dict],
+        client_feats: List[dict],
         default_cardinality: Optional[float] = None,
     ) -> Tuple[Parameters, Optional[List[TestMetrics]]]:
 
@@ -120,7 +133,7 @@ class StreamStallAwareAggregator(StallAwareAggregator):
     def aggregate(
         self,
         client_results: Iterator[ClientResult],
-        client_feats:List[dict],
+        client_feats: List[dict],
         default_cardinality: Optional[float] = None,
     ) -> Tuple[Parameters, Optional[List[TestMetrics]]]:
 

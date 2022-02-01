@@ -4,7 +4,7 @@ import numpy as np
 from tensorflow import keras
 from fedless.datasets.dataset_loaders import DatasetLoader, DatasetNotLoadedError
 import tensorflow as tf
-from typing import  Dict, Iterator, List, Optional
+from typing import Dict, Iterator, List, Optional
 
 
 import requests
@@ -12,8 +12,7 @@ import tempfile
 import os
 from fedless.cache import cache
 
-from pydantic import (BaseModel, Field)
-
+from pydantic import BaseModel, Field
 
 
 class MNISTConfig(BaseModel):
@@ -23,7 +22,9 @@ class MNISTConfig(BaseModel):
     indices: List[int] = None
     split: str = "train"
     proxies: Optional[Dict] = None
-    location: str = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
+    location: str = (
+        "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
+    )
 
 
 class MNIST(DatasetLoader):
@@ -32,7 +33,7 @@ class MNIST(DatasetLoader):
         indices: Optional[List[int]] = None,
         split: str = "train",
         proxies: Optional[Dict] = None,
-        location: str = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
+        location: str = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz",
     ):
         self.split = split
         self.indices = indices
@@ -69,4 +70,3 @@ class MNIST(DatasetLoader):
         ds = tf.data.Dataset.from_tensor_slices((features, labels))
 
         return ds.map(_scale_features)
-

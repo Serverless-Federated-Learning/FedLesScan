@@ -158,7 +158,7 @@ class ClientResultDao(MongoDbDao):
         self,
         session_id: str,
         round_id: int,
-    ) -> Tuple[List,Iterator[ClientResult]]:
+    ) -> Tuple[List, Iterator[ClientResult]]:
         try:
             result_dicts = list(
                 self._collection.find(
@@ -171,14 +171,14 @@ class ClientResultDao(MongoDbDao):
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
         files_iter = self._retrieve_result_files(result_dicts, session_id, round_id)
-        return result_dicts,files_iter
+        return result_dicts, files_iter
 
     @wrap_pymongo_errors
     def load_results_for_session(
         self,
         session_id: str,
         round_id: int,
-    ) -> Tuple[List,Iterator[ClientResult]]:
+    ) -> Tuple[List, Iterator[ClientResult]]:
         try:
             result_dicts = list(
                 self._collection.find(filter={"session_id": session_id})
@@ -186,7 +186,7 @@ class ClientResultDao(MongoDbDao):
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
         files_iter = self._retrieve_result_files(result_dicts, session_id, round_id)
-        return result_dicts,files_iter
+        return result_dicts, files_iter
 
     @wrap_pymongo_errors
     def delete_results_for_round(

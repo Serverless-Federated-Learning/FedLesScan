@@ -13,6 +13,7 @@ from pydantic import (
     PositiveInt,
     StrictBytes,
 )
+
 # from pydantic.fields import ModelField
 
 from fedless.models.validation_func import params_validate_types_match
@@ -91,14 +92,14 @@ class Hyperparams(BaseModel):
 #     """configuration for arbitary dataset"""
 #     type: str
 #     location: Union[AnyHttpUrl, Path]
-    
+
 
 class DatasetLoaderConfig(BaseModel):
     """Configuration for arbitrary dataset loaders"""
 
     type: str
     params: Union[LEAFConfig, MNISTConfig]
-    #TODO check parsing datasets based on type
+    # TODO check parsing datasets based on type
     # params: DatasetConfig
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
@@ -279,6 +280,7 @@ class ClientInvocationParams(BaseModel):
     model: ModelLoaderConfig
     hyperparams: Hyperparams
     test_data: Optional[DatasetLoaderConfig]
+
 
 class EvaluatorParams(BaseModel):
     session_id: str

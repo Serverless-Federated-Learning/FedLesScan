@@ -1,7 +1,12 @@
 from typing import Iterable, Optional, Dict, List, Iterator
 
 
-from fedless.datasets.dataset_loaders import DatasetFormatError, DatasetLoader, DatasetNotLoadedError, merge_datasets
+from fedless.datasets.dataset_loaders import (
+    DatasetFormatError,
+    DatasetLoader,
+    DatasetNotLoadedError,
+    merge_datasets,
+)
 
 import json
 from json import JSONDecodeError
@@ -16,7 +21,8 @@ from requests import RequestException
 from fedless.cache import cache
 
 from enum import Enum
-from pydantic import (Field)
+from pydantic import Field
+
 
 class LeafDataset(str, Enum):
     """
@@ -28,6 +34,7 @@ class LeafDataset(str, Enum):
     CELEBA = "celeba"
     SHAKESPEARE = "shakespeare"
     SENT140 = "sent140"
+
 
 class LEAFConfig(BaseModel):
     """Configuration parameters for LEAF dataset loader"""
@@ -157,7 +164,6 @@ class LEAF(DatasetLoader):
             return merge_datasets(sources)
         except TypeError as e:
             raise DatasetFormatError(e) from e
-
 
 
 def split_source_by_users(config: LEAFConfig) -> Iterable[LEAFConfig]:

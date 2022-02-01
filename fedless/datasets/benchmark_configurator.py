@@ -124,7 +124,6 @@ def create_data_configs(
         raise NotImplementedError(f"Dataset {dataset} not supported")
 
 
-
 class DatasetLoaderBuilder:
     """Convenience class to construct loaders from config"""
 

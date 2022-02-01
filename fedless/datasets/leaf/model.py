@@ -1,6 +1,4 @@
-
 from tensorflow import keras
-
 
 
 def create_femnist_cnn(

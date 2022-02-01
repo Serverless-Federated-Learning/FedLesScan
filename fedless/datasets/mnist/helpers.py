@@ -2,7 +2,7 @@ from typing import Iterator, Optional, Dict
 
 import numpy as np
 from tensorflow import keras
-from typing import  Dict, Iterator,  Optional
+from typing import Dict, Iterator, Optional
 from fedless.datasets.mnist.dataset_loader import MNISTConfig
 
 from fedless.models.models import DatasetLoaderConfig
@@ -11,6 +11,7 @@ from fedless.models.models import DatasetLoaderConfig
 from fedless.cache import cache
 
 # from pydantic import (BaseModel, Field)
+
 
 def create_mnist_train_data_loader_configs(
     n_devices: int, n_shards: int, proxies: Optional[Dict] = None

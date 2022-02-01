@@ -6,7 +6,10 @@ from typing import Iterator, Optional, List, Tuple
 import numpy as np
 import tensorflow as tf
 
-from fedless.model_aggregation.exceptions import InsufficientClientResults, UnknownCardinalityError
+from fedless.model_aggregation.exceptions import (
+    InsufficientClientResults,
+    UnknownCardinalityError,
+)
 from fedless.models import Parameters, ClientResult, TestMetrics
 from fedless.persistence.client_daos import ClientResultDao, ParameterDao
 
@@ -15,6 +18,8 @@ from fedless.serialization import deserialize_parameters
 from fedless.model_aggregation.parameter_aggregator import ParameterAggregator
 
 logger = logging.getLogger(__name__)
+
+
 class FedAvgAggregator(ParameterAggregator):
     def _aggregate(
         self, parameters: List[List[np.ndarray]], weights: List[float]
@@ -35,8 +40,8 @@ class FedAvgAggregator(ParameterAggregator):
             for layer_updates in zip(*weighted_weights)
         ]
         return weights_prime
-    
-    def select_aggregation_candidates(self,mongo_client,session_id, round_id):
+
+    def select_aggregation_candidates(self, mongo_client, session_id, round_id):
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
         logger.debug(f"Establishing database connection")
@@ -47,13 +52,12 @@ class FedAvgAggregator(ParameterAggregator):
             raise InsufficientClientResults(
                 f"Found no client results for session {session_id} and round {round_id}"
             )
-        return round_dicts,round_candidates
-
+        return round_dicts, round_candidates
 
     def aggregate(
         self,
         client_results: Iterator[ClientResult],
-        client_feats:List[dict],
+        client_feats: List[dict],
         default_cardinality: Optional[float] = None,
     ) -> Tuple[Parameters, Optional[List[TestMetrics]]]:
 
@@ -107,7 +111,7 @@ class StreamFedAvgAggregator(FedAvgAggregator):
     def aggregate(
         self,
         client_results: Iterator[ClientResult],
-        client_feats:List[dict],
+        client_feats: List[dict],
         default_cardinality: Optional[float] = None,
     ) -> Tuple[Parameters, Optional[List[TestMetrics]]]:
 

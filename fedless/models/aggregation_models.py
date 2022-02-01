@@ -1,9 +1,11 @@
 from fedless.models.models import *
 
+
 class AggregationStrategy(str, Enum):
     PER_ROUND = "per_round"
-    PER_SESSION = 'per_session'
-    
+    PER_SESSION = "per_session"
+
+
 class AggregatorFunctionParams(BaseModel):
     session_id: str
     round_id: int
@@ -15,6 +17,7 @@ class AggregatorFunctionParams(BaseModel):
     test_data: Optional[DatasetLoaderConfig]
     test_batch_size: int = 512
     aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND
+
 
 class AggregatorFunctionResult(BaseModel):
     new_round_id: int
