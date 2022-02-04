@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-s",
     "--strategy",
-    type=click.Choice(["fedkeeper", "fedless", "fedless_mock"], case_sensitive=False),
+    type=click.Choice(["fedless", "fedless_mock","fedless_enhanced"], case_sensitive=False),
     required=True,
 )
 @click.option(
@@ -201,9 +201,6 @@ def run(
         package=config.cluster.package,
     )
 
-    # TODO make it a cmd arg or select it based on strategy
-    clientSelectionStrat = DBScanClientSelection(config, session)
-    # clientSelectionStrat =  RandomClientSelection()
     inv_params = {
         "session": session,
         "cognito": config.cognito,
@@ -211,7 +208,6 @@ def run(
         "clients": clients,
         "evaluator_config": config.server.evaluator,
         "aggregator_config": config.server.aggregator,
-        "selectionStrategy": clientSelectionStrat,
         "mongodb_config": config.database,
         "allowed_stragglers": stragglers,
         "client_timeout": timeout,

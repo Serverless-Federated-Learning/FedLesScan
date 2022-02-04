@@ -13,7 +13,7 @@ from sklearn.datasets import make_blobs
 from sklearn.preprocessing import StandardScaler
 
 from fedless.persistence.client_daos import ClientHistoryDao
-from fedless.core.models import ExperimentConfig
+from fedless.core.models import MongodbConnectionConfig
 
 logger = logging.getLogger(__name__)
 
@@ -50,9 +50,9 @@ class RandomClientSelection(IntelligentClientSelection):
 
 
 class DBScanClientSelection(IntelligentClientSelection):
-    def __init__(self, config: ExperimentConfig, session):
+    def __init__(self, db_config: MongodbConnectionConfig, session):
         super().__init__(self.db_fit)
-        self.config = config
+        self.db_config = db_config
         self.session = session
 
     def compute_ema(
@@ -113,7 +113,7 @@ class DBScanClientSelection(IntelligentClientSelection):
 
     def db_fit(self, n_clients_in_round: int, pool: List, round, max_rounds) -> list:
         # Generate sample data
-        history_dao = ClientHistoryDao(db=self.config.database)
+        history_dao = ClientHistoryDao(db=self.db_config)
         # all data of the session
         all_data = list(history_dao.load_all(session_id=self.session))
 
