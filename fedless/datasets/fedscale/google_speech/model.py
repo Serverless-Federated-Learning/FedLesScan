@@ -2,7 +2,7 @@ from tensorflow.keras import layers
 from tensorflow.keras import models, optimizers
 
 
-def create_cnn1(input_shape, spectrogram_ds, num_classes):
+def create_cnn1(input_shape, num_classes):
     norm_layer = layers.Normalization()
     # # Fit the state of the layer to the spectrograms
     # # with `Normalization.adapt`.
@@ -32,7 +32,7 @@ def create_cnn1(input_shape, spectrogram_ds, num_classes):
     return model
 
 
-def create_speech_cnn(input_shape, spectrogram_ds, num_classes):
+def create_speech_cnn(input_shape, num_classes):
     model = models.Sequential(
         [
             layers.Conv2D(
@@ -49,5 +49,6 @@ def create_speech_cnn(input_shape, spectrogram_ds, num_classes):
             layers.Dense(num_classes, activation="softmax"),
         ]
     )
+    model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
 
     return model

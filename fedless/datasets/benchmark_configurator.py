@@ -10,6 +10,9 @@ from typing import Dict, List, Optional, Tuple, Union
 # import click
 import tensorflow as tf
 from fedless.datasets.dataset_loaders import DatasetLoader
+from fedless.datasets.fedscale.google_speech.dataset_loader import FedScale, FedScaleConfig
+from fedless.datasets.fedscale.google_speech.data_processing import CLASSES
+from fedless.datasets.fedscale.google_speech.model import create_speech_cnn
 
 from fedless.datasets.leaf.model import create_femnist_cnn, create_shakespeare_lstm
 from fedless.datasets.mnist.helpers import create_mnist_train_data_loader_configs
@@ -34,7 +37,7 @@ from fedless.datasets.leaf.dataset_loader import LEAF
 from fedless.datasets.mnist.dataset_loader import MNIST
 
 logger = logging.getLogger(__name__)
-
+FILE_SERVER = "http://138.246.235.175:81"
 
 def create_model(dataset) -> tf.keras.Sequential:
     if dataset.lower() == "femnist":
@@ -43,6 +46,8 @@ def create_model(dataset) -> tf.keras.Sequential:
         return create_shakespeare_lstm()
     elif dataset.lower() == "mnist":
         return create_mnist_cnn()
+    elif dataset.lower() == "speech":
+        return create_speech_cnn((32, 32, 1), len(CLASSES))
     else:
         raise NotImplementedError()
 
@@ -85,7 +90,7 @@ def create_mnist_test_config(proxies) -> DatasetLoaderConfig:
     )
 
 
-FILE_SERVER = "http://138.246.235.175:81"
+
 
 
 # noinspection PydanticTypeChecker,PyTypeChecker
@@ -120,6 +125,18 @@ def create_data_configs(
             )
             configs.append((train, test))
         return configs
+    elif dataset == "speech":
+        configs = []
+        for client_idx in range(clients):
+            train = DatasetLoaderConfig(
+                type="speech",
+                params=FedScaleConfig(
+                    dataset=dataset,
+                    location=f"{FILE_SERVER}/datasets/google_speech/processed/train/client_{client_idx}.zip"
+                ),
+            )
+            configs.append(train)
+        return configs
     else:
         raise NotImplementedError(f"Dataset {dataset} not supported")
 
@@ -146,6 +163,14 @@ class DatasetLoaderBuilder:
             # location is added by default here
             return MNIST(
                 split=params.split, indices=params.indices, proxies=params.proxies
+            )
+        elif config.type == "speech":
+            params: FedScaleConfig = config.params
+            return FedScale(
+                dataset=params.dataset,
+                location=params.location,
+                http_params=params.http_params,
+                user_indices=params.user_indices,
             )
         else:
             raise NotImplementedError(

@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-d",
     "--dataset",
-    type=click.Choice(["mnist", "femnist", "shakespeare"], case_sensitive=False),
+    type=click.Choice(["mnist", "femnist", "shakespeare","speech"], case_sensitive=False),
     required=True,
     # help='Evaluation dataset. One of ("mnist", "femnist", "shakespeare")',
 )

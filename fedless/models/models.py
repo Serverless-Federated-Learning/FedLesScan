@@ -13,6 +13,7 @@ from pydantic import (
     PositiveInt,
     StrictBytes,
 )
+from fedless.datasets.fedscale.google_speech.dataset_loader import FedScaleConfig
 
 # from pydantic.fields import ModelField
 
@@ -98,7 +99,7 @@ class DatasetLoaderConfig(BaseModel):
     """Configuration for arbitrary dataset loaders"""
 
     type: str
-    params: Union[LEAFConfig, MNISTConfig]
+    params: Union[LEAFConfig, MNISTConfig, FedScaleConfig]
     # TODO check parsing datasets based on type
     # params: DatasetConfig
 
