@@ -11,7 +11,6 @@ from typing import Dict, List, Optional, Tuple, Union
 import tensorflow as tf
 from fedless.datasets.dataset_loaders import DatasetLoader
 from fedless.datasets.fedscale.google_speech.dataset_loader import FedScale, FedScaleConfig
-from fedless.datasets.fedscale.google_speech.data_processing import CLASSES
 from fedless.datasets.fedscale.google_speech.model import create_speech_cnn
 
 from fedless.datasets.leaf.model import create_femnist_cnn, create_shakespeare_lstm
@@ -47,7 +46,7 @@ def create_model(dataset) -> tf.keras.Sequential:
     elif dataset.lower() == "mnist":
         return create_mnist_cnn()
     elif dataset.lower() == "speech":
-        return create_speech_cnn((32, 32, 1), len(CLASSES))
+        return create_speech_cnn((32, 32, 1), 35)
     else:
         raise NotImplementedError()
 
@@ -127,15 +126,24 @@ def create_data_configs(
         return configs
     elif dataset == "speech":
         configs = []
+        num_test_clients = 216
         for client_idx in range(clients):
             train = DatasetLoaderConfig(
                 type="speech",
                 params=FedScaleConfig(
                     dataset=dataset,
-                    location=f"{FILE_SERVER}/datasets/google_speech/processed/train/client_{client_idx}.zip"
+                    location=f"{FILE_SERVER}/datasets/google_speech/npz/train/client_{client_idx}.npz"
                 ),
             )
-            configs.append(train)
+            # if number of test clients is smaller tha number of clients just reloop the assignment
+            test = DatasetLoaderConfig(
+                type="speech",
+                params=FedScaleConfig(
+                    dataset=dataset,
+                    location=f"{FILE_SERVER}/datasets/google_speech/npz/test/client_{client_idx%num_test_clients}.npz"
+                ),
+            )
+            configs.append((train,test))
         return configs
     else:
         raise NotImplementedError(f"Dataset {dataset} not supported")

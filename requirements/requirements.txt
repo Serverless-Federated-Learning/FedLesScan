@@ -15,5 +15,3 @@ boto3~=1.17.39
 tensorflow_privacy@git+https://github.com/tensorflow/privacy.git@331a2911ac3cdf1d9d8d301813be3541257d5bf4#egg=tensorflow_privacy
 azure-functions~=1.7.0
 scikit-learn
-librosa
-soundfile
