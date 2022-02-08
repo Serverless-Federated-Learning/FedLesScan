@@ -33,6 +33,8 @@ clients:
       config:
         name: "Adam"
         learning_rate: 0.01
+    fedprox:
+      mu: 0.2
     metrics:
       - accuracy
   functions:

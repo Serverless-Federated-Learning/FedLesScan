@@ -66,6 +66,8 @@ class LocalDifferentialPrivacyParams(BaseModel):
     num_microbatches: Optional[int]
 
 
+class FedProxParams(BaseModel):
+    mu:float = 0.1
 class Hyperparams(BaseModel):
     """Parameters for training and some data processing"""
 
@@ -77,11 +79,13 @@ class Hyperparams(BaseModel):
         description="Optimizer, either string with name of optimizer or "
         "a config dictionary retrieved via tf.keras.optimizers.serialize. ",
     )
+    fedprox: Optional[FedProxParams]
     loss: Optional[Union[str, Dict]] = Field(
         default=None,
         description="Name of loss function, see https://www.tensorflow.org/api_docs/python/tf/keras/losses, or "
         "a config dictionary retrieved via tf.keras.losses.serialize. ",
     )
+    
     metrics: Optional[List[str]] = Field(
         default=None,
         description="List of metrics to be evaluated by the model",

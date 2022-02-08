@@ -36,6 +36,8 @@ clients:
         learning_rate: 0.001
     metrics:
       - accuracy
+    fedprox:
+      mu: 0.2
   functions:
     - function:
         replicas: 5
