@@ -67,7 +67,9 @@ class LocalDifferentialPrivacyParams(BaseModel):
 
 
 class FedProxParams(BaseModel):
-    mu:float = 0.1
+    mu: float = 0.1
+
+
 class Hyperparams(BaseModel):
     """Parameters for training and some data processing"""
 
@@ -85,7 +87,6 @@ class Hyperparams(BaseModel):
         description="Name of loss function, see https://www.tensorflow.org/api_docs/python/tf/keras/losses, or "
         "a config dictionary retrieved via tf.keras.losses.serialize. ",
     )
-    
     metrics: Optional[List[str]] = Field(
         default=None,
         description="List of metrics to be evaluated by the model",

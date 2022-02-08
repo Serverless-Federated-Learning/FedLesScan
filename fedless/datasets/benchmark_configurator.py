@@ -10,7 +10,10 @@ from typing import Dict, List, Optional, Tuple, Union
 # import click
 import tensorflow as tf
 from fedless.datasets.dataset_loaders import DatasetLoader
-from fedless.datasets.fedscale.google_speech.dataset_loader import FedScale, FedScaleConfig
+from fedless.datasets.fedscale.google_speech.dataset_loader import (
+    FedScale,
+    FedScaleConfig,
+)
 from fedless.datasets.fedscale.google_speech.model import create_speech_cnn
 
 from fedless.datasets.leaf.model import create_femnist_cnn, create_shakespeare_lstm
@@ -37,6 +40,7 @@ from fedless.datasets.mnist.dataset_loader import MNIST
 
 logger = logging.getLogger(__name__)
 FILE_SERVER = "http://138.246.235.175:81"
+
 
 def create_model(dataset) -> tf.keras.Sequential:
     if dataset.lower() == "femnist":
@@ -89,9 +93,6 @@ def create_mnist_test_config(proxies) -> DatasetLoaderConfig:
     )
 
 
-
-
-
 # noinspection PydanticTypeChecker,PyTypeChecker
 def create_data_configs(
     dataset: str, clients: int, proxies: Optional[Dict] = None
@@ -132,7 +133,7 @@ def create_data_configs(
                 type="speech",
                 params=FedScaleConfig(
                     dataset=dataset,
-                    location=f"{FILE_SERVER}/datasets/google_speech/npz/train/client_{client_idx}.npz"
+                    location=f"{FILE_SERVER}/datasets/google_speech/npz/train/client_{client_idx}.npz",
                 ),
             )
             # if number of test clients is smaller tha number of clients just reloop the assignment
@@ -140,10 +141,10 @@ def create_data_configs(
                 type="speech",
                 params=FedScaleConfig(
                     dataset=dataset,
-                    location=f"{FILE_SERVER}/datasets/google_speech/npz/test/client_{client_idx%num_test_clients}.npz"
+                    location=f"{FILE_SERVER}/datasets/google_speech/npz/test/client_{client_idx%num_test_clients}.npz",
                 ),
             )
-            configs.append((train,test))
+            configs.append((train, test))
         return configs
     else:
         raise NotImplementedError(f"Dataset {dataset} not supported")

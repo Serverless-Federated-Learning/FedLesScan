@@ -49,6 +49,8 @@ def create_speech_cnn(input_shape, num_classes):
             layers.Dense(num_classes, activation="softmax"),
         ]
     )
-    model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
+    model.compile(
+        optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"]
+    )
 
     return model

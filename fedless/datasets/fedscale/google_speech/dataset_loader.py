@@ -25,8 +25,10 @@ class FedScaleDataset(str, Enum):
     """
     Officially supported datasets
     """
+
     SPEECH = "speech"
-    
+
+
 class FedScaleConfig(BaseModel):
     """Configuration parameters for LEAF dataset loader"""
 
@@ -35,9 +37,9 @@ class FedScaleConfig(BaseModel):
     location: Union[AnyHttpUrl, Path]
     http_params: Dict = None
     user_indices: Optional[List[int]] = None
-    
+
+
 class FedScale(DatasetLoader):
-    
     @validate_arguments
     def __init__(
         self,
@@ -50,18 +52,16 @@ class FedScale(DatasetLoader):
         self.source = location
         self.http_params = http_params
         self.user_indices = user_indices
-           
-    
+
     @cache
     def load(self) -> tf.data.Dataset:
         """
         Load dataset
         :raise DatasetNotLoadedError when an error occurred in the process
         """
-        tx_file_path = tf.keras.utils.get_file(cache_subdir='data',origin = self.source)
+        tx_file_path = tf.keras.utils.get_file(cache_subdir="data", origin=self.source)
         with np.load(tx_file_path) as all_data:
             data = all_data["data"]
             labels = all_data["labels"]
             dataset = tf.data.Dataset.from_tensor_slices((data, labels))
             return dataset
-

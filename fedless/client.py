@@ -4,7 +4,7 @@ import sys
 from typing import Optional
 import time
 import pymongo
-from tensorflow import norm,nest,square,linalg;
+from tensorflow import norm, nest, square, linalg
 from tensorflow import print as tfprint
 import tensorflow.keras as keras
 from absl import app
@@ -241,18 +241,20 @@ def default_handler(
         SerializationError,
     ) as e:
         raise ClientError(e) from e
-    
+
 
 # fedprox loss function
-def penalty_loss_func(local_model,global_model,mu, loss_func):
+def penalty_loss_func(local_model, global_model, mu, loss_func):
     def my_loss_func(y_true, y_pred):
-        model_difference = nest.map_structure(lambda a, b: a - b,local_model.weights, global_model.weights)
+        model_difference = nest.map_structure(
+            lambda a, b: a - b, local_model.weights, global_model.weights
+        )
         squared_norm = square(linalg.global_norm(model_difference))
         # tfprint(squared_norm)
         # tfprint(squared_norm)
-        return loss_func(y_true,y_pred)+(mu/2)*squared_norm
-    return my_loss_func
+        return loss_func(y_true, y_pred) + (mu / 2) * squared_norm
 
+    return my_loss_func
 
 
 def run(
@@ -398,8 +400,8 @@ def run(
     # add the custom fedprox compiler
     if hyperparams.fedprox is not None:
         logger.debug(f"using fedprox @ client loss")
-        loss = penalty_loss_func(model,global_model,hyperparams.fedprox.mu,loss)
-    
+        loss = penalty_loss_func(model, global_model, hyperparams.fedprox.mu, loss)
+
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
     logger.debug(f"Running training")

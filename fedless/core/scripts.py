@@ -45,7 +45,9 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-d",
     "--dataset",
-    type=click.Choice(["mnist", "femnist", "shakespeare","speech"], case_sensitive=False),
+    type=click.Choice(
+        ["mnist", "femnist", "shakespeare", "speech"], case_sensitive=False
+    ),
     required=True,
     # help='Evaluation dataset. One of ("mnist", "femnist", "shakespeare")',
 )
@@ -59,7 +61,9 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-s",
     "--strategy",
-    type=click.Choice(["fedless", "fedless_mock","fedless_enhanced"], case_sensitive=False),
+    type=click.Choice(
+        ["fedless", "fedless_mock", "fedless_enhanced"], case_sensitive=False
+    ),
     required=True,
 )
 @click.option(
