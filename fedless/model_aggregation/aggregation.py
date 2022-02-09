@@ -5,7 +5,7 @@ import pymongo
 import tensorflow as tf
 
 from fedless.datasets.benchmark_configurator import DatasetLoaderBuilder
-from fedless.model_aggregation.stall_aware_aggregation import StallAwareAggregator
+from fedless.model_aggregation.stall_aware_aggregation import (StallAwareAggregator,StreamStallAwareAggregator)
 from fedless.models import (
     ClientResult,
     MongodbConnectionConfig,
@@ -16,6 +16,7 @@ from fedless.models import (
     DatasetLoaderConfig,
     SerializedModel,
 )
+from fedless.models.aggregation_models import AggregationStrategy
 from fedless.persistence import (
     ClientResultDao,
     ParameterDao,
@@ -39,6 +40,7 @@ from fedless.model_aggregation.fed_avg_aggregator import (
 logger = logging.getLogger(__name__)
 
 
+
 def default_aggregation_handler(
     session_id: str,
     round_id: int,
@@ -48,6 +50,7 @@ def default_aggregation_handler(
     test_data: Optional[DatasetLoaderConfig] = None,
     test_batch_size: int = 512,
     delete_results_after_finish: bool = True,
+    aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND
 ) -> AggregatorFunctionResult:
     mongo_client = pymongo.MongoClient(
         host=database.host,
@@ -61,16 +64,14 @@ def default_aggregation_handler(
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
         # logger.debug(f"Establishing database connection")
-        # # TODO load all results in db not just in round
-
         # aggregator = FedAvgAggregator()
-        aggregator = StallAwareAggregator(round_id)
+        aggregator = StallAwareAggregator(round_id) if aggregation_strategy ==AggregationStrategy.PER_SESSION else FedAvgAggregator()
         previous_dic, previous_results = aggregator.select_aggregation_candidates(
             mongo_client, session_id, round_id
         )
         if online:
             logger.debug(f"Using online aggregation")
-            aggregator = StreamFedAvgAggregator()
+            aggregator = StreamStallAwareAggregator(round_id) if aggregation_strategy ==AggregationStrategy.PER_SESSION else StreamFedAvgAggregator()
         else:
             logger.debug(f"Loading results from database...")
             previous_results = (

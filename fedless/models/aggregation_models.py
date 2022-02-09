@@ -3,7 +3,7 @@ from fedless.models.models import *
 
 class AggregationStrategy(str, Enum):
     PER_ROUND = "per_round"
-    PER_SESSION = "per_session"
+    PER_SESSION = "per_session" # enhanced with stall aware aggregation
 
 
 class AggregatorFunctionParams(BaseModel):

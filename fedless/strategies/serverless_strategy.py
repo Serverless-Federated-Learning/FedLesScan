@@ -14,6 +14,7 @@ from requests import Session
 
 from fedless.core.common import run_in_executor
 from fedless.mocks.mock_aggregation import MockAggregator
+from fedless.models.aggregation_models import AggregationStrategy
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 from fedless.strategies.fl_strategy import FLStrategy
 from fedless.invocation import retry_session, invoke_sync
@@ -43,7 +44,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionDeploymentConfig,
         aggregator_config: FunctionDeploymentConfig,
-        selectionStrategy: IntelligentClientSelection,
+        selection_strategy: IntelligentClientSelection,
+        aggregation_strategy: AggregationStrategy,
         client_timeout: float = 300,
         allowed_stragglers: int = 0,
         global_test_data: Optional[DatasetLoaderConfig] = None,
@@ -53,7 +55,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         proxies: Dict = None,
         invocation_delay: float = None,
     ):
-        super().__init__(clients=clients, selectionStrategy=selectionStrategy)
+        super().__init__(clients=clients, selectionStrategy=selection_strategy,aggregation_strategy=aggregation_strategy)
         urllib3.disable_warnings()
         self.session: str = session or str(uuid.uuid4())
         self.provider = provider
@@ -126,6 +128,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             round_id=round,
             database=self.mongodb_config,
             test_data=self.global_test_data,
+            aggregation_strategy = self.aggregation_strategy,
             **self.aggregator_params,
         )
         aggregator = MockAggregator(params=params)
@@ -141,6 +144,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             round_id=round,
             database=self.mongodb_config,
             test_data=self.global_test_data,
+            aggregation_strategy = self.aggregation_strategy
             **self.aggregator_params,
         )
         session = Session()

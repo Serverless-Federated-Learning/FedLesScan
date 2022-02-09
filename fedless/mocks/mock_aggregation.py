@@ -1,5 +1,5 @@
 from typing import Optional
-from build.lib.fedless.models import AggregatorFunctionParams
+from fedless.models.aggregation_models import AggregatorFunctionParams
 
 from fedless.model_aggregation.aggregation import default_aggregation_handler
 
@@ -24,6 +24,7 @@ class MockAggregator:
         self.test_data = params.test_data
         self.test_batch_size = params.test_batch_size
         self.delete_results_after_finish = delete_results_after_finish
+        self.aggregation_strategy = params.aggregation_strategy
 
     def run_aggregator(self):
         return default_aggregation_handler(
@@ -35,4 +36,5 @@ class MockAggregator:
             self.test_data,
             self.test_batch_size,
             self.delete_results_after_finish,
+            self.aggregation_strategy
         )

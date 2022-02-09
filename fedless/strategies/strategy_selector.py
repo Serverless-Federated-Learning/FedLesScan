@@ -1,3 +1,4 @@
+from build.lib.fedless.models import AggregationStrategy
 from fedless.strategies.Intelligent_selection import DBScanClientSelection
 from fedless.strategies.fedkeeper_strategy import FedkeeperStrategy
 from fedless.strategies.fedless_strategy import FedlessStrategy
@@ -10,22 +11,23 @@ from fedless.strategies.Intelligent_selection import (
 
 
 def selectStrategy(strategy: str, invocation_attrs: dict):
-    # todo fix fedkeeper args
     switcher = {
         # "fedkeeper": FedkeeperStrategy(**invocation_attrs),
         "fedless_enhanced": FedlessStrategy(
-            selectionStrategy=DBScanClientSelection(
-                invocation_attrs["mongodb_config"], invocation_attrs["session"]
-            ),
+            selection_strategy=DBScanClientSelection(
+                invocation_attrs["mongodb_config"], invocation_attrs["session"]),
+            aggregation_strategy=AggregationStrategy.PER_SESSION,
             **invocation_attrs,
         ),
         "fedless": FedlessStrategy(
-            selectionStrategy=RandomClientSelection(), **invocation_attrs
+            selection_strategy=RandomClientSelection(),
+            aggregation_strategy=AggregationStrategy.PER_ROUND,
+            **invocation_attrs
         ),
         "fedless_mock": MockFedlessStrategy(
-            selectionStrategy=DBScanClientSelection(
-                invocation_attrs["mongodb_config"], invocation_attrs["session"]
-            ),
+            selection_strategy=DBScanClientSelection(
+                invocation_attrs["mongodb_config"], invocation_attrs["session"]),
+            aggregation_strategy=AggregationStrategy.PER_SESSION,
             **invocation_attrs,
         ),
     }

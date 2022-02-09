@@ -251,7 +251,7 @@ def penalty_loss_func(local_model, global_model, mu, loss_func):
         )
         squared_norm = square(linalg.global_norm(model_difference))
         # tfprint(squared_norm)
-        # tfprint(squared_norm)
+        # tfprint("norm")
         return loss_func(y_true, y_pred) + (mu / 2) * squared_norm
 
     return my_loss_func

@@ -12,6 +12,7 @@ from fedless.invocation import retry_session, invoke_sync
 from fedless.models import (
     TestMetrics,
 )
+from fedless.models.aggregation_models import AggregationStrategy
 from fedless.providers import FaaSProvider
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 
@@ -19,9 +20,11 @@ logger = logging.getLogger(__name__)
 
 
 class FLStrategy(ABC):
-    def __init__(self, clients, selectionStrategy: IntelligentClientSelection):
+    def __init__(self, clients, selectionStrategy: IntelligentClientSelection, aggregation_strategy: AggregationStrategy
+):
         self.clients = clients
         self.selectionStrategy = selectionStrategy
+        self.aggregation_strategy = aggregation_strategy
 
     def aggregate_metrics(
         self, metrics: List[TestMetrics], metric_names: Optional[List[str]] = None
