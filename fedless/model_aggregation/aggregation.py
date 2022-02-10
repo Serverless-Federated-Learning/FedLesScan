@@ -127,14 +127,22 @@ def default_aggregation_handler(
         )
         logger.debug(f"Finished...")
 
-        results_processed = result_dao.count_results_for_round(
-            session_id=session_id, round_id=round_id
-        )
+        # cleanup and count results
+        delete_func = result_dao.delete_results_for_round
+        count_func = result_dao.count_results_for_round
+        cleanup_params = {"session_id":session_id,"round_id":round_id}
+        if aggregation_strategy ==AggregationStrategy.PER_SESSION:
+            delete_func = result_dao.delete_results_for_session
+            count_func = result_dao.count_results_for_session
+            cleanup_params.pop("round_id", None) 
+                   
+        results_processed = count_func(**cleanup_params)
         if delete_results_after_finish:
             logger.debug(f"Deleting individual results...")
-            result_dao.delete_results_for_round(
-                session_id=session_id, round_id=round_id
-            )
+            delete_func(**cleanup_params)
+            # result_dao.delete_results_for_round(
+            #     session_id=session_id, round_id=round_id
+            # )
 
         return AggregatorFunctionResult(
             new_round_id=new_round_id,
