@@ -21,20 +21,19 @@ server:
       name: aggregator
       file: /home/ubuntu/mitigating-stragglers-fl-project/functions/openwhisk/aggregator/main.py
       image: mohamedazab/fedless-openwhisk:clients
-      memory: 2024
+      memory: 2048
+      # tod try 4gb memory 
       timeout: 60000
 
 clients:
   hyperparams:
-    epochs: 5
-    batch_size: 100
+    epochs: 1
+    batch_size: 32
     optimizer:
-      class_name: "Adam"
+      class_name: "SGD"
       config:
-        name: "Adam"
-        learning_rate: 0.01
-    fedprox:
-      mu: 0.2
+        name: "SGD"
+        learning_rate: 0.8
     metrics:
       - accuracy
   functions:

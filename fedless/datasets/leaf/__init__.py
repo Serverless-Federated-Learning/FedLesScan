@@ -1,2 +1,2 @@
-from .data_loader import *
+from .dataset_loader import *
 from .model import *

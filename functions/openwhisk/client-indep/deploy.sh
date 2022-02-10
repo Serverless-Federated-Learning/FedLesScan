@@ -2,8 +2,9 @@
 
 set -e
 
+#TODO:
 # Generate random token
-token=$(openssl rand -base64 30)
+token="kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf"
 
 for i in {1..5}; do
   action_name="client-indep-$i"

@@ -14,7 +14,8 @@ from fedless.data import (
     DatasetLoaderBuilder,
 )
 from fedless.cache import _clear_cache
-from fedless.models import LEAFConfig, DatasetLoaderConfig, LeafDataset
+from fedless.models import DatasetLoaderConfig
+from fedless.datasets.leaf.dataset_loader import LEAFConfig, LeafDataset
 from .common import resource_folder_path, get_error_function
 
 LEAF_RES_PATH = resource_folder_path() / "leaf"

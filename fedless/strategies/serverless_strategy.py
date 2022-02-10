@@ -13,6 +13,8 @@ from pydantic import ValidationError
 from requests import Session
 
 from fedless.core.common import run_in_executor
+from fedless.mocks.mock_aggregation import MockAggregator
+from fedless.models.aggregation_models import AggregationStrategy
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 from fedless.strategies.fl_strategy import FLStrategy
 from fedless.invocation import retry_session, invoke_sync
@@ -42,7 +44,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionDeploymentConfig,
         aggregator_config: FunctionDeploymentConfig,
-        selectionStrategy: IntelligentClientSelection,
+        selection_strategy: IntelligentClientSelection,
+        aggregation_strategy: AggregationStrategy,
         client_timeout: float = 300,
         allowed_stragglers: int = 0,
         global_test_data: Optional[DatasetLoaderConfig] = None,
@@ -52,7 +55,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         proxies: Dict = None,
         invocation_delay: float = None,
     ):
-        super().__init__(clients=clients, selectionStrategy=selectionStrategy)
+        super().__init__(clients=clients, selectionStrategy=selection_strategy,aggregation_strategy=aggregation_strategy)
         urllib3.disable_warnings()
         self.session: str = session or str(uuid.uuid4())
         self.provider = provider
@@ -118,12 +121,30 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             raise ValueError()
         return self._evaluator
 
+    # Mock function call TODO:remove
+    def call_mock_aggregator(self, round: int) -> AggregatorFunctionResult:
+        params = AggregatorFunctionParams(
+            session_id=self.session,
+            round_id=round,
+            database=self.mongodb_config,
+            test_data=self.global_test_data,
+            aggregation_strategy = self.aggregation_strategy,
+            **self.aggregator_params,
+        )
+        aggregator = MockAggregator(params=params)
+        result = aggregator.run_aggregator()
+        try:
+            return AggregatorFunctionResult.parse_obj(result)
+        except ValidationError as e:
+            raise ValueError(f"Aggregator returned invalid result.") from e
+
     def call_aggregator(self, round: int) -> AggregatorFunctionResult:
         params = AggregatorFunctionParams(
             session_id=self.session,
             round_id=round,
             database=self.mongodb_config,
             test_data=self.global_test_data,
+            aggregation_strategy = self.aggregation_strategy
             **self.aggregator_params,
         )
         session = Session()
@@ -193,7 +214,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         logger.info(f"Invoking Aggregator")
         t_agg_start = time.time()
-        agg_res: AggregatorFunctionResult = self.call_aggregator(round)
+        # agg_res: AggregatorFunctionResult = self.call_aggregator(round)
+        agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round)
         t_agg_end = time.time()
         logger.info(f"Aggregator combined result of {agg_res.num_clients} clients.")
         metrics_misc["aggregator_seconds"] = t_agg_end - t_agg_start
@@ -211,7 +233,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             if hasattr(self, "evaluate_clients"):
                 n_clients_in_round = len(clients)
                 # randomly select clients form evaluation
-                eval_clients = random.sample( self.clients,n_clients_in_round)
+                eval_clients = random.sample(self.clients, n_clients_in_round)
                 logger.info(f"Selected {len(eval_clients)} for evaluation...")
                 metrics = await self.evaluate_clients(
                     agg_res.new_round_id, eval_clients

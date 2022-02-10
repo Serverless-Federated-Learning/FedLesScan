@@ -1,4 +1,4 @@
-from typing import Any, Union, Iterator
+from typing import Any, List, Tuple, Union, Iterator
 
 import bson
 import pymongo
@@ -129,14 +129,38 @@ class ClientResultDao(MongoDbDao):
         finally:
             results_file.close()
 
+    def _retrieve_result_files(
+        self, result_dicts, session_id: str, round_id
+    ) -> Iterator[ClientResult]:
+        for result_dict in result_dicts:
+            if not result_dict:
+                raise DocumentNotLoadedException(
+                    f"Client results for session {session_id} found."
+                )
+            client_round_id = result_dict["round_id"]
+            if "file_id" not in result_dict:
+                raise PersistenceValueError(
+                    f"Client result in session {session_id},{round_id} for client_round {client_round_id} malformed."
+                )
+            results_file = self._gridfs.find_one({"_id": result_dict["file_id"]})
+            if not results_file:
+                raise DocumentNotLoadedException(
+                    f"GridFS file with results in session {session_id},{round_id} "
+                    f"and client round {client_round_id} not found."
+                )
+            try:
+                yield ClientResult.parse_obj(bson.decode(results_file.read()))
+            finally:
+                results_file.close()
+
     @wrap_pymongo_errors
     def load_results_for_round(
         self,
         session_id: str,
         round_id: int,
-    ) -> Iterator[ClientResult]:
+    ) -> Tuple[List, Iterator[ClientResult]]:
         try:
-            result_dicts = iter(
+            result_dicts = list(
                 self._collection.find(
                     filter={
                         "session_id": session_id,
@@ -146,25 +170,23 @@ class ClientResultDao(MongoDbDao):
             )
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
-        for result_dict in result_dicts:
-            if not result_dict:
-                raise DocumentNotLoadedException(
-                    f"Client results for session {session_id} and round {round_id} not found."
-                )
-            if "file_id" not in result_dict:
-                raise PersistenceValueError(
-                    f"Client result in session {session_id} for round {round_id} malformed."
-                )
-            results_file = self._gridfs.find_one({"_id": result_dict["file_id"]})
-            if not results_file:
-                raise DocumentNotLoadedException(
-                    f"GridFS file with results in session {session_id} "
-                    f"and round {round_id} not found."
-                )
-            try:
-                yield ClientResult.parse_obj(bson.decode(results_file.read()))
-            finally:
-                results_file.close()
+        files_iter = self._retrieve_result_files(result_dicts, session_id, round_id)
+        return result_dicts, files_iter
+
+    @wrap_pymongo_errors
+    def load_results_for_session(
+        self,
+        session_id: str,
+        round_id: int,
+    ) -> Tuple[List, Iterator[ClientResult]]:
+        try:
+            result_dicts = list(
+                self._collection.find(filter={"session_id": session_id})
+            )
+        except ConnectionFailure as e:
+            raise StorageConnectionError(e) from e
+        files_iter = self._retrieve_result_files(result_dicts, session_id, round_id)
+        return result_dicts, files_iter
 
     @wrap_pymongo_errors
     def delete_results_for_round(
@@ -193,7 +215,31 @@ class ClientResultDao(MongoDbDao):
             )
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
-
+    @wrap_pymongo_errors
+    def delete_results_for_session(
+        self,
+        session_id: str,
+    ):
+        try:
+            result_dicts = iter(
+                self._collection.find(
+                    filter={
+                        "session_id": session_id,
+                    },
+                )
+            )
+            for result_dict in result_dicts:
+                if not result_dict or "file_id" not in result_dict:
+                    continue
+                self._gridfs.delete(file_id=result_dict["file_id"])
+            self._collection.delete_many(
+                filter={
+                    "session_id": session_id,
+                }
+            )
+        except ConnectionFailure as e:
+            raise StorageConnectionError(e) from e
+        
     @wrap_pymongo_errors
     def count_results_for_round(
         self,
@@ -205,6 +251,21 @@ class ClientResultDao(MongoDbDao):
                 filter={
                     "session_id": session_id,
                     "round_id": round_id,
+                },
+            )
+        except ConnectionFailure as e:
+            raise StorageConnectionError(e) from e
+    
+    @wrap_pymongo_errors
+    def count_results_for_session(
+        self,
+        session_id: str,
+       
+    ) -> int:
+        try:
+            return self._collection.count_documents(
+                filter={
+                    "session_id": session_id,
                 },
             )
         except ConnectionFailure as e:

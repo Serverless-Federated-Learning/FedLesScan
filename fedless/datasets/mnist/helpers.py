@@ -2,14 +2,15 @@ from typing import Iterator, Optional, Dict
 
 import numpy as np
 from tensorflow import keras
+from typing import Dict, Iterator, Optional
+from fedless.datasets.mnist.dataset_loader import MNISTConfig
 
-from fedless.models import (
-    DatasetLoaderConfig,
-    MNISTConfig,
-)
+from fedless.models.models import DatasetLoaderConfig
 
 
-# Helper functions to create dataset shards / model
+from fedless.cache import cache
+
+# from pydantic import (BaseModel, Field)
 
 
 def create_mnist_train_data_loader_configs(

@@ -21,47 +21,9 @@ cd openwhisk-deploy-kube || exit
 # Alternatively use --selector='!node-role.kubernetes.io/master'
 kubectl label nodes --all openwhisk-role=invoker --overwrite
 
-# Create cluster config file for helm
-cat >mycluster.yaml <<ENDOFFILE
-whisk:
-  ingress:
-    type: NodePort
-    apiHostName: $(hostname -I | cut -d' ' -f1)
-    apiHostPort: 31001
-  limits:
-    actions:
-      memory:
-        max: "5g"
-      time:
-        max: "10m"
-    activation:
-      payload:
-        max: "128000000"
-  containerPool:
-    userMemory: "4096m"
-  loadbalancer:
-    blackbox-fraction: "100%"
-
-k8s:
-  persistence:
-    enabled: false
-nginx:
-  httpsNodePort: 31001
-invoker:
-  containerFactory:
-    impl: "kubernetes"
-    kubernetes:
-      replicaCount: 2
-controller:
-  replicaCount: 2
-metrics:
-  prometheusEnabled: true
-metrics:
-  userMetricsEnabled: true
-ENDOFFILE
 
 # Create helm release
-helm upgrade owdev ./helm/openwhisk -n openwhisk --create-namespace --install -f mycluster.yaml
+helm upgrade owdev ./helm/openwhisk -n openwhisk --create-namespace --install -f ../my_cluster.yaml
 
 ## Create new user and delete default guest user
 #kubectl -n openwhisk -ti exec owdev-wskadmin -- wskadmin user create admin-1

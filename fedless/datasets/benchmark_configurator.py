@@ -1,3 +1,4 @@
+import abc
 import logging
 import sys
 
@@ -8,15 +9,19 @@ from typing import Dict, List, Optional, Tuple, Union
 
 # import click
 import tensorflow as tf
+from fedless.datasets.dataset_loaders import DatasetLoader
+from fedless.datasets.fedscale.google_speech.dataset_loader import (
+    FedScale,
+    FedScaleConfig,
+)
+from fedless.datasets.fedscale.google_speech.model import create_speech_cnn
 
 from fedless.datasets.leaf.model import create_femnist_cnn, create_shakespeare_lstm
-from fedless.datasets.mnist.data_loader import create_mnist_train_data_loader_configs
+from fedless.datasets.mnist.helpers import create_mnist_train_data_loader_configs
 from fedless.datasets.mnist.model import create_mnist_cnn
 from fedless.models import (
     BinaryStringFormat,
     DatasetLoaderConfig,
-    LEAFConfig,
-    MNISTConfig,
     MongodbConnectionConfig,
     NpzWeightsSerializerConfig,
     SerializedParameters,
@@ -28,8 +33,13 @@ from fedless.serialization import (
     NpzWeightsSerializer,
     serialize_model,
 )
+from fedless.datasets.mnist.dataset_loader import MNISTConfig
+from fedless.datasets.leaf.dataset_loader import LEAFConfig
+from fedless.datasets.leaf.dataset_loader import LEAF
+from fedless.datasets.mnist.dataset_loader import MNIST
 
 logger = logging.getLogger(__name__)
+FILE_SERVER = "http://138.246.235.175:81"
 
 
 def create_model(dataset) -> tf.keras.Sequential:
@@ -39,6 +49,8 @@ def create_model(dataset) -> tf.keras.Sequential:
         return create_shakespeare_lstm()
     elif dataset.lower() == "mnist":
         return create_mnist_cnn()
+    elif dataset.lower() == "speech":
+        return create_speech_cnn((32, 32, 1), 35)
     else:
         raise NotImplementedError()
 
@@ -73,15 +85,12 @@ def init_store_model(
     parameters_dao.save(session_id=session, round_id=0, params=params)
     models_dao.save(session_id=session, model=serialized_model)
 
+
 # only for global test data
 def create_mnist_test_config(proxies) -> DatasetLoaderConfig:
     return DatasetLoaderConfig(
         type="mnist", params=MNISTConfig(split="test", proxies=proxies)
     )
-
-
-FILE_SERVER = "http://138.246.235.175:81"
-
 
 
 # noinspection PydanticTypeChecker,PyTypeChecker
@@ -116,5 +125,63 @@ def create_data_configs(
             )
             configs.append((train, test))
         return configs
+    elif dataset == "speech":
+        configs = []
+        num_test_clients = 216
+        for client_idx in range(clients):
+            train = DatasetLoaderConfig(
+                type="speech",
+                params=FedScaleConfig(
+                    dataset=dataset,
+                    location=f"{FILE_SERVER}/datasets/google_speech/npz/train/client_{client_idx}.npz",
+                ),
+            )
+            # if number of test clients is smaller tha number of clients just reloop the assignment
+            test = DatasetLoaderConfig(
+                type="speech",
+                params=FedScaleConfig(
+                    dataset=dataset,
+                    location=f"{FILE_SERVER}/datasets/google_speech/npz/test/client_{client_idx%num_test_clients}.npz",
+                ),
+            )
+            configs.append((train, test))
+        return configs
     else:
         raise NotImplementedError(f"Dataset {dataset} not supported")
+
+
+class DatasetLoaderBuilder:
+    """Convenience class to construct loaders from config"""
+
+    @staticmethod
+    def from_config(config: DatasetLoaderConfig) -> DatasetLoader:
+        """
+        Construct loader from config
+        :raises NotImplementedError if the loader does not exist
+        """
+        if config.type == "leaf":
+            params: LEAFConfig = config.params
+            return LEAF(
+                dataset=params.dataset,
+                location=params.location,
+                http_params=params.http_params,
+                user_indices=params.user_indices,
+            )
+        elif config.type == "mnist":
+            params: MNISTConfig = config.params
+            # location is added by default here
+            return MNIST(
+                split=params.split, indices=params.indices, proxies=params.proxies
+            )
+        elif config.type == "speech":
+            params: FedScaleConfig = config.params
+            return FedScale(
+                dataset=params.dataset,
+                location=params.location,
+                http_params=params.http_params,
+                user_indices=params.user_indices,
+            )
+        else:
+            raise NotImplementedError(
+                f"Dataset loader {config.type} is not implemented"
+            )

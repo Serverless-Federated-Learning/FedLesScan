@@ -185,3 +185,6 @@ $RECYCLE.BIN/
 /playground
 *.prof
 /out
+scripts/cluster/1.0.0.zip
+scripts/cluster/openwhisk-deploy-kube*
+
