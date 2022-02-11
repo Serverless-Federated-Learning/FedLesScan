@@ -15,6 +15,8 @@ from requests import Session
 from fedless.core.common import run_in_executor
 from fedless.mocks.mock_aggregation import MockAggregator
 from fedless.models.aggregation_models import AggregationStrategy
+from fedless.models.models import ClientPersistentHistory
+from fedless.persistence.client_daos import ClientHistoryDao
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 from fedless.strategies.fl_strategy import FLStrategy
 from fedless.invocation import retry_session, invoke_sync
@@ -197,8 +199,28 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         # Invoke clients
         t_clients_start = time.time()
         succs, errors = await self.call_clients(round, clients)
+        # add last failed round idx
+        client_history_dao = ClientHistoryDao(db=self.mongodb_config)
+        
+        
+        # reset client backoff
+        for suc in succs:
+            successfull_client:ClientPersistentHistory = client_history_dao.load(suc.get_name()) 
+            successfull_client.client_backoff = 0
+            client_history_dao.save(successfull_client)
+             
+        # add client backoff and add the missing rounds
+        # the backoff is computed from the last missed round
         for err in errors:
             print(err)
+            failed_client:ClientPersistentHistory = client_history_dao.load(err.get_name())
+            failed_client.missed_rounds.append(round)
+            if failed_client.client_backoff ==0:
+                failed_client.client_backoff =1
+            else:
+                failed_client.client_backoff *=2
+            client_history_dao.save(failed_client)
+            
 
         if len(succs) < (len(clients) - self.allowed_stragglers):
             logger.error(errors)
@@ -214,6 +236,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         logger.info(f"Invoking Aggregator")
         t_agg_start = time.time()
+        #TODO: aggregate choice function or onthe same node
         # agg_res: AggregatorFunctionResult = self.call_aggregator(round)
         agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round)
         t_agg_end = time.time()

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import logging
-from typing import List
+from typing import List, Tuple,Union
 import numpy as np
 
 import random
@@ -11,6 +11,7 @@ from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.datasets import make_blobs
 from sklearn.preprocessing import StandardScaler
+from fedless.models.models import ClientPersistentHistory
 
 from fedless.persistence.client_daos import ClientHistoryDao
 from fedless.core.models import MongodbConnectionConfig
@@ -100,7 +101,7 @@ class DBScanClientSelection(IntelligentClientSelection):
         )
         # pass
 
-    def filter_rookies(self, clients: list):
+    def filter_rookies(self, clients: list)->Tuple[List[ClientPersistentHistory], List[ClientPersistentHistory]]:
         rookies = []
         rest_clients = []
         for client in clients:
@@ -131,6 +132,7 @@ class DBScanClientSelection(IntelligentClientSelection):
         logger.info(
             f"selected rookies {len(rookie_clients)}, remaining {n_clients_from_clustering}"
         )
+        # todo: filter the clients with non fulfilled backoffs and use them iff the rest does not complete the required number
         training_data = []
         for client_data in rest_clients:
             client_training_times = client_data.training_times

@@ -264,7 +264,10 @@ class ClientPersistentHistory(BaseModel):
     training_times: list = []
     ema: float = 0
     latest_updated: int = -1
+    # id of the missed rounds
     missed_rounds: list = []
+    # rounds to be skipped from the last failed round this increase exponentially and reset if the client succeded once
+    client_backoff:float =  0 
 
 
 class InvokerParams(BaseModel):
