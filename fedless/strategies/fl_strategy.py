@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Tuple
 
 import numpy as np
-import pandas as pd
 
 
 from fedless.core.common import run_in_executor

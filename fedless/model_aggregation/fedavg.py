@@ -13,7 +13,7 @@ from multiprocessing import Pool, set_start_method
 import random
 
 import click
-import pandas as pd
+# import pandas as pd
 
 from fedless.datasets.benchmark_configurator import DatasetLoaderBuilder
 from fedless.model_aggregation.aggregation import FedAvgAggregator
@@ -215,10 +215,10 @@ def run(
             }
         )
 
-        pd.DataFrame.from_records(round_results).to_csv(
-            f"results_{devices}_{epochs}_{local_epochs}_{local_batch_size}"
-            f"_{clients_per_round}_{l2_norm_clip}_{noise_multiplier}_{local_dp}_{num_microbatches}_{start_time}.csv"
-        )
+        # pd.DataFrame.from_records(round_results).to_csv(
+        #     f"results_{devices}_{epochs}_{local_epochs}_{local_batch_size}"
+        #     f"_{clients_per_round}_{l2_norm_clip}_{noise_multiplier}_{local_dp}_{num_microbatches}_{start_time}.csv"
+        # )
 
 
 if __name__ == "__main__":

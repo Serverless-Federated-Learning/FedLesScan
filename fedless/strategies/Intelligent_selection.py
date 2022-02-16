@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from functools import reduce
 import logging
 from typing import List, Tuple,Union
 import numpy as np
@@ -96,6 +97,7 @@ class DBScanClientSelection(IntelligentClientSelection):
             else:
                 cluster_number_map[client_cluster_idx] = (client_ema, [clients[idx]])
         # sort clusters based on avg ema per cluster
+        # we didnt sort with the missed rounds because fast clients will probably not miss alot of rounds
         return dict(
             sorted(cluster_number_map.items(), key=lambda x: x[1][0] / len(x[1][1]))
         )
@@ -109,17 +111,18 @@ class DBScanClientSelection(IntelligentClientSelection):
                 rookies.append(client)
             else:
                 rest_clients.append(client)
-            #   filter(lambda item: len(item.training_times)==0 and len(item.missed_rounds) == 0,clients)
         return rookies, rest_clients
 
     def db_fit(self, n_clients_in_round: int, pool: List, round, max_rounds) -> list:
-        # Generate sample data
         history_dao = ClientHistoryDao(db=self.db_config)
         # all data of the session
         all_data = list(history_dao.load_all(session_id=self.session))
 
         # try and run rookies first
         rookie_clients, rest_clients = self.filter_rookies(all_data)
+        # use the list t o get separate the clients
+        
+        
         if len(rookie_clients) >= n_clients_in_round:
             logger.info(
                 f"selected rookies {n_clients_in_round} of {len(rookie_clients)}"
@@ -136,23 +139,23 @@ class DBScanClientSelection(IntelligentClientSelection):
         training_data = []
         for client_data in rest_clients:
             client_training_times = client_data.training_times
-            client_ema = client_data.ema
-            client_latest_updated = client_data.latest_updated
+            client_missed_rounds = client_data.missed_rounds
+            # client_ema = client_data.ema
+            # client_latest_updated = client_data.latest_updated
             rounds_completed = len(client_training_times)
-            latest_ema = client_ema
+            # latest_ema = client_ema
+            ema = 0
+            missed_rounds_ema = 0
+            for client_time in client_training_times:
+                ema = ema * 0.5 + client_time
+            for missed_round in client_missed_rounds:
+                round_factor = missed_round/max_rounds
+                missed_rounds_ema = missed_round*0.5 + round_factor
 
-            # the ema is not up to date
-            if client_latest_updated < rounds_completed - 1:
-                latest_ema = self.compute_ema(
-                    training_times=client_training_times,
-                    latest_ema=client_ema,
-                    latest_updated=client_latest_updated,
-                )
-
-                client_data.ema = latest_ema
-                client_data.latest_updated = rounds_completed - 1
+                client_data.latest_updated = round
                 history_dao.save(client_data)
-            training_data.append([latest_ema])
+            training_data.append([ema,missed_rounds_ema])
+        # use last update with backoff
 
         # todo convert to mins
         labels = self.perform_clustering(training_data=training_data, eps_step=0.1)
