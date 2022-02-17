@@ -121,7 +121,7 @@ class DBScanClientSelection(IntelligentClientSelection):
         # try and run rookies first
         rookie_clients, rest_clients = self.filter_rookies(all_data)
         # use the list t o get separate the clients
-        
+        # rest_clients_no_backoff = filter(lambda client:client.client_backoff+client.latest_updated<= round, rest_clients)
         
         if len(rookie_clients) >= n_clients_in_round:
             logger.info(

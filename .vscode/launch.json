@@ -89,7 +89,7 @@
                 "-d",
                 "mnist",
                 "-s",
-                "fedless_mock",
+                "fedless",
                 "-c",
                 "${workspaceFolder}/experiment/mnist-demo.yaml",
                 "--clients",
@@ -103,10 +103,9 @@
                 "--out",
                 "${workspaceFolder}/out/fedkeeper-mnist-demo",
                 "--rounds",
-                "3",
+                "2",
                 "--timeout",
-                "900",
-                "--separate-invokers"
+                "800",
                 // "--tum-proxy"
             ]
         }

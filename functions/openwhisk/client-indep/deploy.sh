@@ -6,7 +6,7 @@ set -e
 # Generate random token
 token="kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf"
 
-for i in {1..5}; do
+for i in {1..50}; do
   action_name="client-indep-$i"
 
   wsk -i action update \
