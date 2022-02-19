@@ -38,24 +38,26 @@ clients:
     metrics:
       - accuracy
   functions:
-    # - function:
-    #     replicas: 10
-    #     params:
-    #       endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-1.json
-    #       self_signed_cert: true
-    #       token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
-    #       type: openwhisk-web
-    #     type: openwhisk-web
-    
-    # - function:
-    #     replicas: 10
-    #     params:
-    #       type: openfaas
-    #       url: http://138.246.234.228:31112/function/client-indep-test
-    #     type: openfaas
     - function:
-        replicas: 10
+        # replicas: 2
+        params:
+          endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-1.json
+          self_signed_cert: true
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
+          type: openwhisk-web
+        type: openwhisk-web
+        invocation_delay: 3
+    
+    - function:
+        # replicas: 2
+        params:
+          type: openfaas
+          url: http://138.246.234.228:31112/function/client-indep-test
+        type: openfaas
+    - function:
+        # replicas: 12
         params:
           type: openfaas
           url: http://invasic.caps.in.tum.de:31112/function/client-indep-test
         type: openfaas
+        invocation_delay: 5

@@ -215,6 +215,7 @@ class ClientResultDao(MongoDbDao):
             )
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
+
     @wrap_pymongo_errors
     def delete_results_for_session(
         self,
@@ -239,7 +240,7 @@ class ClientResultDao(MongoDbDao):
             )
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
-        
+
     @wrap_pymongo_errors
     def count_results_for_round(
         self,
@@ -255,12 +256,11 @@ class ClientResultDao(MongoDbDao):
             )
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e
-    
+
     @wrap_pymongo_errors
     def count_results_for_session(
         self,
         session_id: str,
-       
     ) -> int:
         try:
             return self._collection.count_documents(

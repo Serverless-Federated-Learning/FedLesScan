@@ -57,7 +57,11 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         proxies: Dict = None,
         invocation_delay: float = None,
     ):
-        super().__init__(clients=clients, selectionStrategy=selection_strategy,aggregation_strategy=aggregation_strategy)
+        super().__init__(
+            clients=clients,
+            selectionStrategy=selection_strategy,
+            aggregation_strategy=aggregation_strategy,
+        )
         urllib3.disable_warnings()
         self.session: str = session or str(uuid.uuid4())
         self.provider = provider
@@ -130,7 +134,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             round_id=round,
             database=self.mongodb_config,
             test_data=self.global_test_data,
-            aggregation_strategy = self.aggregation_strategy,
+            aggregation_strategy=self.aggregation_strategy,
             **self.aggregator_params,
         )
         aggregator = MockAggregator(params=params)
@@ -146,8 +150,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             round_id=round,
             database=self.mongodb_config,
             test_data=self.global_test_data,
-            aggregation_strategy = self.aggregation_strategy
-            **self.aggregator_params,
+            aggregation_strategy=self.aggregation_strategy ** self.aggregator_params,
         )
         session = Session()
         # session.proxies.update(self.proxies)
@@ -196,36 +199,35 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         metrics_misc = {}
         loss, acc = None, None
 
-
-        all_clients:Set = set(map(lambda client:client.client_id,clients))
+        all_clients: Set = set(map(lambda client: client.client_id, clients))
         # Invoke clients
         t_clients_start = time.time()
         succs, errors = await self.call_clients(round, clients)
         # add last failed round idx
         client_history_dao = ClientHistoryDao(db=self.mongodb_config)
-        
-        
-        
+
         # reset client backoff
         for suc in succs:
-            successfull_client:ClientPersistentHistory = client_history_dao.load(suc.client_id) 
+            successfull_client: ClientPersistentHistory = client_history_dao.load(
+                suc.client_id
+            )
             successfull_client.client_backoff = 0
             client_history_dao.save(successfull_client)
             all_clients.remove(suc.client_id)
-        
-             
+
         # add client backoff and add the missing rounds
         # the backoff is computed from the last missed round
         for failed_client_id in all_clients:
-            
-            failed_client:ClientPersistentHistory = client_history_dao.load(failed_client_id)
+
+            failed_client: ClientPersistentHistory = client_history_dao.load(
+                failed_client_id
+            )
             failed_client.missed_rounds.append(round)
-            if failed_client.client_backoff ==0:
-                failed_client.client_backoff =1
+            if failed_client.client_backoff == 0:
+                failed_client.client_backoff = 1
             else:
-                failed_client.client_backoff *=2
+                failed_client.client_backoff *= 2
             client_history_dao.save(failed_client)
-            
 
         if len(succs) < (len(clients) - self.allowed_stragglers):
             logger.error(errors)

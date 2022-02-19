@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from functools import reduce
 import logging
-from typing import List, Tuple,Union
+from typing import List, Tuple, Union
 import numpy as np
 
 import random
@@ -103,7 +103,9 @@ class DBScanClientSelection(IntelligentClientSelection):
         )
         # pass
 
-    def filter_rookies(self, clients: list)->Tuple[List[ClientPersistentHistory], List[ClientPersistentHistory]]:
+    def filter_rookies(
+        self, clients: list
+    ) -> Tuple[List[ClientPersistentHistory], List[ClientPersistentHistory]]:
         rookies = []
         rest_clients = []
         for client in clients:
@@ -122,7 +124,7 @@ class DBScanClientSelection(IntelligentClientSelection):
         rookie_clients, rest_clients = self.filter_rookies(all_data)
         # use the list t o get separate the clients
         # rest_clients_no_backoff = filter(lambda client:client.client_backoff+client.latest_updated<= round, rest_clients)
-        
+
         if len(rookie_clients) >= n_clients_in_round:
             logger.info(
                 f"selected rookies {n_clients_in_round} of {len(rookie_clients)}"
@@ -149,12 +151,12 @@ class DBScanClientSelection(IntelligentClientSelection):
             for client_time in client_training_times:
                 ema = ema * 0.5 + client_time
             for missed_round in client_missed_rounds:
-                round_factor = missed_round/max_rounds
-                missed_rounds_ema = missed_round*0.5 + round_factor
+                round_factor = missed_round / max_rounds
+                missed_rounds_ema = missed_round * 0.5 + round_factor
 
                 client_data.latest_updated = round
                 history_dao.save(client_data)
-            training_data.append([ema,missed_rounds_ema])
+            training_data.append([ema, missed_rounds_ema])
         # use last update with backoff
 
         # todo convert to mins

@@ -19,8 +19,12 @@ logger = logging.getLogger(__name__)
 
 
 class FLStrategy(ABC):
-    def __init__(self, clients, selectionStrategy: IntelligentClientSelection, aggregation_strategy: AggregationStrategy
-):
+    def __init__(
+        self,
+        clients,
+        selectionStrategy: IntelligentClientSelection,
+        aggregation_strategy: AggregationStrategy,
+    ):
         self.clients = clients
         self.selectionStrategy = selectionStrategy
         self.aggregation_strategy = aggregation_strategy

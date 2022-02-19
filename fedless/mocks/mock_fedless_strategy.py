@@ -40,7 +40,6 @@ class MockFedlessStrategy(ServerlessFlStrategy):
         aggregator_config: FunctionDeploymentConfig,
         selection_strategy: IntelligentClientSelection,
         aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
-
         client_timeout: float = 300,
         cognito: Optional[CognitoConfig] = None,
         global_test_data: Optional[DatasetLoaderConfig] = None,
@@ -130,7 +129,7 @@ class MockFedlessStrategy(ServerlessFlStrategy):
                 database=self.mongodb_config,
                 http_proxies=self.proxies,
                 evaluate_only=evaluate_only,
-                invocation_delay= client.function.invocation_delay
+                invocation_delay=client.function.invocation_delay,
             )
 
             tasks.append(

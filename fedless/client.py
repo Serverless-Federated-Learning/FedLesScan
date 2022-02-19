@@ -70,7 +70,7 @@ def fedless_mongodb_handler(
     client_id: str,
     database: MongodbConnectionConfig,
     evaluate_only: bool = False,
-    invocation_delay: int = 0
+    invocation_delay: int = 0,
 ):
     """
     Basic handler that only requires data and model loader configs plus hyperparams.
@@ -81,18 +81,15 @@ def fedless_mongodb_handler(
     logger.info(
         f"handler called for session_id={session_id} round_id={round_id} client_id={client_id}"
     )
-    
-    logger.info(
-        f"invocation delay {invocation_delay} sec for client_id={client_id}"
-    )
-    
+
+    logger.info(f"invocation delay {invocation_delay} sec for client_id={client_id}")
+
     # delayed execution
-    if invocation_delay ==-1:
+    if invocation_delay == -1:
         raise ClientError("client invoked with -1 delay: simulating failed client")
-    elif invocation_delay >0:
-        time.sleep(invocation_delay) 
-        
-    
+    elif invocation_delay > 0:
+        time.sleep(invocation_delay)
+
     db = pymongo.MongoClient(
         host=database.host,
         port=database.port,

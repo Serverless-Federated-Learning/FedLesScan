@@ -15,18 +15,20 @@ def selectStrategy(strategy: str, invocation_attrs: dict):
         # "fedkeeper": FedkeeperStrategy(**invocation_attrs),
         "fedless_enhanced": FedlessStrategy(
             selection_strategy=DBScanClientSelection(
-                invocation_attrs["mongodb_config"], invocation_attrs["session"]),
+                invocation_attrs["mongodb_config"], invocation_attrs["session"]
+            ),
             aggregation_strategy=AggregationStrategy.PER_SESSION,
             **invocation_attrs,
         ),
         "fedless": FedlessStrategy(
             selection_strategy=RandomClientSelection(),
             aggregation_strategy=AggregationStrategy.PER_ROUND,
-            **invocation_attrs
+            **invocation_attrs,
         ),
         "fedless_mock": MockFedlessStrategy(
             selection_strategy=DBScanClientSelection(
-                invocation_attrs["mongodb_config"], invocation_attrs["session"]),
+                invocation_attrs["mongodb_config"], invocation_attrs["session"]
+            ),
             aggregation_strategy=AggregationStrategy.PER_SESSION,
             **invocation_attrs,
         ),

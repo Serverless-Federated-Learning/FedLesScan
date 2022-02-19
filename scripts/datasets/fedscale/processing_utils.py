@@ -2,6 +2,7 @@ import os
 import tensorflow as tf
 import numpy as np
 import librosa
+
 # import soundfile as sf
 
 
@@ -159,7 +160,7 @@ def get_mel_and_label(file_path):
     input_len = 16000
     label = get_label(file_path)
     label_id = label == CLASSES
-    #TODO do it on the data as whole
+    # TODO do it on the data as whole
     audio_binary = tf.io.read_file(file_path)
     audio, sampling_rate = tf.audio.decode_wav(contents=audio_binary)
     waveform = tf.squeeze(audio, axis=-1)

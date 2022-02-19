@@ -36,5 +36,5 @@ class MockAggregator:
             self.test_data,
             self.test_batch_size,
             self.delete_results_after_finish,
-            self.aggregation_strategy
+            self.aggregation_strategy,
         )

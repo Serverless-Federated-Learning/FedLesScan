@@ -15,5 +15,5 @@ class MockClient:
             client_id=self.config.client_id,
             database=self.config.database,
             evaluate_only=self.config.evaluate_only,
-            invocation_delay=self.config.invocation_delay
+            invocation_delay=self.config.invocation_delay,
         )

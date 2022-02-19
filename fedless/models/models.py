@@ -267,7 +267,7 @@ class ClientPersistentHistory(BaseModel):
     # id of the missed rounds
     missed_rounds: list = []
     # rounds to be skipped from the last failed round this increase exponentially and reset if the client succeded once
-    client_backoff:float =  0 
+    client_backoff: float = 0
 
 
 class InvokerParams(BaseModel):
@@ -280,7 +280,9 @@ class InvokerParams(BaseModel):
     evaluate_only: bool = False
     http_headers: Optional[Dict] = None
     http_proxies: Optional[Dict] = None
-    invocation_delay: Optional[int] = 0 # values can be -1 for failure, 0 for no delay, number in secs to delay running the client 
+    invocation_delay: Optional[
+        int
+    ] = 0  # values can be -1 for failure, 0 for no delay, number in secs to delay running the client
 
 
 class ClientInvocationParams(BaseModel):

@@ -39,7 +39,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         aggregator_config: FunctionDeploymentConfig,
         selection_strategy: IntelligentClientSelection,
         aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
-        client_timeout: float = 300, # 5 mins default
+        client_timeout: float = 300,  # 5 mins default
         cognito: Optional[CognitoConfig] = None,
         global_test_data: Optional[DatasetLoaderConfig] = None,
         aggregator_params: Optional[Dict] = None,
@@ -48,7 +48,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
         invocation_delay: float = None,
-        evaluation_timeout: float = 30.0, # 30 sec default
+        evaluation_timeout: float = 30.0,  # 30 sec default
     ):
         super().__init__(
             provider=provider,
@@ -106,7 +106,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                 database=self.mongodb_config,
                 http_proxies=self.proxies,
                 evaluate_only=evaluate_only,
-                invocation_delay= client.function.invocation_delay
+                invocation_delay=client.function.invocation_delay,
             )
 
             # function with closure for easier logging
@@ -150,10 +150,11 @@ class FedlessStrategy(ServerlessFlStrategy):
                         session=session,
                         round=round,
                         client_id=client.client_id,
-                    ),name=client.client_id
+                    ),
+                    name=client.client_id,
                 )
             )
-        
+
         done, pending = await asyncio.wait(tasks)
         results = list(map(lambda f: f.result(), done))
         suc, errs = [], []

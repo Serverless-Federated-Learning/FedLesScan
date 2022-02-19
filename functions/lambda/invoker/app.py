@@ -29,5 +29,5 @@ def handler(event, context):
         database=config.database,
         http_headers=config.http_headers,
         http_proxies=config.http_proxies,
-        invocation_delay=config.invocation_delay
+        invocation_delay=config.invocation_delay,
     )

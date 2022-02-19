@@ -5,7 +5,10 @@ import pymongo
 import tensorflow as tf
 
 from fedless.datasets.benchmark_configurator import DatasetLoaderBuilder
-from fedless.model_aggregation.stall_aware_aggregation import (StallAwareAggregator,StreamStallAwareAggregator)
+from fedless.model_aggregation.stall_aware_aggregation import (
+    StallAwareAggregator,
+    StreamStallAwareAggregator,
+)
 from fedless.models import (
     ClientResult,
     MongodbConnectionConfig,
@@ -40,7 +43,6 @@ from fedless.model_aggregation.fed_avg_aggregator import (
 logger = logging.getLogger(__name__)
 
 
-
 def default_aggregation_handler(
     session_id: str,
     round_id: int,
@@ -50,7 +52,7 @@ def default_aggregation_handler(
     test_data: Optional[DatasetLoaderConfig] = None,
     test_batch_size: int = 512,
     delete_results_after_finish: bool = True,
-    aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND
+    aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
 ) -> AggregatorFunctionResult:
     mongo_client = pymongo.MongoClient(
         host=database.host,
@@ -65,13 +67,21 @@ def default_aggregation_handler(
         parameter_dao = ParameterDao(mongo_client)
         # logger.debug(f"Establishing database connection")
         # aggregator = FedAvgAggregator()
-        aggregator = StallAwareAggregator(round_id) if aggregation_strategy ==AggregationStrategy.PER_SESSION else FedAvgAggregator()
+        aggregator = (
+            StallAwareAggregator(round_id)
+            if aggregation_strategy == AggregationStrategy.PER_SESSION
+            else FedAvgAggregator()
+        )
         previous_dic, previous_results = aggregator.select_aggregation_candidates(
             mongo_client, session_id, round_id
         )
         if online:
             logger.debug(f"Using online aggregation")
-            aggregator = StreamStallAwareAggregator(round_id) if aggregation_strategy ==AggregationStrategy.PER_SESSION else StreamFedAvgAggregator()
+            aggregator = (
+                StreamStallAwareAggregator(round_id)
+                if aggregation_strategy == AggregationStrategy.PER_SESSION
+                else StreamFedAvgAggregator()
+            )
         else:
             logger.debug(f"Loading results from database...")
             previous_results = (
@@ -130,12 +140,12 @@ def default_aggregation_handler(
         # cleanup and count results
         delete_func = result_dao.delete_results_for_round
         count_func = result_dao.count_results_for_round
-        cleanup_params = {"session_id":session_id,"round_id":round_id}
-        if aggregation_strategy ==AggregationStrategy.PER_SESSION:
+        cleanup_params = {"session_id": session_id, "round_id": round_id}
+        if aggregation_strategy == AggregationStrategy.PER_SESSION:
             delete_func = result_dao.delete_results_for_session
             count_func = result_dao.count_results_for_session
-            cleanup_params.pop("round_id", None) 
-                   
+            cleanup_params.pop("round_id", None)
+
         results_processed = count_func(**cleanup_params)
         if delete_results_after_finish:
             logger.debug(f"Deleting individual results...")
