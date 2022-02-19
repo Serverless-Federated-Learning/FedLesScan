@@ -1,4 +1,4 @@
-from build.lib.fedless.models import AggregationStrategy
+from fedless.models import AggregationStrategy
 from fedless.strategies.Intelligent_selection import DBScanClientSelection
 from fedless.strategies.fedkeeper_strategy import FedkeeperStrategy
 from fedless.strategies.fedless_strategy import FedlessStrategy
