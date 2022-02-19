@@ -83,7 +83,7 @@ def fedless_mongodb_handler(
     )
     
     logger.info(
-        f"invocation delay {invocation_delay} session_id={session_id} round_id={round_id} client_id={client_id}"
+        f"invocation delay {invocation_delay} sec for client_id={client_id}"
     )
     
     # delayed execution

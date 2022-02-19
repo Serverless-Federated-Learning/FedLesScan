@@ -68,6 +68,7 @@ class FunctionInvocationConfig(BaseModel):
         AzureFunctionHTTPConfig,
         OpenFaasFunctionConfig,
     ]
+    invocation_delay: Optional[int] = 0
 
     _params_type_matches_type = validator("params", allow_reuse=True)(
         params_validate_types_match

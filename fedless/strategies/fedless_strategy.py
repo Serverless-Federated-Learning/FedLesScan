@@ -106,6 +106,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                 database=self.mongodb_config,
                 http_proxies=self.proxies,
                 evaluate_only=evaluate_only,
+                invocation_delay= client.function.invocation_delay
             )
 
             # function with closure for easier logging

@@ -4,9 +4,8 @@ from fedless.models import InvokerParams
 
 
 class MockClient:
-    def __init__(self, config: InvokerParams, delay: int = 0):
+    def __init__(self, config: InvokerParams):
         self.config = config
-        self.delay = delay
 
     async def run_client(self):
 
@@ -16,4 +15,5 @@ class MockClient:
             client_id=self.config.client_id,
             database=self.config.database,
             evaluate_only=self.config.evaluate_only,
+            invocation_delay=self.config.invocation_delay
         )

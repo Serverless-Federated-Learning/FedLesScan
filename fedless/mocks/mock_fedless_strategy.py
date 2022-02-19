@@ -130,6 +130,7 @@ class MockFedlessStrategy(ServerlessFlStrategy):
                 database=self.mongodb_config,
                 http_proxies=self.proxies,
                 evaluate_only=evaluate_only,
+                invocation_delay= client.function.invocation_delay
             )
 
             tasks.append(
