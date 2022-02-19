@@ -280,6 +280,7 @@ class InvokerParams(BaseModel):
     evaluate_only: bool = False
     http_headers: Optional[Dict] = None
     http_proxies: Optional[Dict] = None
+    invocation_delay: Optional[int] = 0 # values can be -1 for failure, 0 for no delay, number in secs to delay running the client 
 
 
 class ClientInvocationParams(BaseModel):

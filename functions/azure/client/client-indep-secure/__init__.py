@@ -57,4 +57,5 @@ def main(req: azure.functions.HttpRequest):
         client_id=config.client_id,
         database=config.database,
         evaluate_only=config.evaluate_only,
+        invocation_delay=config.invocation_delay
     )
