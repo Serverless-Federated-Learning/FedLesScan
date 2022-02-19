@@ -1,8 +1,6 @@
 import abc
 from typing import Iterator, Optional, List, Tuple
 
-import pymongo_inmemory
-
 from fedless.models import (
     Parameters,
     ClientResult,

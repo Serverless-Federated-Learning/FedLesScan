@@ -150,7 +150,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             round_id=round,
             database=self.mongodb_config,
             test_data=self.global_test_data,
-            aggregation_strategy=self.aggregation_strategy ** self.aggregator_params,
+            aggregation_strategy=self.aggregation_strategy,
+            **self.aggregator_params,
         )
         session = Session()
         # session.proxies.update(self.proxies)
@@ -243,8 +244,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         logger.info(f"Invoking Aggregator")
         t_agg_start = time.time()
-        # agg_res: AggregatorFunctionResult = self.call_aggregator(round)
-        agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round)
+        agg_res: AggregatorFunctionResult = self.call_aggregator(round)
+        # agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round)
         t_agg_end = time.time()
         logger.info(f"Aggregator combined result of {agg_res.num_clients} clients.")
         metrics_misc["aggregator_seconds"] = t_agg_end - t_agg_start
