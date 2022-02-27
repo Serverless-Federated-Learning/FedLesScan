@@ -175,7 +175,7 @@ def fedless_mongodb_handler(
         )
 
         end_time = time.time()
-        elapsed_time = end_time - start_time
+        elapsed_time = int(end_time - start_time)/60.0
 
         logger.debug(f"Storing client results in database. Starting now...")
         results_dao.save(

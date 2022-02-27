@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import random
 import time
@@ -8,18 +9,20 @@ from typing import List, Optional, Dict, Set, Tuple
 
 import numpy as np
 import pandas as pd
+from requests_mock import mock
 import urllib3
 from pydantic import ValidationError
 from requests import Session
 
 from fedless.core.common import run_in_executor
 from fedless.mocks.mock_aggregation import MockAggregator
+from fedless.mocks.mock_client import MockClient
 from fedless.models.aggregation_models import AggregationStrategy
-from fedless.models.models import ClientPersistentHistory
+from fedless.models.models import ClientPersistentHistory, InvokerParams
 from fedless.persistence.client_daos import ClientHistoryDao
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 from fedless.strategies.fl_strategy import FLStrategy
-from fedless.invocation import retry_session, invoke_sync
+from fedless.invocation import InvocationError, retry_session, invoke_sync
 from fedless.models import (
     TestMetrics,
     MongodbConnectionConfig,
@@ -56,6 +59,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
         invocation_delay: float = None,
+        mock: bool = False
     ):
         super().__init__(
             clients=clients,
@@ -83,6 +87,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.save_dir = save_dir
         self.proxies = proxies or {}
         self.invocation_delay: Optional[float] = invocation_delay
+        self.mock = mock
 
     @abstractmethod
     async def deploy_all_functions(self, *args, **kwargs):
@@ -101,6 +106,15 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         pd.DataFrame.from_records(self.client_timings).to_csv(
             dir / f"clients_{session}.csv"
         )
+    def save_invocation_details(self, session:str,round:int,dir:Optional[Path] = None, **kwargs)->None:
+        
+        if not dir:
+            dir = Path.cwd()
+        preps_dict = {"session_id": session, "round_id": round, **kwargs}
+        pd.DataFrame.from_records([preps_dict]).to_csv(
+            dir / f"invocation_{session}.csv",mode='a',index=False,header=False
+        )
+        
 
     @run_in_executor
     def _async_call_request(
@@ -143,6 +157,34 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             return AggregatorFunctionResult.parse_obj(result)
         except ValidationError as e:
             raise ValueError(f"Aggregator returned invalid result.") from e
+        
+    async def inv_mock(self,function, data: InvokerParams, session: Session, round, client_id):
+        try:
+            if self.invocation_delay:
+                await asyncio.sleep(random.uniform(0.0, self.invocation_delay))
+            t_start = time.time()
+            logger.info(
+                f"***->>> invoking client ${client_id} with time out ${self.client_timeout}"
+            )
+            cl = MockClient(data)
+            res = await cl.run_client()
+           
+            dt_call = time.time() - t_start
+            self.client_timings.append(
+                {
+                    "client_id": client_id,
+                    "session_id": self.session,
+                    "invocation_time": t_start,
+                    "function": {"function": "mock"},
+                    "seconds": dt_call,
+                    "eval": data.evaluate_only,
+                    "round": round,
+                }
+            )
+            return res
+        except InvocationError as e:
+            return str(e)
+
 
     def call_aggregator(self, round: int) -> AggregatorFunctionResult:
         params = AggregatorFunctionParams(
@@ -207,6 +249,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         # add last failed round idx
         client_history_dao = ClientHistoryDao(db=self.mongodb_config)
 
+        preps_dict = {"succs":len(succs),'failed':len(errors),'pending':len(all_clients)-len(succs)-len(errors)}
+        self.save_invocation_details(self.session,round,self.save_dir,**preps_dict)
         # reset client backoff
         for suc in succs:
             successfull_client: ClientPersistentHistory = client_history_dao.load(
@@ -228,6 +272,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
                 failed_client.client_backoff = 1
             else:
                 failed_client.client_backoff *= 2
+            # add failed client training time to max time
             client_history_dao.save(failed_client)
 
         if len(succs) < (len(clients) - self.allowed_stragglers):
@@ -244,7 +289,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         logger.info(f"Invoking Aggregator")
         t_agg_start = time.time()
-        agg_res: AggregatorFunctionResult = self.call_aggregator(round)
+        agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round) if self.mock else self.call_aggregator(round)
         # agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round)
         t_agg_end = time.time()
         logger.info(f"Aggregator combined result of {agg_res.num_clients} clients.")

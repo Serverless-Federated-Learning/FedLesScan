@@ -27,8 +27,8 @@ server:
 
 clients:
   hyperparams:
-    epochs: 5
-    batch_size: 10
+    epochs: 10
+    batch_size: 5
     optimizer:
       class_name: "Adam"
       config:
@@ -36,8 +36,8 @@ clients:
         learning_rate: 0.001
     metrics:
       - accuracy
-    fedprox:
-      mu: 0.2
+    # fedprox:
+    #   mu: 0.2
   functions:
     - function:
         replicas: 5

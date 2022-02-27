@@ -45,7 +45,6 @@ class StallAwareAggregator(ParameterAggregator):
         # weights is a list of the number of elements for each client
         #
         num_examples_total = sum(weights)
-        # TODO get the clients here
         client_scores = self._score_clients(client_feats)
         # scale by the client scores
         weighted_weights = [
@@ -115,7 +114,8 @@ class StallAwareAggregator(ParameterAggregator):
 
 
 class StreamStallAwareAggregator(StallAwareAggregator):
-    def __init__(self, chunk_size: int = 25):
+    def __init__(self,current_round:int, chunk_size: int = 25):
+        super().__init__(current_round)
         self.chunk_size = chunk_size
 
     def chunks(self, iterator: Iterator, n) -> Iterator[List]:
@@ -164,9 +164,9 @@ class StreamStallAwareAggregator(StallAwareAggregator):
                 if client_result.test_metrics:
                     client_metrics.append(client_result.test_metrics)
             if curr_global_params is None:
-                curr_global_params = self._aggregate(params_buffer, card_buffer)
+                curr_global_params = self._aggregate(client_feats,params_buffer, card_buffer)
             else:
-                curr_global_params = self._aggregate(
+                curr_global_params = self._aggregate(client_feats,
                     [curr_global_params, *params_buffer],
                     [curr_sum_weights, *card_buffer],
                 )

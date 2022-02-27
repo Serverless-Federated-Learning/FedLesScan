@@ -19,7 +19,7 @@
                 "-d",
                 "speech",
                 "-s",
-                "fedless_mock",
+                "fedless_enhanced",
                 "-c",
                 "${workspaceFolder}/experiment/speech-demo.yaml",
                 "--clients",
@@ -37,6 +37,7 @@
                 "--timeout",
                 "120",
                 // "--tum-proxy"
+                "--mock"
             ]
         },
         {
@@ -54,7 +55,7 @@
                 "-d",
                 "femnist",
                 "-s",
-                "fedless_mock",
+                "fedless_enhanced",
                 "-c",
                 "${workspaceFolder}/experiment/femnist-demo.yaml",
                 "--clients",
@@ -89,7 +90,7 @@
                 "-d",
                 "mnist",
                 "-s",
-                "fedless",
+                "fedless_enhanced",
                 "-c",
                 "${workspaceFolder}/experiment/mnist-demo.yaml",
                 "--clients",
