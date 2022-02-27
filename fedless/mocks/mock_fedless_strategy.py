@@ -77,7 +77,6 @@ class MockFedlessStrategy(ServerlessFlStrategy):
         self._aggregator = await self.provider.deploy(self.aggregator_config.params)
         self._evaluator = await self.provider.deploy(self.evaluator_config.params)
 
-    # function with closure for easier logging
     async def _inv_mock(self, data: InvokerParams, session: Session, round, client_id):
         try:
             if self.invocation_delay:
@@ -88,14 +87,7 @@ class MockFedlessStrategy(ServerlessFlStrategy):
             )
             cl = MockClient(data)
             res = await cl.run_client()
-            # res = await self.invoke_async(
-            #     function,
-            #     data,
-            #     session=session,
-            #     timeout=self.client_timeout
-            #     if not data.evaluate_only
-            #     else self.evaluation_timeout,
-            # )
+           
             dt_call = time.time() - t_start
             self.client_timings.append(
                 {
