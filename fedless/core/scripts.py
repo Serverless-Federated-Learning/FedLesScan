@@ -1,11 +1,13 @@
 import asyncio
 import logging
+import random
 import uuid
 from itertools import cycle
 from pathlib import Path
 from typing import List, Union, Tuple, Dict
 
 import click
+import numpy as np
 import tensorflow as tf
 
 from fedless.core.common import parse_yaml_file
@@ -61,9 +63,7 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-s",
     "--strategy",
-    type=click.Choice(
-        ["fedless", "fedless_enhanced"], case_sensitive=False
-    ),
+    type=click.Choice(["fedless", "fedless_enhanced"], case_sensitive=False),
     required=True,
 )
 @click.option(
@@ -144,7 +144,12 @@ logger = logging.getLogger(__name__)
     help="use mocks",
     default=False,
 )
-
+@click.option(
+    "--simulate-stragglers",
+    help="define a percentage of the clients to straggle",
+    type=float,
+    default=0.0,
+)
 def run(
     dataset: str,
     config: str,
@@ -162,7 +167,8 @@ def run(
     aggregate_online: bool,
     test_batch_size: int,
     # invocation_delay: float,
-    mock:bool
+    mock: bool,
+    simulate_stragglers: float,
 ):
     session = str(uuid.uuid4())
     log_dir = Path(out) if out else Path(config).parent
@@ -198,6 +204,7 @@ def run(
         num_clients=clients,
         data_configs=data_configs,
         database=config.database,
+        stragglers_precentage=simulate_stragglers,
     )
     init_store_model(
         session=session,
@@ -235,7 +242,7 @@ def run(
             else None
         ),
         "proxies": proxies,
-        "mock": mock
+        "mock": mock,
     }
 
     strategy = select_strategy(strategy, inv_params)
@@ -258,6 +265,7 @@ def store_client_configs(
         Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]
     ],
     database: MongodbConnectionConfig,
+    stragglers_precentage: float,
 ) -> List[ClientConfig]:
     client_config_dao = ClientConfigDao(database)
     client_history_dao = ClientHistoryDao(database)
@@ -267,12 +275,17 @@ def store_client_configs(
         f"{len(data_configs)} data configurations given with the "
         f"instruction to setup {num_clients} clients from {n_clients} potential endpoints."
     )
+    # todo add delay param for all clients
+    stragglers_delay_list = [-1, 80]
 
+    num_stragglers = int(stragglers_precentage * num_clients)
+    logger.info(f"simulate stragglers {num_stragglers} clients for {num_clients}.")
     data_shards = iter(data_configs)
     function_iter = cycle(clients_unrolled)
     default_hyperparms = clients.hyperparams
     final_configs = []
-    for shard in data_shards:
+    stragglers_idx_list = random.sample(list(np.arange(num_clients)), num_stragglers)
+    for idx, shard in enumerate(data_shards):
         client = next(function_iter)
         hp = client.hyperparams or default_hyperparms
         client_id = str(uuid.uuid4())
@@ -285,6 +298,11 @@ def store_client_configs(
             test_data=test_config,
             hyperparams=hp,
         )
+        # add straggler
+        if idx in stragglers_idx_list:
+            client_config.function.invocation_delay = random.sample(
+                stragglers_delay_list, 1
+            )[0]
 
         client_history = ClientPersistentHistory(
             client_id=client_id,

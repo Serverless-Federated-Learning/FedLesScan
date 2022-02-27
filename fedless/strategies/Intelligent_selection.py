@@ -1,18 +1,15 @@
-from abc import ABC, abstractmethod
-from functools import reduce
+from abc import ABC
+# from functools import reduce
 import logging
-from typing import List, Optional, Tuple, Union
+from typing import List,Tuple
 import numpy as np
 from pathlib import Path
 import pandas as pd
 
 import random
-from requests.sessions import session
-from sklearn import cluster
 
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
-from sklearn.datasets import make_blobs
 from sklearn.preprocessing import StandardScaler
 from fedless.models.models import ClientPersistentHistory
 
