@@ -79,34 +79,57 @@ class DBScanClientSelection(IntelligentClientSelection):
         """
         updated_ema = latest_ema
         for i in range(latest_updated + 1, len(training_times)):
-            updated_ema = updated_ema * smoothingFactor + training_times[i]
+            updated_ema = updated_ema * smoothingFactor + (1-smoothingFactor)*training_times[i]
         return updated_ema
     
-    def get_client_ema(self, times_list:List):
+    def get_client_ema(self, times_list:List)-> float:
+        
+        if len(times_list)==0:
+            return 0
         ema = 0
-        for client_time in times_list:
-                ema = ema * 0.5 + client_time
+        i = 1
+        ema = times_list[0]
+        while i < len(times_list):            
+            ema = ema * 0.5 + 0.5*times_list[i]
+            i+=1
         # return (random.sample([50,80,120,140,160],1))[0]
         return ema
 
-    def sort_clusters(self, clients: List[ClientPersistentHistory], labels: list):
+    def sort_clusters(self, clients: List[ClientPersistentHistory], labels: list,round:int):
         n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
         # dict of {cluster_idx: (ema,[client_list])}
         cluster_number_map = {}
+        
+        # get the largest possible training time this is computed everytime in the clustering
+        # so its effect is in this round only
+        max_training_time = max([max(client.training_times) for client in clients ])
+        
         for idx in range(len(labels)):
             client_cluster_idx = labels[idx]
             # client_ema = clients[idx].ema
             client_ema = self.get_client_ema(clients[idx].training_times)
+            total_ema = client_ema
+            
+            missed_rounds = np.divide(clients[idx].missed_rounds, round)
+            client_penalty = self.get_client_ema(missed_rounds)*max_training_time
+            # each missed round have a penalty where the penalty percentage is max_training_time* how fresh miss is
+            # avoid div by zero in round
+            # client penalty is ema on the defiend penalty
+    
+            
+            # add penalty to training time
+            total_ema+=client_penalty
+                
             if client_cluster_idx in cluster_number_map:
                 old_cluster_data = cluster_number_map[client_cluster_idx]
                 # append new client
                 old_cluster_data[1].append(clients[idx])
                 cluster_number_map[client_cluster_idx] = (
-                    old_cluster_data[0] + client_ema,
+                    old_cluster_data[0] + total_ema,
                     old_cluster_data[1],
                 )
             else:
-                cluster_number_map[client_cluster_idx] = (client_ema, [clients[idx]])
+                cluster_number_map[client_cluster_idx] = (total_ema, [clients[idx]])
         # sort clusters based on avg ema per cluster
         # we didnt sort with the missed rounds because fast clients will probably not miss alot of rounds
         
@@ -129,13 +152,16 @@ class DBScanClientSelection(IntelligentClientSelection):
         # pd.DataFrame.from_records([preps_dict]).to_csv(
         #     self.log_dir / f"clusters_details_{session}.csv",mode='a',index=False,header=False
         # )
-    def save_clustering_details(self, round:int, sorted_clusters, selected_clients)->None:
+    def save_clustering_details(self, round:int, sorted_clusters, selected_clients,max_training_time)->None:
         
         cluster_dict_list =[]
         for cluster_idx, (cluster_ema,cluster_client_configs) in sorted_clusters.items():
             
             for client_config in cluster_client_configs:
-                cluster_dict_list+=[{"round_id":round,"cluster_ema":cluster_ema,"cluster_id":cluster_idx,"client_id":client_config.client_id}]
+                # round is never zero because clustering works after first round
+                missed_rounds = np.divide(client_config.missed_rounds, round)
+                client_penalty = self.get_client_ema(missed_rounds)*max_training_time
+                cluster_dict_list+=[{"round_id":round,"cluster_ema":cluster_ema,"cluster_id":cluster_idx,"client_id":client_config.client_id, "client_ema": self.get_client_ema(client_config.training_times),"penalty": client_penalty*max_training_time}]
         
         selected_clients_ids = []
         for client_config in selected_clients:
@@ -199,17 +225,17 @@ class DBScanClientSelection(IntelligentClientSelection):
         
             ema = self.get_client_ema(client_training_times)
             # ema of missed rounds so later rounds have higher penalty factor
-            missed_rounds_ema = self.get_client_ema(np.divide(client_missed_rounds, max_rounds))
+            missed_rounds_ema = self.get_client_ema(np.divide(client_missed_rounds, round))
             client_data.latest_updated = round
             history_dao.save(client_data)
             training_data.append([ema, missed_rounds_ema])
         # use last update with backoff
 
         # todo convert to mins
-        labels,best_score = self.perform_clustering(training_data=training_data, eps_step=0.1)
-        sorted_clusters = self.sort_clusters(rest_clients, labels)
+        labels,best_score,best_eps = self.perform_clustering(training_data=training_data, eps_step=0.1)
+        sorted_clusters = self.sort_clusters(rest_clients, labels,round)
         # logs
-        self.save_clustering_count(round,**{"num_clusters":len(sorted_clusters),"score":best_score})
+        self.save_clustering_count(round,**{"num_clusters":len(sorted_clusters),"score":best_score,"eps":best_eps})
         ######
         
         cluster_idx_list = np.arange(start=0, stop=len(sorted_clusters))
@@ -221,11 +247,13 @@ class DBScanClientSelection(IntelligentClientSelection):
         round_candidates_history = rookie_clients + self.sample_starting_from(
             sorted_clusters, start_cluster_idx, n_clients_from_clustering
         )
+        max_training_time = max([max(client.training_times) for client in rest_clients ])
+
         # save logs
         # save 2 files 
         # 1- round -> client to cluster
         # 2- round -> selected client_id list
-        self.save_clustering_details(round, sorted_clusters, round_candidates_history)
+        self.save_clustering_details(round, sorted_clusters, round_candidates_history,max_training_time)
 
         return self.select_candidates_from_pool(round_candidates_history, pool)
 
@@ -239,20 +267,25 @@ class DBScanClientSelection(IntelligentClientSelection):
     def perform_clustering(self, training_data, eps_step):
         best_labels = None
         best_score = 0
+        best_eps = 0
         X = StandardScaler().fit_transform(training_data)
-        for eps in np.arange(0.01, 1, eps_step):
+        # we train on training time in mins
+        # distance should be time in mins
+        # we try distances of upt to 2 mins apart
+        for eps in np.arange(0.01, 2, eps_step):
             logger.info(f"trying eps in range 0.01-{eps} with step {eps_step}")
             db = DBSCAN(eps=eps, min_samples=2).fit(X)
             labels = db.labels_
 
             if best_labels is None:
                 best_labels = labels
+                best_eps = eps
             # Number of clusters in labels, ignoring noise if present.
             n_lables = len(set(labels))
-            n_clusters_ = n_lables - (1 if -1 in labels else 0)
-            if n_clusters_ == 1:
-                logger.info("stopping, samples are all in one cluster")
-                break
+            # n_clusters_ = n_lables - (1 if -1 in labels else 0)
+            # if n_clusters_ == 1:
+            #     logger.info("stopping, samples are all in one cluster")
+            #     break
             n_noise_ = list(labels).count(-1)
             if n_lables <= len(X) - 1 and n_lables > 1:
                 clustering_score = metrics.calinski_harabasz_score(X, labels)
@@ -260,6 +293,7 @@ class DBScanClientSelection(IntelligentClientSelection):
                 if clustering_score > best_score:
                     best_score = clustering_score
                     best_labels = labels
+                    best_eps = eps
                     logger.info(
                         f"updated clustering score:{clustering_score}, n_labels = {n_lables}, n_noise = {n_noise_}"
                     )
@@ -267,7 +301,7 @@ class DBScanClientSelection(IntelligentClientSelection):
                 logger.info(
                     f"number of clusters not enough , labels = {n_lables}, noise = {n_noise_}"
                 )
-        return best_labels,best_score
+        return best_labels,best_score,best_eps
 
     def sample_starting_from(
         self, sorted_clusters, start_cluster_idx: int, n_clients_from_clustering: int
