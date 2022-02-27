@@ -6,7 +6,7 @@ functions:
   client-indep-1:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-1
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -20,16 +20,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-2:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-2
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -43,16 +43,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-3:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-3
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -66,8 +66,8 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
       http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
@@ -75,7 +75,7 @@ functions:
   client-indep-4:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-4
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -89,16 +89,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-5:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-5
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -112,16 +112,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-6:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-6
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -135,16 +135,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-7:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-7
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -158,16 +158,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-8:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-8
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -181,16 +181,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-9:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-9
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -204,16 +204,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-10:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-10
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -227,16 +227,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-11:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-11
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -250,16 +250,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-12:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-12
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -273,16 +273,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-13:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-13
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -296,16 +296,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-14:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-14
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -319,16 +319,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-15:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-15
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -342,16 +342,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-16:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-16
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -365,16 +365,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-17:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-17
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -388,16 +388,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-18:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-18
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -411,16 +411,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-19:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-19
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -434,16 +434,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-20:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-20
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -457,16 +457,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-21:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-21
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -480,16 +480,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-22:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-22
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -503,16 +503,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-23:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-23
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -526,16 +526,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-24:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-24
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -549,16 +549,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-25:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-25
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -572,16 +572,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-26:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-26
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -595,16 +595,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-27:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-27
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -618,16 +618,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-28:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-28
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -641,16 +641,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-29:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-29
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -664,16 +664,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-30:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-30
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -687,16 +687,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=invasic"
 
   client-indep-31:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-31
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -710,16 +710,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-32:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-32
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -733,16 +733,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-33:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-33
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -756,16 +756,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-34:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-34
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -779,16 +779,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-35:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-35
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -802,16 +802,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-36:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-36
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -825,16 +825,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-37:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-37
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -848,16 +848,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-38:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-38
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -871,16 +871,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-39:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-39
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -894,16 +894,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-40:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-40
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -917,16 +917,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-41:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-41
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -940,16 +940,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-42:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-42
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -963,16 +963,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-43:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-43
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -986,16 +986,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-44:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-44
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1009,16 +1009,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-45:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-45
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1032,16 +1032,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk1"
 
   client-indep-46:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-46
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1055,16 +1055,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-47:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-47
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1078,16 +1078,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-48:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-48
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1101,16 +1101,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-49:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-49
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1124,16 +1124,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-50:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-50
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1147,16 +1147,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-51:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-51
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1170,16 +1170,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-52:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-52
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1193,16 +1193,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-53:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-53
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1216,16 +1216,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-54:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-54
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1239,16 +1239,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-55:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-55
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1262,16 +1262,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-56:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-56
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1285,16 +1285,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-57:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-57
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1308,16 +1308,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-58:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-58
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1331,16 +1331,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-59:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-59
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1354,16 +1354,16 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
   client-indep-60:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-60
+    image: mohamedazab/fedless-ofaas:rbg
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -1377,123 +1377,116 @@ functions:
       read_timeout: 20m
       exec_timeout: 20m
       upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
+      handler_wait_duration: 4m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
     constraints:
       - "fedless_node=sk2"
 
-  client-indep-61:
-    lang: python3-http-debian
-    handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-61
-    build_args:
-      ADDITIONAL_PACKAGE: git
-    limits:
-      cpu: 2000m
-      memory: 4000Mi
-    requests:
-      cpu: 300m
-      memory: 1000Mi
-    environment:
-      write_timeout: 20m
-      read_timeout: 20m
-      exec_timeout: 20m
-      upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
-    constraints:
-      - "fedless_node=sksmall"
+  # client-indep-61:
+  #   lang: python3-http-debian
+  #   handler: ./client-indep
+  #   image: mohamedazab/fedless-ofaas:rbg
+  #   build_args:
+  #     ADDITIONAL_PACKAGE: git
+  #   limits:
+  #     cpu: 2000m
+  #     memory: 4000Mi
+  #   requests:
+  #     cpu: 300m
+  #     memory: 1000Mi
+  #   environment:
+  #     write_timeout: 20m
+  #     read_timeout: 20m
+  #     exec_timeout: 20m
+  #     upstream_timeout: 19m55s
+  #     handler_wait_duration: 4m
+  #     # https_proxy: http://proxy.in.tum.de:8080/
+  #     http_proxy: http://proxy.in.tum.de:8080/
 
-  client-indep-62:
-    lang: python3-http-debian
-    handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-62
-    build_args:
-      ADDITIONAL_PACKAGE: git
-    limits:
-      cpu: 2000m
-      memory: 4000Mi
-    requests:
-      cpu: 300m
-      memory: 1000Mi
-    environment:
-      write_timeout: 20m
-      read_timeout: 20m
-      exec_timeout: 20m
-      upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
-    constraints:
-      - "fedless_node=sksmall"
 
-  client-indep-63:
-    lang: python3-http-debian
-    handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-63
-    build_args:
-      ADDITIONAL_PACKAGE: git
-    limits:
-      cpu: 2000m
-      memory: 4000Mi
-    requests:
-      cpu: 300m
-      memory: 1000Mi
-    environment:
-      write_timeout: 20m
-      read_timeout: 20m
-      exec_timeout: 20m
-      upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
-    constraints:
-      - "fedless_node=sksmall"
+  # client-indep-62:
+  #   lang: python3-http-debian
+  #   handler: ./client-indep
+  #   image: mohamedazab/fedless-ofaas:rbg
+  #   build_args:
+  #     ADDITIONAL_PACKAGE: git
+  #   limits:
+  #     cpu: 2000m
+  #     memory: 4000Mi
+  #   requests:
+  #     cpu: 300m
+  #     memory: 1000Mi
+  #   environment:
+  #     write_timeout: 20m
+  #     read_timeout: 20m
+  #     exec_timeout: 20m
+  #     upstream_timeout: 19m55s
+  #     handler_wait_duration: 4m
+  #     # https_proxy: http://proxy.in.tum.de:8080/
+  #     http_proxy: http://proxy.in.tum.de:8080/
 
-  client-indep-64:
-    lang: python3-http-debian
-    handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-64
-    build_args:
-      ADDITIONAL_PACKAGE: git
-    limits:
-      cpu: 2000m
-      memory: 4000Mi
-    requests:
-      cpu: 300m
-      memory: 1000Mi
-    environment:
-      write_timeout: 20m
-      read_timeout: 20m
-      exec_timeout: 20m
-      upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
-    constraints:
-      - "fedless_node=sksmall"
 
-  client-indep-65:
-    lang: python3-http-debian
-    handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-65
-    build_args:
-      ADDITIONAL_PACKAGE: git
-    limits:
-      cpu: 2000m
-      memory: 4000Mi
-    requests:
-      cpu: 300m
-      memory: 1000Mi
-    environment:
-      write_timeout: 20m
-      read_timeout: 20m
-      exec_timeout: 20m
-      upstream_timeout: 19m55s
-      handler_wait_duration: 2m
-      https_proxy: http://proxy.in.tum.de:8080/
-      http_proxy: http://proxy.in.tum.de:8080/
-    constraints:
-      - "fedless_node=sksmall"
+  # client-indep-63:
+  #   lang: python3-http-debian
+  #   handler: ./client-indep
+  #   image: mohamedazab/fedless-ofaas:rbg
+  #   build_args:
+  #     ADDITIONAL_PACKAGE: git
+  #   limits:
+  #     cpu: 2000m
+  #     memory: 4000Mi
+  #   requests:
+  #     cpu: 300m
+  #     memory: 1000Mi
+  #   environment:
+  #     write_timeout: 20m
+  #     read_timeout: 20m
+  #     exec_timeout: 20m
+  #     upstream_timeout: 19m55s
+  #     handler_wait_duration: 4m
+  #     # https_proxy: http://proxy.in.tum.de:8080/
+  #     http_proxy: http://proxy.in.tum.de:8080/
+
+
+  # client-indep-64:
+  #   lang: python3-http-debian
+  #   handler: ./client-indep
+  #   image: mohamedazab/fedless-ofaas:rbg
+  #   build_args:
+  #     ADDITIONAL_PACKAGE: git
+  #   limits:
+  #     cpu: 2000m
+  #     memory: 4000Mi
+  #   requests:
+  #     cpu: 300m
+  #     memory: 1000Mi
+  #   environment:
+  #     write_timeout: 20m
+  #     read_timeout: 20m
+  #     exec_timeout: 20m
+  #     upstream_timeout: 19m55s
+  #     handler_wait_duration: 4m
+  #     # https_proxy: http://proxy.in.tum.de:8080/
+  #     http_proxy: http://proxy.in.tum.de:8080/
+
+  # client-indep-65:
+  #   lang: python3-http-debian
+  #   handler: ./client-indep
+  #   image: mohamedazab/fedless-ofaas:rbg
+  #   build_args:
+  #     ADDITIONAL_PACKAGE: git
+  #   limits:
+  #     cpu: 2000m
+  #     memory: 4000Mi
+  #   requests:
+  #     cpu: 300m
+  #     memory: 1000Mi
+  #   environment:
+  #     write_timeout: 20m
+  #     read_timeout: 20m
+  #     exec_timeout: 20m
+  #     upstream_timeout: 19m55s
+  #     handler_wait_duration: 4m
+  #     # https_proxy: http://proxy.in.tum.de:8080/
+  #     http_proxy: http://proxy.in.tum.de:8080/
