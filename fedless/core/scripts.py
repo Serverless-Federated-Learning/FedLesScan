@@ -62,7 +62,7 @@ logger = logging.getLogger(__name__)
     "-s",
     "--strategy",
     type=click.Choice(
-        ["fedless", "fedless_mock", "fedless_enhanced"], case_sensitive=False
+        ["fedless", "fedless_enhanced"], case_sensitive=False
     ),
     required=True,
 )
@@ -139,6 +139,12 @@ logger = logging.getLogger(__name__)
 #     type=float,
 #     default=None,
 # )
+@click.option(
+    "--mock/--no-mock",
+    help="use mocks",
+    default=False,
+)
+
 def run(
     dataset: str,
     config: str,
@@ -156,6 +162,7 @@ def run(
     aggregate_online: bool,
     test_batch_size: int,
     # invocation_delay: float,
+    mock:bool
 ):
     session = str(uuid.uuid4())
     log_dir = Path(out) if out else Path(config).parent
@@ -228,6 +235,7 @@ def run(
             else None
         ),
         "proxies": proxies,
+        "mock": mock
     }
 
     strategy = select_strategy(strategy, inv_params)
