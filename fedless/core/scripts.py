@@ -24,7 +24,7 @@ from fedless.strategies.Intelligent_selection import (
     DBScanClientSelection,
     RandomClientSelection,
 )
-from fedless.strategies.strategy_selector import selectStrategy
+from fedless.strategies.strategy_selector import select_strategy
 from fedless.models import (
     ClientConfig,
     ClientPersistentHistory,
@@ -230,7 +230,7 @@ def run(
         "proxies": proxies,
     }
 
-    strategy = selectStrategy(strategy, inv_params)
+    strategy = select_strategy(strategy, inv_params)
 
     asyncio.run(strategy.deploy_all_functions())
     asyncio.run(

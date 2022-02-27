@@ -101,6 +101,15 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         pd.DataFrame.from_records(self.client_timings).to_csv(
             dir / f"clients_{session}.csv"
         )
+    def save_invocation_details(self, session:str,round:int,dir:Optional[Path] = None, **kwargs)->None:
+        
+        if not dir:
+            dir = Path.cwd()
+        preps_dict = {"session_id": session, "round_id": round, **kwargs}
+        pd.DataFrame.from_records([preps_dict]).to_csv(
+            dir / f"invocation_{session}.csv",mode='a',index=False,header=False
+        )
+        
 
     @run_in_executor
     def _async_call_request(
@@ -207,6 +216,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         # add last failed round idx
         client_history_dao = ClientHistoryDao(db=self.mongodb_config)
 
+        preps_dict = {"succs":len(succs),'failed':len(errors),'pending':len(all_clients)-len(succs)-len(errors)}
+        self.save_invocation_details(self.session,round,self.save_dir,**preps_dict)
         # reset client backoff
         for suc in succs:
             successfull_client: ClientPersistentHistory = client_history_dao.load(
@@ -228,6 +239,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
                 failed_client.client_backoff = 1
             else:
                 failed_client.client_backoff *= 2
+            # add failed client training time to max time
             client_history_dao.save(failed_client)
 
         if len(succs) < (len(clients) - self.allowed_stragglers):

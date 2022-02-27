@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
 from functools import reduce
 import logging
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 import numpy as np
+from pathlib import Path
+import pandas as pd
 
 import random
 from requests.sessions import session
@@ -52,10 +54,11 @@ class RandomClientSelection(IntelligentClientSelection):
 
 
 class DBScanClientSelection(IntelligentClientSelection):
-    def __init__(self, db_config: MongodbConnectionConfig, session):
+    def __init__(self, db_config: MongodbConnectionConfig, session, log_dir = Path.cwd()):
         super().__init__(self.db_fit)
         self.db_config = db_config
         self.session = session
+        self.log_dir = log_dir
 
     def compute_ema(
         self,
@@ -78,14 +81,22 @@ class DBScanClientSelection(IntelligentClientSelection):
         for i in range(latest_updated + 1, len(training_times)):
             updated_ema = updated_ema * smoothingFactor + training_times[i]
         return updated_ema
+    
+    def get_client_ema(self, times_list:List):
+        ema = 0
+        for client_time in times_list:
+                ema = ema * 0.5 + client_time
+        # return (random.sample([50,80,120,140,160],1))[0]
+        return ema
 
-    def sort_clusters(self, clients: list, labels: list):
+    def sort_clusters(self, clients: List[ClientPersistentHistory], labels: list):
         n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
         # dict of {cluster_idx: (ema,[client_list])}
         cluster_number_map = {}
         for idx in range(len(labels)):
             client_cluster_idx = labels[idx]
-            client_ema = clients[idx].ema
+            # client_ema = clients[idx].ema
+            client_ema = self.get_client_ema(clients[idx].training_times)
             if client_cluster_idx in cluster_number_map:
                 old_cluster_data = cluster_number_map[client_cluster_idx]
                 # append new client
@@ -98,18 +109,56 @@ class DBScanClientSelection(IntelligentClientSelection):
                 cluster_number_map[client_cluster_idx] = (client_ema, [clients[idx]])
         # sort clusters based on avg ema per cluster
         # we didnt sort with the missed rounds because fast clients will probably not miss alot of rounds
+        
+        #normalize by no of clients/cluster
+        for cluster_idx,(cluster_total_ema,cluster_clients) in cluster_number_map.items():
+            cluster_number_map[cluster_idx] = (cluster_total_ema/len(cluster_clients),cluster_clients)
         return dict(
-            sorted(cluster_number_map.items(), key=lambda x: x[1][0] / len(x[1][1]))
+            sorted(cluster_number_map.items(), key=lambda x: x[1][0])
         )
         # pass
 
+    def save_clustering_count(self, round:int, **kwargs)->None:
+        
+        preps_dict = {"session_id": self.session, "round_id": round, **kwargs}
+        # cluster num for each round 
+        pd.DataFrame.from_records([preps_dict]).to_csv(
+            self.log_dir / f"clusters_{self.session}.csv",mode='a',index=False,header=False
+        )
+        # # cluster:avg_ema
+        # pd.DataFrame.from_records([preps_dict]).to_csv(
+        #     self.log_dir / f"clusters_details_{session}.csv",mode='a',index=False,header=False
+        # )
+    def save_clustering_details(self, round:int, sorted_clusters, selected_clients)->None:
+        
+        cluster_dict_list =[]
+        for cluster_idx, (cluster_ema,cluster_client_configs) in sorted_clusters.items():
+            
+            for client_config in cluster_client_configs:
+                cluster_dict_list+=[{"round_id":round,"cluster_ema":cluster_ema,"cluster_id":cluster_idx,"client_id":client_config.client_id}]
+        
+        selected_clients_ids = []
+        for client_config in selected_clients:
+            selected_clients_ids+=[{"round_id":round,"client_id":client_config.client_id}]
+        # cluster num for each round 
+        pd.DataFrame.from_records(cluster_dict_list).to_csv(
+            self.log_dir / f"clusters_details_{self.session}.csv",mode='a',index=False,header=False
+        )
+        
+        pd.DataFrame.from_records(selected_clients_ids).to_csv(
+            self.log_dir / f"selected_details_{self.session}.csv",mode='a',index=False,header=False
+        )
+        
+    
+        
     def filter_rookies(
-        self, clients: list
+        self, clients: List[ClientPersistentHistory]
     ) -> Tuple[List[ClientPersistentHistory], List[ClientPersistentHistory]]:
         rookies = []
         rest_clients = []
         for client in clients:
             if len(client.training_times) == 0 and len(client.missed_rounds) == 0:
+            # if client.latest_updated == -1:
                 rookies.append(client)
             else:
                 rest_clients.append(client)
@@ -124,6 +173,10 @@ class DBScanClientSelection(IntelligentClientSelection):
         rookie_clients, rest_clients = self.filter_rookies(all_data)
         # use the list t o get separate the clients
         # rest_clients_no_backoff = filter(lambda client:client.client_backoff+client.latest_updated<= round, rest_clients)
+        
+        # rest_clients = all_data
+        # rookie_clients = []
+        # round=4
 
         if len(rookie_clients) >= n_clients_in_round:
             logger.info(
@@ -137,31 +190,28 @@ class DBScanClientSelection(IntelligentClientSelection):
         logger.info(
             f"selected rookies {len(rookie_clients)}, remaining {n_clients_from_clustering}"
         )
+        # update the latest updated for rookies
         # todo: filter the clients with non fulfilled backoffs and use them iff the rest does not complete the required number
         training_data = []
         for client_data in rest_clients:
             client_training_times = client_data.training_times
             client_missed_rounds = client_data.missed_rounds
-            # client_ema = client_data.ema
-            # client_latest_updated = client_data.latest_updated
-            rounds_completed = len(client_training_times)
-            # latest_ema = client_ema
-            ema = 0
-            missed_rounds_ema = 0
-            for client_time in client_training_times:
-                ema = ema * 0.5 + client_time
-            for missed_round in client_missed_rounds:
-                round_factor = missed_round / max_rounds
-                missed_rounds_ema = missed_round * 0.5 + round_factor
-
-                client_data.latest_updated = round
-                history_dao.save(client_data)
+        
+            ema = self.get_client_ema(client_training_times)
+            # ema of missed rounds so later rounds have higher penalty factor
+            missed_rounds_ema = self.get_client_ema(np.divide(client_missed_rounds, max_rounds))
+            client_data.latest_updated = round
+            history_dao.save(client_data)
             training_data.append([ema, missed_rounds_ema])
         # use last update with backoff
 
         # todo convert to mins
-        labels = self.perform_clustering(training_data=training_data, eps_step=0.1)
+        labels,best_score = self.perform_clustering(training_data=training_data, eps_step=0.1)
         sorted_clusters = self.sort_clusters(rest_clients, labels)
+        # logs
+        self.save_clustering_count(round,**{"num_clusters":len(sorted_clusters),"score":best_score})
+        ######
+        
         cluster_idx_list = np.arange(start=0, stop=len(sorted_clusters))
         perc = (round / max_rounds) * 100
         start_cluster_idx = np.percentile(
@@ -171,6 +221,11 @@ class DBScanClientSelection(IntelligentClientSelection):
         round_candidates_history = rookie_clients + self.sample_starting_from(
             sorted_clusters, start_cluster_idx, n_clients_from_clustering
         )
+        # save logs
+        # save 2 files 
+        # 1- round -> client to cluster
+        # 2- round -> selected client_id list
+        self.save_clustering_details(round, sorted_clusters, round_candidates_history)
 
         return self.select_candidates_from_pool(round_candidates_history, pool)
 
@@ -212,7 +267,7 @@ class DBScanClientSelection(IntelligentClientSelection):
                 logger.info(
                     f"number of clusters not enough , labels = {n_lables}, noise = {n_noise_}"
                 )
-        return best_labels
+        return best_labels,best_score
 
     def sample_starting_from(
         self, sorted_clusters, start_cluster_idx: int, n_clients_from_clustering: int
@@ -228,7 +283,8 @@ class DBScanClientSelection(IntelligentClientSelection):
                 cluster_clients_sorted = sorted(
                     cluster_clients, key=lambda client: len(client.training_times)
                 )
-                return cluster_clients_sorted[:n_clients_from_clustering]
+                returned_samples += cluster_clients_sorted[:n_clients_from_clustering]
+                n_clients_from_clustering = 0
             else:
                 n_clients_from_clustering -= cluster_size
                 returned_samples += cluster_clients
