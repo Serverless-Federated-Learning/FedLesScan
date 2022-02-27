@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-root_directory="$(dirname "$(dirname "$script_dir")")"
+root_directory="$(dirname "$script_dir")"
 echo $script_dir
 echo $root_directory
-n_clients=10
-clients_per_round=3
-allowed_stragglers=2
-accuracy_threshold=0.5
-rounds=10
+n_clients=200
+clients_per_round=100
+allowed_stragglers=10
+accuracy_threshold=0.9
+rounds=100
 
 # shellcheck disable=SC2034
 for curr_repeat in {1..1}; do
@@ -23,8 +23,8 @@ for curr_repeat in {1..1}; do
     --out "$root_directory/out/femnist-demo" \
     --rounds "$rounds" \
     --aggregate-online \
-	--no-tum-proxy \
-	--timeout 120
+  	--timeout 120
+    -- mock
 
   sleep 600
   exit 0
