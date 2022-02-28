@@ -49,7 +49,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         proxies: Dict = None,
         invocation_delay: float = None,
         evaluation_timeout: float = 30.0,  # 30 sec default
-        mock:bool =False
+        mock: bool = False,
     ):
         super().__init__(
             provider=provider,
@@ -67,7 +67,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             save_dir=save_dir,
             proxies=proxies,
             invocation_delay=invocation_delay,
-            mock=mock
+            mock=mock,
         )
         self.cognito = cognito
         self.evaluation_timeout = evaluation_timeout
@@ -143,6 +143,7 @@ class FedlessStrategy(ServerlessFlStrategy):
                     return res
                 except InvocationError as e:
                     return str(e)
+
             client_invoker_func = self.inv_mock if self.mock else _inv
             tasks.append(
                 asyncio.create_task(

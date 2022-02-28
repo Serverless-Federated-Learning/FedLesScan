@@ -22,6 +22,7 @@ from fedless.datasets.benchmark_configurator import (
     create_mnist_test_config,
     create_data_configs,
 )
+from fedless.models.models import FedProxParams
 from fedless.strategies.Intelligent_selection import (
     DBScanClientSelection,
     RandomClientSelection,
@@ -63,7 +64,7 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-s",
     "--strategy",
-    type=click.Choice(["fedless", "fedless_enhanced"], case_sensitive=False),
+    type=click.Choice(["fedless", "fedless_enhanced", "fedprox"], case_sensitive=False),
     required=True,
 )
 @click.option(
@@ -96,11 +97,11 @@ logger = logging.getLogger(__name__)
     help="maximum wait time for functions to finish",
     default=100,
 )
-@click.option(
-    "--separate-invokers/--no-separate-invokers",
-    help="use separate invoker function for each client (only applies when fedkeeper strategy is used)",
-    default=True,
-)
+# @click.option(
+#     "--separate-invokers/--no-separate-invokers",
+#     help="use separate invoker function for each client (only applies when fedkeeper strategy is used)",
+#     default=True,
+# )
 @click.option(
     "--max-accuracy",
     help="stop training if this test accuracy is reached",
@@ -144,11 +145,19 @@ logger = logging.getLogger(__name__)
     help="use mocks",
     default=False,
 )
+
+# straggler simulation per client if specified in function or with percentages
 @click.option(
     "--simulate-stragglers",
-    help="define a percentage of the clients to straggle",
+    help="define a percentage of the clients to straggle, this option overrides the invocation delay if specified in the function",
     type=float,
     default=0.0,
+)
+@click.option(
+    "--mu",
+    help="param for fedprox training",
+    type=float,
+    default=0.01,
 )
 def run(
     dataset: str,
@@ -159,7 +168,7 @@ def run(
     stragglers: int,
     timeout: float,
     rounds: int,
-    separate_invokers: bool,
+    # separate_invokers: bool,
     max_accuracy: float,
     out: str,
     tum_proxy: bool,
@@ -169,6 +178,7 @@ def run(
     # invocation_delay: float,
     mock: bool,
     simulate_stragglers: float,
+    mu: float,
 ):
     session = str(uuid.uuid4())
     log_dir = Path(out) if out else Path(config).parent
@@ -200,11 +210,13 @@ def run(
 
     clients = store_client_configs(
         session=session,
+        strategy=strategy,
         clients=config.clients,
         num_clients=clients,
         data_configs=data_configs,
         database=config.database,
         stragglers_precentage=simulate_stragglers,
+        fedprox_global_mu=mu,
     )
     init_store_model(
         session=session,
@@ -259,6 +271,7 @@ def run(
 
 def store_client_configs(
     session: str,
+    strategy: str,
     clients: FedkeeperClientsConfig,
     num_clients: int,
     data_configs: List[
@@ -266,6 +279,7 @@ def store_client_configs(
     ],
     database: MongodbConnectionConfig,
     stragglers_precentage: float,
+    fedprox_global_mu: float,
 ) -> List[ClientConfig]:
     client_config_dao = ClientConfigDao(database)
     client_history_dao = ClientHistoryDao(database)
@@ -282,7 +296,14 @@ def store_client_configs(
     logger.info(f"simulate stragglers {num_stragglers} clients for {num_clients}.")
     data_shards = iter(data_configs)
     function_iter = cycle(clients_unrolled)
+    # todo: add fedprox param
+    if strategy == "fedprox" and fedprox_global_mu > 0:
+        st = FedProxParams()
+        st.mu = fedprox_global_mu
+        clients.hyperparams.fedprox = st
+
     default_hyperparms = clients.hyperparams
+
     final_configs = []
     stragglers_idx_list = random.sample(list(np.arange(num_clients)), num_stragglers)
     for idx, shard in enumerate(data_shards):
