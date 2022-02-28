@@ -167,6 +167,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
                 f"***->>> invoking client ${client_id} with time out ${self.client_timeout}"
             )
             cl = MockClient(data)
+            
             res = await cl.run_client()
            
             dt_call = time.time() - t_start

@@ -1,5 +1,6 @@
 from typing import Any
-from fedless.client import fedless_mongodb_handler
+from fedless.client import ClientError, fedless_mongodb_handler
+from fedless.invocation import InvocationError
 from fedless.models import InvokerParams
 
 
@@ -8,12 +9,15 @@ class MockClient:
         self.config = config
 
     async def run_client(self):
-
-        return fedless_mongodb_handler(
-            session_id=self.config.session_id,
-            round_id=self.config.round_id,
-            client_id=self.config.client_id,
-            database=self.config.database,
-            evaluate_only=self.config.evaluate_only,
-            invocation_delay=self.config.invocation_delay,
-        )
+        try:
+            
+            return fedless_mongodb_handler(
+                session_id=self.config.session_id,
+                round_id=self.config.round_id,
+                client_id=self.config.client_id,
+                database=self.config.database,
+                evaluate_only=self.config.evaluate_only,
+                invocation_delay=self.config.invocation_delay,
+            )
+        except ClientError as e:
+            raise InvocationError(str(e))

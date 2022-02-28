@@ -303,11 +303,12 @@ def store_client_configs(
         clients.hyperparams.fedprox = st
 
     default_hyperparms = clients.hyperparams
-
+    # TODO add fed prox parm mu here
     final_configs = []
     stragglers_idx_list = random.sample(list(np.arange(num_clients)), num_stragglers)
     for idx, shard in enumerate(data_shards):
         client = next(function_iter)
+        #  addition fedprox on specific functions or custom hp for specific functions
         hp = client.hyperparams or default_hyperparms
         client_id = str(uuid.uuid4())
         train_config, test_config = shard if isinstance(shard, tuple) else (shard, None)
