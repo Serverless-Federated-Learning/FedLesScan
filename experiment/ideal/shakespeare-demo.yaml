@@ -1,0 +1,47 @@
+database:
+  host: "138.246.235.81"
+
+cluster:
+  apihost: 138.246.235.81:31001
+  auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+
+server:
+  evaluator:
+    type: openwhisk
+    params:
+      name: evaluator
+      file: /home/ubuntu/mitigating-stragglers-fl-project/functions/openwhisk/evaluator/main.py
+      image: mohamedazab/fedless-openwhisk:clients
+      memory: 2048
+      timeout: 60000
+
+  aggregator:
+    type: openwhisk
+    params:
+      name: aggregator
+      file: /home/ubuntu/mitigating-stragglers-fl-project/functions/openwhisk/aggregator/main.py
+      image: mohamedazab/fedless-openwhisk:clients
+      memory: 2048
+      # tod try 4gb memory 
+      timeout: 60000
+
+clients:
+  hyperparams:
+    epochs: 1
+    batch_size: 32
+    optimizer:
+      class_name: "SGD"
+      config:
+        name: "SGD"
+        learning_rate: 0.8
+    metrics:
+      - accuracy
+  functions:
+    - function:
+        replicas: 10
+        params:
+          endpoint: https://138.246.235.81:31002/api/v1/web/guest/default/client-indep-5.json
+          self_signed_cert: true
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
+          type: openwhisk-web
+        type: openwhisk-web
