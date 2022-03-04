@@ -6,9 +6,10 @@ echo $script_dir
 echo $root_directory
 n_clients=200
 clients_per_round=25
-allowed_stragglers=2
+allowed_stragglers=
 accuracy_threshold=0.6
-rounds=40
+rounds=30
+straggler_percent=0.3
 
 # shellcheck disable=SC2034
 # for curr_repeat in {1..1}; do

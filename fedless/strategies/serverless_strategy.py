@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import random
 import time
 import uuid
@@ -101,18 +102,19 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         if not dir:
             dir = Path.cwd()
         pd.DataFrame.from_records(self.log_metrics).to_csv(
-            dir / f"timing_{session}.csv"
+            dir / f"timing_{session}.csv", index=False
         )
         pd.DataFrame.from_records(self.client_timings).to_csv(
-            dir / f"clients_{session}.csv"
+            dir / f"clients_{session}.csv", index=False
         )
     def save_invocation_details(self, session:str,round:int,dir:Optional[Path] = None, **kwargs)->None:
         
         if not dir:
             dir = Path.cwd()
         preps_dict = {"session_id": session, "round_id": round, **kwargs}
+        add_header = not os.path.isfile( dir / f"invocation_{session}.csv")
         pd.DataFrame.from_records([preps_dict]).to_csv(
-            dir / f"invocation_{session}.csv",mode='a',index=False,header=False
+            dir / f"invocation_{session}.csv",mode='a',index=False,header=add_header
         )
         
 
@@ -260,7 +262,9 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             successfull_client.client_backoff = 0
             client_history_dao.save(successfull_client)
             all_clients.remove(suc.client_id)
-
+        # todo failed get the backoff
+        # pending does not
+        
         # add client backoff and add the missing rounds
         # the backoff is computed from the last missed round
         for failed_client_id in all_clients:
@@ -272,8 +276,8 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             if failed_client.client_backoff == 0:
                 failed_client.client_backoff = 1
             else:
-                failed_client.client_backoff *= 2
-            # add failed client training time to max time
+                # todo change to linear backoff
+                failed_client.client_backoff +=1
             client_history_dao.save(failed_client)
 
         if len(succs) < (len(clients) - self.allowed_stragglers):

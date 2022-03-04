@@ -4,7 +4,7 @@ import sys
 from typing import Optional
 import time
 import pymongo
-from tensorflow import norm, nest, square, linalg
+from tensorflow import norm, nest, square, linalg,multiply 
 from tensorflow import print as tfprint
 import tensorflow.keras as keras
 from absl import app
@@ -84,12 +84,13 @@ def fedless_mongodb_handler(
 
     logger.info(f"invocation delay {invocation_delay} sec for client_id={client_id}")
 
-    # delayed execution
-    if invocation_delay == -1:
-        raise ClientError("client invoked with -1 delay: simulating failed client")
-    elif invocation_delay > 0:
-        time.sleep(invocation_delay)
-
+    # delayed execution only for training
+    if not evaluate_only:
+        if invocation_delay == -1:
+            raise ClientError("client invoked with -1 delay: simulating failed client")
+        elif invocation_delay > 0:
+            time.sleep(invocation_delay)
+        
     db = pymongo.MongoClient(
         host=database.host,
         port=database.port,
@@ -187,6 +188,10 @@ def fedless_mongodb_handler(
         logger.debug(f"Storing client history in database...")
         client_history = client_history_dao.load(client_id)
         client_history.training_times.append(elapsed_time)
+        # remove the round if declared missed round
+        # the missed round is not removed in case the client did not finish and save the results
+        if round_id in client_history.missed_rounds:
+            client_history.missed_rounds.remove(round_id)
         client_history_dao.save(client_history)
 
         logger.debug(f"Finished writing to database")
@@ -262,7 +267,7 @@ def penalty_loss_func(local_model, global_model, mu, loss_func):
         squared_norm = square(linalg.global_norm(model_difference))
         # tfprint(squared_norm)
         # tfprint("norm")
-        return loss_func(y_true, y_pred) + (mu / 2) * squared_norm
+        return loss_func(y_true, y_pred) + multiply(multiply(mu,0.5),squared_norm)
 
     return my_loss_func
 
@@ -406,15 +411,15 @@ def run(
         else:
             raise ValueError(f"Unkown loss type {loss_name}")
 
-    logger.debug(f"Compiling model")
+    logger.info(f"Compiling model")
     # add the custom fedprox compiler
     if hyperparams.fedprox is not None:
-        logger.debug(f"using fedprox @ client loss")
+        logger.info(f"using fedprox @ client loss")
         loss = penalty_loss_func(model, global_model, hyperparams.fedprox.mu, loss)
 
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
-    logger.debug(f"Running training")
+    logger.info(f"Running training")
     # Train Model
     # RuntimeError, ValueError
     history: History = model.fit(
@@ -443,7 +448,7 @@ def run(
     weights_serialized = weights_serializer.serialize(model.get_weights())
     if string_serializer:
         weights_serialized = string_serializer.to_str(weights_serialized)
-    logger.debug(
+    logger.info(
         f"Finished serializing model parameters of size {sys.getsizeof(weights_serialized)} bytes"
     )
 

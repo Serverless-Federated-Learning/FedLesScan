@@ -27,7 +27,8 @@ server:
 
 clients:
   hyperparams:
-    epochs: 10
+    # epochs: 10 # best result
+    epochs: 5
     batch_size: 5
     optimizer:
       class_name: "Adam"
