@@ -39,10 +39,10 @@
                 "120",
                 // "--tum-proxy"
                 "--mock",
-                "--simulate-stragglers",
-                "0.5",
-                "--mu",
-                "0.1"
+                // "--simulate-stragglers",
+                // "0.3",
+                // "--mu",
+                // "0.1"
             ]
         },
         {

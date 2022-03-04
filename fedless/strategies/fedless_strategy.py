@@ -50,6 +50,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         invocation_delay: float = None,
         evaluation_timeout: float = 30.0,  # 30 sec default
         mock: bool = False,
+        max_test_client_count: int = 0,
     ):
         super().__init__(
             provider=provider,
@@ -68,6 +69,7 @@ class FedlessStrategy(ServerlessFlStrategy):
             proxies=proxies,
             invocation_delay=invocation_delay,
             mock=mock,
+            max_test_client_count=max_test_client_count,
         )
         self.cognito = cognito
         self.evaluation_timeout = evaluation_timeout

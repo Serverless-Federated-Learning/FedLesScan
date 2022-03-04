@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import random
 import uuid
 from itertools import cycle
@@ -44,6 +45,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 # todo remove seed for exps
 random.seed(15)
+
+# todo  remove
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 
 @click.command()
 @click.option(
@@ -158,7 +163,7 @@ random.seed(15)
     "--mu",
     help="param for fedprox training",
     type=float,
-    default=0.01,
+    default=0.001,
 )
 def run(
     dataset: str,
@@ -207,7 +212,9 @@ def run(
     )
 
     model = create_model(dataset)
-    data_configs = create_data_configs(dataset, clients)  # , proxies=proxies)
+    data_configs, max_test_clients_count = create_data_configs(
+        dataset, clients
+    )  # , proxies=proxies)
 
     clients = store_client_configs(
         session=session,
@@ -256,6 +263,7 @@ def run(
         ),
         "proxies": proxies,
         "mock": mock,
+        "max_test_client_count": max_test_clients_count,
     }
 
     strategy = select_strategy(strategy, inv_params)
@@ -291,7 +299,7 @@ def store_client_configs(
         f"instruction to setup {num_clients} clients from {n_clients} potential endpoints."
     )
     # todo add delay param for all clients
-    stragglers_delay_list = [-1,-1, 20,25]
+    stragglers_delay_list = [-1, -1, 20, 25]
 
     num_stragglers = int(stragglers_precentage * num_clients)
     logger.info(f"simulate stragglers {num_stragglers} clients for {num_clients}.")

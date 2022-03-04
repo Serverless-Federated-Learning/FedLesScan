@@ -93,17 +93,23 @@ def create_mnist_test_config(proxies) -> DatasetLoaderConfig:
     )
 
 
+# returns the configs and the number of clients available for testing
 # noinspection PydanticTypeChecker,PyTypeChecker
 def create_data_configs(
     dataset: str, clients: int, proxies: Optional[Dict] = None
-) -> List[Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]]:
+) -> Tuple[
+    List[Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]],
+    int,
+]:
     dataset = dataset.lower()
     if dataset == "mnist":
-        return list(
+        mn_configs = list(
             create_mnist_train_data_loader_configs(
                 n_devices=clients, n_shards=600, proxies=proxies
             )
         )
+        return mn_configs, len(mn_configs)
+
     elif dataset in ["femnist", "shakespeare"]:
         configs = []
         for client_idx in range(clients):
@@ -124,7 +130,7 @@ def create_data_configs(
                 ),
             )
             configs.append((train, test))
-        return configs
+        return configs, len(configs)
     elif dataset == "speech":
         configs = []
         num_test_clients = 216
@@ -145,7 +151,7 @@ def create_data_configs(
                 ),
             )
             configs.append((train, test))
-        return configs
+        return configs, min(len(configs), num_test_clients)
     else:
         raise NotImplementedError(f"Dataset {dataset} not supported")
 

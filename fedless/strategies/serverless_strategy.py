@@ -60,13 +60,20 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
         invocation_delay: float = None,
-        mock: bool = False
+        mock: bool = False,
+        max_test_client_count: int = 0,
     ):
         super().__init__(
             clients=clients,
             selectionStrategy=selection_strategy,
             aggregation_strategy=aggregation_strategy,
         )
+        # if clients for test are zero mean all the clients can be used for testing
+        # other than that we have the number of the clients used for testing
+        if max_test_client_count == 0:
+            self.max_test_client_count = len(clients)
+        else:
+            self.max_test_client_count = max_test_client_count
         urllib3.disable_warnings()
         self.session: str = session or str(uuid.uuid4())
         self.provider = provider
@@ -107,16 +114,18 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         pd.DataFrame.from_records(self.client_timings).to_csv(
             dir / f"clients_{session}.csv", index=False
         )
-    def save_invocation_details(self, session:str,round:int,dir:Optional[Path] = None, **kwargs)->None:
-        
+
+    def save_invocation_details(
+        self, session: str, round: int, dir: Optional[Path] = None, **kwargs
+    ) -> None:
+
         if not dir:
             dir = Path.cwd()
         preps_dict = {"session_id": session, "round_id": round, **kwargs}
-        add_header = not os.path.isfile( dir / f"invocation_{session}.csv")
+        add_header = not os.path.isfile(dir / f"invocation_{session}.csv")
         pd.DataFrame.from_records([preps_dict]).to_csv(
-            dir / f"invocation_{session}.csv",mode='a',index=False,header=add_header
+            dir / f"invocation_{session}.csv", mode="a", index=False, header=add_header
         )
-        
 
     @run_in_executor
     def _async_call_request(
@@ -159,8 +168,10 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             return AggregatorFunctionResult.parse_obj(result)
         except ValidationError as e:
             raise ValueError(f"Aggregator returned invalid result.") from e
-        
-    async def inv_mock(self,function, data: InvokerParams, session: Session, round, client_id):
+
+    async def inv_mock(
+        self, function, data: InvokerParams, session: Session, round, client_id
+    ):
         try:
             if self.invocation_delay:
                 await asyncio.sleep(random.uniform(0.0, self.invocation_delay))
@@ -169,9 +180,9 @@ class ServerlessFlStrategy(FLStrategy, ABC):
                 f"***->>> invoking client ${client_id} with time out ${self.client_timeout}"
             )
             cl = MockClient(data)
-            
+
             res = await cl.run_client()
-           
+
             dt_call = time.time() - t_start
             self.client_timings.append(
                 {
@@ -187,7 +198,6 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             return res
         except InvocationError as e:
             return str(e)
-
 
     def call_aggregator(self, round: int) -> AggregatorFunctionResult:
         params = AggregatorFunctionParams(
@@ -252,8 +262,12 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         # add last failed round idx
         client_history_dao = ClientHistoryDao(db=self.mongodb_config)
 
-        preps_dict = {"succs":len(succs),'failed':len(errors),'pending':len(all_clients)-len(succs)-len(errors)}
-        self.save_invocation_details(self.session,round,self.save_dir,**preps_dict)
+        preps_dict = {
+            "succs": len(succs),
+            "failed": len(errors),
+            "pending": len(all_clients) - len(succs) - len(errors),
+        }
+        self.save_invocation_details(self.session, round, self.save_dir, **preps_dict)
         # reset client backoff
         for suc in succs:
             successfull_client: ClientPersistentHistory = client_history_dao.load(
@@ -264,7 +278,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             all_clients.remove(suc.client_id)
         # todo failed get the backoff
         # pending does not
-        
+
         # add client backoff and add the missing rounds
         # the backoff is computed from the last missed round
         for failed_client_id in all_clients:
@@ -277,7 +291,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
                 failed_client.client_backoff = 1
             else:
                 # todo change to linear backoff
-                failed_client.client_backoff +=1
+                failed_client.client_backoff += 1
             client_history_dao.save(failed_client)
 
         if len(succs) < (len(clients) - self.allowed_stragglers):
@@ -294,7 +308,11 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         logger.info(f"Invoking Aggregator")
         t_agg_start = time.time()
-        agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round) if self.mock else self.call_aggregator(round)
+        agg_res: AggregatorFunctionResult = (
+            self.call_mock_aggregator(round)
+            if self.mock
+            else self.call_aggregator(round)
+        )
         # agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round)
         t_agg_end = time.time()
         logger.info(f"Aggregator combined result of {agg_res.num_clients} clients.")
@@ -313,7 +331,14 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             if hasattr(self, "evaluate_clients"):
                 n_clients_in_round = len(clients)
                 # randomly select clients form evaluation
-                eval_clients = random.sample(self.clients, n_clients_in_round)
+                # choose subset for testing if applicable
+                eval_clients_list = self.clients[
+                    : min(len(clients), self.max_test_client_count)
+                ]
+                eval_clients = random.sample(
+                    eval_clients_list,
+                    min(n_clients_in_round, self.max_test_client_count),
+                )
                 logger.info(f"Selected {len(eval_clients)} for evaluation...")
                 metrics = await self.evaluate_clients(
                     agg_res.new_round_id, eval_clients
