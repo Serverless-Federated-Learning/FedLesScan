@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-for i in {1..2}; do
+for i in {1..50}; do
   function_name="http-indep-${i}"
   echo "Deploying function $function_name"
   # shellcheck disable=SC2140

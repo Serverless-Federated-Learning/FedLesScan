@@ -1,5 +1,6 @@
 import logging
 import math
+import random
 import sys
 from typing import Optional
 import time
@@ -90,6 +91,13 @@ def fedless_mongodb_handler(
             raise ClientError("client invoked with -1 delay: simulating failed client")
         elif invocation_delay > 0:
             time.sleep(invocation_delay)
+        elif invocation_delay <-1:
+            # for any number less than -1
+            prob = random.uniform(0, 1)
+            logger.info(f'genrating failure prob: {prob}')
+            if prob <0.5:
+                raise ClientError("client failed with prob {prob}: simulating failed client")
+            
         
     db = pymongo.MongoClient(
         host=database.host,

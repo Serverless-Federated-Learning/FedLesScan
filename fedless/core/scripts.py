@@ -44,7 +44,7 @@ from fedless.providers import OpenwhiskCluster
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 # todo remove seed for exps
-random.seed(15)
+random.seed(10)
 
 # todo  remove
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -299,7 +299,7 @@ def store_client_configs(
         f"instruction to setup {num_clients} clients from {n_clients} potential endpoints."
     )
     # todo add delay param for all clients
-    stragglers_delay_list = [-1, -1, 20, 25]
+    stragglers_delay_list = [-1, -2]
 
     num_stragglers = int(stragglers_precentage * num_clients)
     logger.info(f"simulate stragglers {num_stragglers} clients for {num_clients}.")
@@ -331,10 +331,10 @@ def store_client_configs(
         )
         # add straggler
         if idx in stragglers_idx_list:
-            # client_config.function.invocation_delay = random.sample(
-            #     stragglers_delay_list, 1
-            # )[0]
-            client_config.function.invocation_delay = -1
+            client_config.function.invocation_delay = random.sample(
+                stragglers_delay_list, 1
+            )[0]
+            # client_config.function.invocation_delay = -2
 
         client_history = ClientPersistentHistory(
             client_id=client_id,
