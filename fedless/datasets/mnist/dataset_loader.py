@@ -42,15 +42,17 @@ class MNIST(DatasetLoader):
 
     @cache
     def load(self) -> tf.data.Dataset:
-        response = requests.get(
-            self.location,
-            proxies=self.proxies,
-        )
-        fp, path = tempfile.mkstemp()
-        with os.fdopen(fp, "wb") as f:
-            f.write(response.content)
+        # response = requests.get(
+        #     self.location,
+        #     proxies=self.proxies,
+        # )
+        # TODO remove for deploy
+        # fp, path = tempfile.mkstemp(prefix="mnist",dir="/home/ubuntu/mnist_temp")
+        # with os.fdopen(fp, "wb") as f:
+        #     f.write(response.content)
+        tx_file_path = tf.keras.utils.get_file(cache_subdir="data", origin=self.location)
 
-        with np.load(path, allow_pickle=True) as f:
+        with np.load(tx_file_path, allow_pickle=True) as f:
             x_train, y_train = f["x_train"], f["y_train"]
             x_test, y_test = f["x_test"], f["y_test"]
 
