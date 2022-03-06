@@ -8,7 +8,7 @@ n_clients=200
 clients_per_round=100
 allowed_stragglers=10
 accuracy_threshold=0.9
-rounds=40
+rounds=30
 
 # shellcheck disable=SC2034
 # for curr_repeat in {1..1}; do
@@ -20,13 +20,13 @@ python -m fedless.core.scripts \
   --clients-in-round "$clients_per_round" \
   --stragglers "$allowed_stragglers" \
   --max-accuracy "$accuracy_threshold" \
-  --out "$root_directory/out/femnist" \
+  --out "$root_directory/out/ideal2/femnist" \
   --rounds "$rounds" \
   --aggregate-online \
   --timeout 900 \
   --mock
 
-sleep 100
+sleep 5
 
 python -m fedless.core.scripts \
   -d "femnist" \
@@ -36,7 +36,7 @@ python -m fedless.core.scripts \
   --clients-in-round "$clients_per_round" \
   --stragglers "$allowed_stragglers" \
   --max-accuracy "$accuracy_threshold" \
-  --out "$root_directory/out/femnist-enhanced" \
+  --out "$root_directory/out/ideal2/femnist-enhanced" \
   --rounds "$rounds" \
   --aggregate-online \
   --timeout 900 \

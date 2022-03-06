@@ -11,44 +11,47 @@ accuracy_threshold=0.9
 rounds=30
 straggler_percent=0.1
 
+base_out_dir="$root_directory/out/controlled-expo/a_random_stragglers"
+
 
 # shellcheck disable=SC2034
 # for curr_repeat in {1..1}; do
-python -m fedless.core.scripts \
-  -d "femnist" \
-  -s "fedless" \
-  -c "$script_dir/femnist-demo.yaml" \
-  --clients "$n_clients" \
-  --clients-in-round "$clients_per_round" \
-  --stragglers "$allowed_stragglers" \
-  --max-accuracy "$accuracy_threshold" \
-  --out "$root_directory/out/controlled/femnist-"$straggler_percent"" \
-  --rounds "$rounds" \
-  --aggregate-online \
-  --timeout 900 \
-  --mock \
-  --simulate-stragglers "$straggler_percent"
+for straggler_percent in 0.1 0.2 0.3; do
+  python -m fedless.core.scripts \
+    -d "femnist" \
+    -s "fedless_enhanced" \
+    -c "$script_dir/femnist-demo.yaml" \
+    --clients "$n_clients" \
+    --clients-in-round "$clients_per_round" \
+    --stragglers "$allowed_stragglers" \
+    --max-accuracy "$accuracy_threshold" \
+    --out "$base_out_dir/femnist-enhanced-"$straggler_percent"" \
+    --rounds "$rounds" \
+    --aggregate-online \
+    --timeout 900 \
+    --mock \
+    --simulate-stragglers "$straggler_percent"
 
-sleep 2
+  sleep 2
 
-python -m fedless.core.scripts \
-  -d "femnist" \
-  -s "fedless_enhanced" \
-  -c "$script_dir/femnist-demo.yaml" \
-  --clients "$n_clients" \
-  --clients-in-round "$clients_per_round" \
-  --stragglers "$allowed_stragglers" \
-  --max-accuracy "$accuracy_threshold" \
-  --out "$root_directory/out/controlled/femnist-enhanced-"$straggler_percent"" \
-  --rounds "$rounds" \
-  --aggregate-online \
-  --timeout 900 \
-  --mock \
-  --simulate-stragglers "$straggler_percent"
-  # exit 0
+  python -m fedless.core.scripts \
+    -d "femnist" \
+    -s "fedless" \
+    -c "$script_dir/femnist-demo.yaml" \
+    --clients "$n_clients" \
+    --clients-in-round "$clients_per_round" \
+    --stragglers "$allowed_stragglers" \
+    --max-accuracy "$accuracy_threshold" \
+    --out "$base_out_dir/femnist-"$straggler_percent"" \
+    --rounds "$rounds" \
+    --aggregate-online \
+    --timeout 900 \
+    --mock \
+    --simulate-stragglers "$straggler_percent"
 
-sleep 2
-
+  sleep 2
+  
+done
 # python -m fedless.core.scripts \
 #   -d "femnist" \
 #   -s "fedprox" \
