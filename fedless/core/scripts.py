@@ -299,7 +299,8 @@ def store_client_configs(
         f"instruction to setup {num_clients} clients from {n_clients} potential endpoints."
     )
     # todo add delay param for all clients
-    stragglers_delay_list = [-1, -2]
+    # stragglers_delay_list = [-1, -2]
+    stragglers_delay_list = [-1]
 
     num_stragglers = int(stragglers_precentage * num_clients)
     logger.info(f"simulate stragglers {num_stragglers} clients for {num_clients}.")

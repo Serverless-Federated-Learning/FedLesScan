@@ -7,9 +7,9 @@ import tensorflow as tf
 from typing import Dict, Iterator, List, Optional
 
 
-import requests
-import tempfile
-import os
+# import requests
+# import tempfile
+# import os
 from fedless.cache import cache
 
 from pydantic import BaseModel, Field

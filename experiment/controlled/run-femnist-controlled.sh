@@ -11,7 +11,7 @@ accuracy_threshold=0.9
 rounds=30
 straggler_percent=0.1
 
-base_out_dir="$root_directory/out/controlled-expo/a_random_stragglers"
+base_out_dir="$root_directory/out/controlled-expo"
 
 
 # shellcheck disable=SC2034

@@ -6,12 +6,12 @@ echo $script_dir
 echo $root_directory
 n_clients=300
 clients_per_round=100
-allowed_stragglers=85
-accuracy_threshold=0.9
-rounds=30
+allowed_stragglers=102
+accuracy_threshold=0.99
+rounds=50
 # straggler_percent=0.2
 
-base_out_dir="$root_directory/out/controlled-expo/a_random_stragglers"
+base_out_dir="$root_directory/out/controlled-expo"
 
 # shellcheck disable=SC2034
 for straggler_percent in 0.1 0.2 0.3; do
