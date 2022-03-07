@@ -26,7 +26,6 @@ class StallAwareAggregator(ParameterAggregator):
         super().__init__()
 
     def _score_clients(self, client_result: List[dict]):
-        # todo get the score by client_round/current_round
         scores = map(
             lambda client_dict: (client_dict["round_id"] + 1)
             / (self.current_round + 1),

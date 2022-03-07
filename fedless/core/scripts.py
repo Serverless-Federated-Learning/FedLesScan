@@ -43,11 +43,9 @@ from fedless.providers import OpenwhiskCluster
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-# todo remove seed for exps
-random.seed(10)
 
 # todo  remove
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
 @click.command()
@@ -306,14 +304,12 @@ def store_client_configs(
     logger.info(f"simulate stragglers {num_stragglers} clients for {num_clients}.")
     data_shards = iter(data_configs)
     function_iter = cycle(clients_unrolled)
-    # todo: add fedprox param
     if strategy == "fedprox" and fedprox_global_mu > 0:
         st = FedProxParams()
         st.mu = fedprox_global_mu
         clients.hyperparams.fedprox = st
 
     default_hyperparms = clients.hyperparams
-    # TODO add fed prox parm mu here
     final_configs = []
     stragglers_idx_list = random.sample(list(np.arange(num_clients)), num_stragglers)
     for idx, shard in enumerate(data_shards):
