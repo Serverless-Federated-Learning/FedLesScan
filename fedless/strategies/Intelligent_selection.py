@@ -252,7 +252,7 @@ class DBScanClientSelection(IntelligentClientSelection):
             missed_rounds_ema = self.get_missed_rounds_ema(client_missed_rounds,round,max_training_time)
             client_data.latest_updated = round
             history_dao.save(client_data)
-            training_data.append([ema, missed_rounds_ema])
+            training_data.append([ema + missed_rounds_ema])
         # use last update with backoff
 
         # todo convert to mins
