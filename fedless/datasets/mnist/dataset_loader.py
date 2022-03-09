@@ -22,9 +22,7 @@ class MNISTConfig(BaseModel):
     indices: List[int] = None
     split: str = "train"
     proxies: Optional[Dict] = None
-    location: str = (
-        "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
-    )
+    location: str = "http://138.246.235.175:81/datasets/mnist.npz"
 
 
 class MNIST(DatasetLoader):
@@ -33,7 +31,7 @@ class MNIST(DatasetLoader):
         indices: Optional[List[int]] = None,
         split: str = "train",
         proxies: Optional[Dict] = None,
-        location: str = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz",
+        location: str = "http://138.246.235.175:81/datasets/mnist.npz",
     ):
         self.split = split
         self.indices = indices
@@ -50,7 +48,9 @@ class MNIST(DatasetLoader):
         # fp, path = tempfile.mkstemp(prefix="mnist",dir="/home/ubuntu/mnist_temp")
         # with os.fdopen(fp, "wb") as f:
         #     f.write(response.content)
-        tx_file_path = tf.keras.utils.get_file(cache_subdir="data", origin=self.location)
+        tx_file_path = tf.keras.utils.get_file(
+            cache_subdir="data", origin=self.location
+        )
 
         with np.load(tx_file_path, allow_pickle=True) as f:
             x_train, y_train = f["x_train"], f["y_train"]

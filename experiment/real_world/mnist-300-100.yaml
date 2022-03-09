@@ -1,0 +1,939 @@
+database:
+  host: "138.246.235.81"
+
+cluster:
+  apihost: 138.246.235.81:31001
+  auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+
+server:
+  evaluator:
+    type: openwhisk
+    params:
+      name: evaluator
+      file: /u/home/elzohair/mitigating-stragglers-fl-project/functions/openwhisk/evaluator/main.py
+      image: mohamedazab/fedless-openwhisk:clients
+      memory: 2048
+      timeout: 60000
+
+  aggregator:
+    type: openwhisk
+    params:
+      name: aggregator
+      file: /u/home/elzohair/mitigating-stragglers-fl-project/functions/openwhisk/aggregator/main.py
+      image: mohamedazab/fedless-openwhisk:clients
+      memory: 2024
+      timeout: 60000
+
+clients:
+  hyperparams:
+    epochs: 5
+    batch_size: 10
+    optimizer:
+      class_name: "Adam"
+      config:
+        name: "Adam"
+        learning_rate: 0.001
+    metrics:
+      - accuracy
+  functions:
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-0-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-1-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-2-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-3-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-4-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-5-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-6-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-7-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-8-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-9-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-10-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-11-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-12-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-13-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-14-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-15-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-16-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-17-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-18-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-19-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-20-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-21-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-22-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-23-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-24-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-25-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-26-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-27-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-28-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-29-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-30-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-31-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-32-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-33-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-34-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-35-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-36-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-37-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-38-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-39-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-40-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-41-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-42-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-43-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-44-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-45-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-46-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-47-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-48-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-49-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-50-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-51-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-52-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-53-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-54-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-55-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-56-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-57-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-58-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-59-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-60-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-61-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-62-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-63-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-64-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-65-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-66-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-67-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-68-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-69-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-70-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-71-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-72-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-73-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-74-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-75-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-76-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-77-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-78-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-79-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-80-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-81-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-82-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-83-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-84-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-85-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-86-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-87-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-88-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-89-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-90-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-91-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-92-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-93-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-94-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-95-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-96-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-97-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-98-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+    - function:
+        invocation_delay: 0
+        params:
+          type: gcloud
+          url: https://http-indep-99-n2nf4txpja-ez.a.run.app/
+        type: gcloud
+
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-0
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-1
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-2
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-3
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-4
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-5
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-6
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-7
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-8
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-9
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-10
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-11
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-12
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-13
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-14
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-15
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-16
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-17
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-18
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-19
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-20
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-21
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-22
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-23
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-24
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-25
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-26
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-27
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-28
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-29
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-30
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-31
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-32
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-33
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-34
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-35
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-36
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-37
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-38
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-39
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-40
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-41
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-42
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-43
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-44
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-45
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-46
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-47
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-48
+    #     type: openfaas
+    # - function:
+    #     invocation_delay: 0
+    #     params:
+    #       type: openfaas
+    #       url: http://127.0.0.1:31112/function/client-indep-49
+    #     type: openfaas
