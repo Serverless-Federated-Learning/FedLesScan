@@ -266,7 +266,7 @@ class DBScanClientSelection(IntelligentClientSelection):
         # actuall running perc without the first rookie rounds
         perc = ((round-self.start_clustering_round) / max(max_rounds-self.start_clustering_round,1))* 100
         start_cluster_idx = np.percentile(
-            cluster_idx_list, perc, interpolation="nearest"
+            cluster_idx_list, perc, interpolation="lower"
         )
 
         round_candidates_history = rookie_clients + self.sample_starting_from(
@@ -341,7 +341,7 @@ class DBScanClientSelection(IntelligentClientSelection):
             cluster_size = len(cluster_clients)
             if cluster_size >= n_clients_from_clustering:
                 cluster_clients_sorted = sorted(
-                    cluster_clients, key=lambda client: len(client.training_times)
+                    cluster_clients, key=lambda client: len(client.training_times)+len(client.missed_rounds)
                 )
                 returned_samples += cluster_clients_sorted[:n_clients_from_clustering]
                 n_clients_from_clustering = 0
