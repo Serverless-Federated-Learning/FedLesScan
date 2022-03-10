@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     file_name = "my_funcs.yaml"
     # Gcloud
-    for i in range(100):
+    for i in range(1, 201):
         config = FunctionInvocationConfig(
             type="gcloud",
             params=GCloudFunctionConfig(
