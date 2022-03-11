@@ -16,7 +16,7 @@ class ServerFunctions(pydantic.BaseModel):
     provider: Optional[str]
     invoker: Optional[FunctionDeploymentConfig]
     evaluator: FunctionDeploymentConfig
-    aggregator: FunctionDeploymentConfig
+    aggregator: FunctionInvocationConfig
 
 
 class FedkeeperClientConfig(pydantic.BaseModel):

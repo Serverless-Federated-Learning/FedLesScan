@@ -49,7 +49,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         provider: FaaSProvider,
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionDeploymentConfig,
-        aggregator_config: FunctionDeploymentConfig,
+        aggregator_config: FunctionInvocationConfig,
         selection_strategy: IntelligentClientSelection,
         aggregation_strategy: AggregationStrategy,
         client_timeout: float = 300,
@@ -85,7 +85,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.aggregator_params = aggregator_params or {}
         self.global_test_data = global_test_data
 
-        self._aggregator: Optional[FunctionInvocationConfig] = None
+        self._aggregator: Optional[FunctionInvocationConfig] = aggregator_config
         self._evaluator: Optional[FunctionInvocationConfig] = None
 
         self.evaluator_config: FunctionDeploymentConfig = evaluator_config
@@ -310,11 +310,12 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         logger.info(f"Invoking Aggregator")
         t_agg_start = time.time()
-        agg_res: AggregatorFunctionResult = (
-            self.call_mock_aggregator(round)
-            if self.mock
-            else self.call_aggregator(round)
-        )
+        # agg_res: AggregatorFunctionResult = (
+        #     self.call_mock_aggregator(round)
+        #     if self.mock
+        #     else self.call_aggregator(round)
+        # )
+        agg_res = self.call_aggregator(round)
         # agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round)
         t_agg_end = time.time()
         logger.info(f"Aggregator combined result of {agg_res.num_clients} clients.")

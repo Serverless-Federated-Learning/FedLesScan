@@ -5,8 +5,8 @@ root_directory="$(dirname "$(dirname "$script_dir")")"
 echo $script_dir
 echo $root_directory
 n_clients=200
-clients_per_round=100
-allowed_stragglers=100
+clients_per_round=175
+allowed_stragglers=175
 accuracy_threshold=0.99
 rounds=40
 dataset_name="femnist"
@@ -17,6 +17,22 @@ config_dir="$script_dir/$dataset_name-$n_clients-$clients_per_round.yaml"
 echo $base_out_dir
 # shellcheck disable=SC2034
 for straggler_percent in 0 ; do
+  
+  python -m fedless.core.scripts \
+    -d "$dataset_name" \
+    -s "fedless_enhanced" \
+    -c "$config_dir" \
+    --clients "$n_clients" \
+    --clients-in-round "$clients_per_round" \
+    --stragglers "$allowed_stragglers" \
+    --max-accuracy "$accuracy_threshold" \
+    --out "$base_out_dir/$dataset_name-enhanced-$straggler_percent" \
+    --aggregate-online \
+    --rounds "$rounds" \
+    --timeout "$client_timeout" \
+    --simulate-stragglers "$straggler_percent"
+
+  sleep 1
   
   python -m fedless.core.scripts \
     -d "$dataset_name" \
@@ -35,21 +51,6 @@ for straggler_percent in 0 ; do
   
   sleep 1
 
-  python -m fedless.core.scripts \
-    -d "$dataset_name" \
-    -s "fedless_enhanced" \
-    -c "$config_dir" \
-    --clients "$n_clients" \
-    --clients-in-round "$clients_per_round" \
-    --stragglers "$allowed_stragglers" \
-    --max-accuracy "$accuracy_threshold" \
-    --out "$base_out_dir/$dataset_name-enhanced-$straggler_percent" \
-    --aggregate-online \
-    --rounds "$rounds" \
-    --timeout "$client_timeout" \
-    --simulate-stragglers "$straggler_percent"
-
-  sleep 1
 
 
   python -m fedless.core.scripts \

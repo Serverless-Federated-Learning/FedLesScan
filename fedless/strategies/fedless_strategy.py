@@ -13,6 +13,7 @@ from fedless.models.aggregation_models import AggregationStrategy
 
 from fedless.core.common import fetch_cognito_auth_token
 from fedless.core.models import CognitoConfig
+from fedless.models.function_models import FunctionInvocationConfig
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 from fedless.strategies.serverless_strategy import ServerlessFlStrategy
 from fedless.invocation import retry_session, InvocationError
@@ -36,7 +37,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         clients: List[ClientConfig],
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionDeploymentConfig,
-        aggregator_config: FunctionDeploymentConfig,
+        aggregator_config: FunctionInvocationConfig,
         selection_strategy: IntelligentClientSelection,
         aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
         client_timeout: float = 300,  # 5 mins default
@@ -75,9 +76,10 @@ class FedlessStrategy(ServerlessFlStrategy):
         self.evaluation_timeout = evaluation_timeout
 
     async def deploy_all_functions(self, *args, **kwargs):
-        logger.info(f"Deploying fedless functions...")
-        logger.info(f"Deploying aggregator and evaluator")
-        self._aggregator = await self.provider.deploy(self.aggregator_config.params)
+        logger.info(f"aggregator is a function on openfaas...")
+        # logger.info(f"Deploying fedless functions...")
+        # logger.info(f"Deploying aggregator and evaluator")
+        # self._aggregator = await self.provider.deploy(self.aggregator_config.params)
         self._evaluator = await self.provider.deploy(self.evaluator_config.params)
 
     async def call_clients(
