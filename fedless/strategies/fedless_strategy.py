@@ -131,17 +131,20 @@ class FedlessStrategy(ServerlessFlStrategy):
                         else self.evaluation_timeout,
                     )
                     dt_call = time.time() - t_start
-                    self.client_timings.append(
-                        {
-                            "client_id": client_id,
-                            "session_id": self.session,
-                            "invocation_time": t_start,
-                            "function": function.json(),
-                            "seconds": dt_call,
-                            "eval": evaluate_only,
-                            "round": round,
-                        }
-                    )
+
+                    # logs for only training
+                    if not data.evaluate_only:
+                        self.client_timings.append(
+                            {
+                                "client_id": client_id,
+                                "session_id": self.session,
+                                "invocation_time": t_start,
+                                "function": function.json(),
+                                "seconds": dt_call,
+                                "eval": evaluate_only,
+                                "round": round,
+                            }
+                        )
                     return res
                 except InvocationError as e:
                     return str(e)

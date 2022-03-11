@@ -24,10 +24,7 @@ from fedless.datasets.benchmark_configurator import (
     create_data_configs,
 )
 from fedless.models.models import FedProxParams
-from fedless.strategies.Intelligent_selection import (
-    DBScanClientSelection,
-    RandomClientSelection,
-)
+
 from fedless.strategies.strategy_selector import select_strategy
 from fedless.models import (
     ClientConfig,
@@ -44,8 +41,11 @@ from fedless.providers import OpenwhiskCluster
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # todo  remove
-# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+random.seed(10)
+logger.info("experiment_seed set to 5")
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
 @click.command()
@@ -298,7 +298,8 @@ def store_client_configs(
     )
     # todo add delay param for all clients
     # stragglers_delay_list = [-1, -2]
-    stragglers_delay_list = [-1]
+    stragglers_delay_list = [-1, 30]
+    # stragglers_delay_list = [-1]
 
     num_stragglers = int(stragglers_precentage * num_clients)
     logger.info(f"simulate stragglers {num_stragglers} clients for {num_clients}.")

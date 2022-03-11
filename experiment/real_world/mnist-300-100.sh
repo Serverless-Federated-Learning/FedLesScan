@@ -5,15 +5,15 @@ root_directory="$(dirname "$(dirname "$script_dir")")"
 echo $script_dir
 echo $root_directory
 n_clients=300
-clients_per_round=100
-allowed_stragglers=80
+clients_per_round=200
+allowed_stragglers=200
 accuracy_threshold=0.99
-rounds=80
+rounds=100
 
-base_out_dir="$root_directory/out/real_world"
+base_out_dir="$root_directory/out/real_world/linear"
 
 # shellcheck disable=SC2034
-for curr_repeat in {1..3}; do
+for straggler_percent in 0.7 0.5 0.3 0.1; do
   python -m fedless.core.scripts \
     -d "mnist" \
     -s "fedless_enhanced" \
@@ -25,6 +25,7 @@ for curr_repeat in {1..3}; do
     --out "$base_out_dir/mnist-enhanced" \
     --rounds "$rounds" \
     --timeout 600 \
+    --simulate-stragglers "$straggler_percent"
 
   sleep 1
 
@@ -39,6 +40,7 @@ for curr_repeat in {1..3}; do
     --out "$base_out_dir/mnist" \
     --rounds "$rounds" \
     --timeout 600 \
+    --simulate-stragglers "$straggler_percent"
 
   python -m fedless.core.scripts \
     -d "mnist" \
@@ -51,6 +53,7 @@ for curr_repeat in {1..3}; do
     --out "$base_out_dir/mnist-prox" \
     --rounds "$rounds" \
     --timeout 600 \
+    --simulate-stragglers "$straggler_percent" \
     --mu 0.001
 done
 

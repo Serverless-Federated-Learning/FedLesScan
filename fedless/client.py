@@ -5,9 +5,9 @@ import sys
 from typing import Optional
 import time
 import pymongo
-from tensorflow import norm, nest, square, linalg,multiply 
+from tensorflow import norm, nest, square, linalg, multiply
 from tensorflow import print as tfprint
-import tensorflow.keras as keras
+from tensorflow import keras as keras
 from absl import app
 from tensorflow.python.keras.callbacks import History
 from tensorflow_privacy import (
@@ -86,19 +86,25 @@ def fedless_mongodb_handler(
     logger.info(f"invocation delay {invocation_delay} sec for client_id={client_id}")
 
     # delayed execution only for training
-    if not evaluate_only:
-        if invocation_delay == -1:
-            raise ClientError("client invoked with -1 delay: simulating failed client")
-        elif invocation_delay > 0:
+    if invocation_delay == -1:
+        # fail in both
+        raise ClientError("client invoked with -1 delay: simulating failed client")
+    elif invocation_delay == -2 and not evaluate_only:
+        # fail training only
+        raise ClientError("client invoked with -1 delay: simulating failed client")
+    elif not evaluate_only:
+        if invocation_delay > 0:
+            # sleep in training only
             time.sleep(invocation_delay)
-        elif invocation_delay <-1:
+        elif invocation_delay < -2:
             # for any number less than -1
             prob = random.uniform(0, 1)
-            logger.info(f'genrating failure prob: {prob}')
-            if prob <0.5:
-                raise ClientError("client failed with prob {prob}: simulating failed client")
-            
-        
+            logger.info(f"genrating failure prob: {prob}")
+            if prob < 0.5:
+                raise ClientError(
+                    "client failed with prob {prob}: simulating failed client"
+                )
+
     db = pymongo.MongoClient(
         host=database.host,
         port=database.port,
@@ -184,7 +190,7 @@ def fedless_mongodb_handler(
         )
 
         end_time = time.time()
-        elapsed_time = int(end_time - start_time)/60.0
+        elapsed_time = int(end_time - start_time) / 60.0
 
         logger.debug(f"Storing client results in database. Starting now...")
         results_dao.save(
@@ -275,7 +281,7 @@ def penalty_loss_func(local_model, global_model, mu, loss_func):
         squared_norm = square(linalg.global_norm(model_difference))
         # tfprint(squared_norm)
         # tfprint("norm")
-        return loss_func(y_true, y_pred) + multiply(multiply(mu,0.5),squared_norm)
+        return loss_func(y_true, y_pred) + multiply(multiply(mu, 0.5), squared_norm)
 
     return my_loss_func
 

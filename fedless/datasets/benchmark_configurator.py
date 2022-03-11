@@ -139,7 +139,7 @@ def create_data_configs(
                 type="speech",
                 params=FedScaleConfig(
                     dataset=dataset,
-                    location=f"{FILE_SERVER}/datasets/google_speech/npz/train/client_{client_idx}.npz",
+                    location=f"{FILE_SERVER}/datasets/google_speech/npz_570/train/client_{client_idx}.npz",
                 ),
             )
             # if number of test clients is smaller tha number of clients just reloop the assignment
