@@ -2,12 +2,6 @@
     invocation_delay: 0
     params:
       type: gcloud
-      url: https://http-indep-0-n2nf4txpja-ez.a.run.app/
-    type: gcloud
-- function:
-    invocation_delay: 0
-    params:
-      type: gcloud
       url: https://http-indep-1-n2nf4txpja-ez.a.run.app/
     type: gcloud
 - function:
@@ -1197,4 +1191,10 @@
     params:
       type: gcloud
       url: https://http-indep-199-n2nf4txpja-ez.a.run.app/
+    type: gcloud
+- function:
+    invocation_delay: 0
+    params:
+      type: gcloud
+      url: https://http-indep-200-n2nf4txpja-ez.a.run.app/
     type: gcloud
