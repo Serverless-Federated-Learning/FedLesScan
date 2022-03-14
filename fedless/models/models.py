@@ -268,6 +268,7 @@ class ClientPersistentHistory(BaseModel):
     missed_rounds: list = []
     # rounds to be skipped from the last failed round this increase exponentially and reset if the client succeded once
     client_backoff: float = 0
+    train_cardinality: int = -1  # client cardinality if not inf or not unknown
 
 
 class InvokerParams(BaseModel):

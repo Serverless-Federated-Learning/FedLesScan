@@ -310,12 +310,12 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         logger.info(f"Invoking Aggregator")
         t_agg_start = time.time()
-        # agg_res: AggregatorFunctionResult = (
-        #     self.call_mock_aggregator(round)
-        #     if self.mock
-        #     else self.call_aggregator(round)
-        # )
-        agg_res = self.call_aggregator(round)
+        agg_res: AggregatorFunctionResult = (
+            self.call_mock_aggregator(round)
+            if self.mock
+            else self.call_aggregator(round)
+        )
+        # agg_res = self.call_aggregator(round)
         # agg_res: AggregatorFunctionResult = self.call_mock_aggregator(round)
         t_agg_end = time.time()
         logger.info(f"Aggregator combined result of {agg_res.num_clients} clients.")

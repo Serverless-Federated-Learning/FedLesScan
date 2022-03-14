@@ -298,7 +298,7 @@ def store_client_configs(
     )
     # todo add delay param for all clients
     # stragglers_delay_list = [-1, -2]
-    stragglers_delay_list = [-1, 30]
+    stragglers_delay_list = [-1]
     # stragglers_delay_list = [-1]
 
     num_stragglers = int(stragglers_precentage * num_clients)

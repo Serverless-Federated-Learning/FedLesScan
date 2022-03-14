@@ -5,8 +5,10 @@ import sys
 from typing import Optional
 import time
 import pymongo
-from tensorflow import norm, nest, square, linalg, multiply
-from tensorflow import print as tfprint
+import tensorflow as tf
+from tensorflow import nest, square, linalg, multiply
+
+# from tensorflow import print as tfprint
 from tensorflow import keras as keras
 from absl import app
 from tensorflow.python.keras.callbacks import History
@@ -19,6 +21,8 @@ from tensorflow_privacy import (
 from tensorflow_privacy.privacy.analysis.compute_dp_sgd_privacy_lib import (
     apply_dp_sgd_analysis,
 )
+
+from timeit import default_timer as timer
 
 from fedless.datasets.dataset_loaders import (
     DatasetLoader,
@@ -120,7 +124,7 @@ def fedless_mongodb_handler(
         results_dao = ClientResultDao(db=db)
         client_history_dao = ClientHistoryDao(db=db)
 
-        start_time = time.time()
+        start_time = timer()
         logger.debug(f"Loading model from database")
         # Load model and latest weights
         model = model_dao.load(session_id=session_id)
@@ -172,7 +176,7 @@ def fedless_mongodb_handler(
                 client_id=client_id,
                 test_metrics=test_metrics,
             )
-
+        ### happens only in training
         data_loader = DatasetLoaderBuilder.from_config(client_params.data)
         weights_serializer: WeightsSerializer = NpzWeightsSerializer(
             compressed=client_config.compress_model
@@ -189,8 +193,11 @@ def fedless_mongodb_handler(
             verbose=verbose,
         )
 
-        end_time = time.time()
-        elapsed_time = int(end_time - start_time) / 60.0
+        end_time = timer()
+        ## add invocation delay if applicable
+        elapsed_time = (
+            end_time - start_time + (invocation_delay if invocation_delay > 0 else 0)
+        ) / 60.0
 
         logger.debug(f"Storing client results in database. Starting now...")
         results_dao.save(
@@ -202,6 +209,12 @@ def fedless_mongodb_handler(
         logger.debug(f"Storing client history in database...")
         client_history = client_history_dao.load(client_id)
         client_history.training_times.append(elapsed_time)
+        # save the dataset cardinality if
+        if not (
+            (client_result.cardinality == tf.data.INFINITE_CARDINALITY)
+            or (client_result.cardinality == tf.data.UNKNOWN_CARDINALITY)
+        ):
+            client_history.train_cardinality = client_result.cardinality
         # remove the round if declared missed round
         # the missed round is not removed in case the client did not finish and save the results
         if round_id in client_history.missed_rounds:
