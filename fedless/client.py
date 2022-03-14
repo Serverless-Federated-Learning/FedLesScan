@@ -92,10 +92,10 @@ def fedless_mongodb_handler(
     # delayed execution only for training
     if invocation_delay == -1:
         # fail in both
-        raise ClientError("client invoked with -1 delay: simulating failed client")
+        raise ClientError("client invoked with -1 delay: simulating failed client in training and test")
     elif invocation_delay == -2 and not evaluate_only:
         # fail training only
-        raise ClientError("client invoked with -1 delay: simulating failed client")
+        raise ClientError("client invoked with -1 delay: simulating failed client in training only")
     elif not evaluate_only:
         if invocation_delay > 0:
             # sleep in training only
