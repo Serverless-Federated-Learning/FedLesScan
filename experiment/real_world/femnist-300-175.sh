@@ -12,7 +12,7 @@ rounds=40
 dataset_name="femnist"
 client_timeout=130
 
-base_out_dir="$root_directory/out/real_world/linear"
+base_out_dir="$root_directory/out/real_world/expo"
 config_dir="$script_dir/$dataset_name-$n_clients-$clients_per_round.yaml"
 echo $base_out_dir
 # shellcheck disable=SC2034

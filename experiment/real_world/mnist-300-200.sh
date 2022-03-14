@@ -34,34 +34,34 @@ for straggler_percent in 0; do
 
   # sleep1
 
-  python -m fedless.core.scripts \
-    -d "mnist" \
-    -s "fedprox" \
-    -c "$config_dir" \
-    --clients "$n_clients" \
-    --clients-in-round "$clients_per_round" \
-    --stragglers "$allowed_stragglers" \
-    --max-accuracy "$accuracy_threshold" \
-    --out "$base_out_dir/$dataset_name-prox-$straggler_percent" \
-    --rounds "$rounds" \
-    --timeout "$client_timeout" \
-    --simulate-stragglers "$straggler_percent" \
-    --mu 0.001
-  
-  sleep 1
-  
   # python -m fedless.core.scripts \
   #   -d "mnist" \
-  #   -s "fedless_enhanced" \
+  #   -s "fedprox" \
   #   -c "$config_dir" \
   #   --clients "$n_clients" \
   #   --clients-in-round "$clients_per_round" \
   #   --stragglers "$allowed_stragglers" \
   #   --max-accuracy "$accuracy_threshold" \
-  #   --out "$base_out_dir/$dataset_name-enhanced-$straggler_percent" \
+  #   --out "$base_out_dir/$dataset_name-prox-$straggler_percent" \
   #   --rounds "$rounds" \
   #   --timeout "$client_timeout" \
-  #   --simulate-stragglers "$straggler_percent"
+  #   --simulate-stragglers "$straggler_percent" \
+  #   --mu 0.001
+  
+  # sleep 1
+  
+  python -m fedless.core.scripts \
+    -d "mnist" \
+    -s "fedless_enhanced" \
+    -c "$config_dir" \
+    --clients "$n_clients" \
+    --clients-in-round "$clients_per_round" \
+    --stragglers "$allowed_stragglers" \
+    --max-accuracy "$accuracy_threshold" \
+    --out "$base_out_dir/$dataset_name-enhanced-$straggler_percent" \
+    --rounds "$rounds" \
+    --timeout "$client_timeout" \
+    --simulate-stragglers "$straggler_percent"
 
   
 done

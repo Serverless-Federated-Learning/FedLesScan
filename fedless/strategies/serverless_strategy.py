@@ -293,7 +293,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
                 # todo change to linear backoff
                 # todo exponential backoff
                 logger.info(f"using exponential backoff for client {failed_client_id}")
-                failed_client.client_backoff += 1
+                failed_client.client_backoff *= 2
             client_history_dao.save(failed_client)
 
         if len(succs) < (len(clients) - self.allowed_stragglers):

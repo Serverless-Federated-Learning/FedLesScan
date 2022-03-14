@@ -300,6 +300,7 @@ class DBScanClientSelection(IntelligentClientSelection):
             client_missed_rounds = client_data.missed_rounds
 
             ema = self.get_client_ema(client_training_times)
+            # todo div by cardinality if exist else assume 1 so the number will be bigger and it will get demoted
             # ema of missed rounds so later rounds have higher penalty factor
             missed_rounds_ema = self.get_missed_rounds_ema(
                 client_missed_rounds, round, max_training_time
