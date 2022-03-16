@@ -16,18 +16,14 @@ server:
       timeout: 60000
 
   aggregator:
-    type: openwhisk
     params:
-      name: aggregator
-      file: /home/ubuntu/mitigating-stragglers-fl-project/functions/openwhisk/aggregator/main.py
-      image: mohamedazab/fedless-openwhisk:clients
-      memory: 4096
-      # tod try 4gb memory 
-      timeout: 60000
+      type: openfaas
+      url: http://138.246.234.228:31112/function/aggregator
+    type: openfaas
 
 clients:
   hyperparams:
-    epochs: 10
+    epochs: 2
     batch_size: 5
     optimizer:
       class_name: "Adam"
