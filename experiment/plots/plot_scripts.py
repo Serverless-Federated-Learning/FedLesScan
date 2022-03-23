@@ -9,8 +9,10 @@ def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, sub_plt,title
     y_data = data[y_axis_col].to_numpy()
     if(y_axis_col=="succs"):
         total_clients = y_data[0]+data["failed"][0]
+        straggler_rounds = np.count_nonzero(y_data<total_clients)
         y_data = y_data/total_clients
-        print(y_label+ " mean",np.mean(y_data))
+        print(f'{y_label} mean: {np.mean(y_data)}, straggler rounds: {straggler_rounds}')
+        
     # data.plot(kind='line',x=x_axis_col,y=y_axis_col,ax=plt.gca())
     sub_plt.set_xlabel(x_label)
     sub_plt.set_ylabel(y_label)
