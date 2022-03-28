@@ -14,7 +14,7 @@ rounds=2
 dataset_name="mnist"
 client_timeout=60
 base_out_dir="$root_directory/out/mnist-flower"
-config_dir="$script_dir/$dataset_name-$n_clients-$clients_per_round.yaml"
+config_dir="$script_dir/mnist-demo.yaml"
 echo $base_out_dir
 
 
@@ -26,8 +26,6 @@ python -m fedless.core.scripts \
   --clients-in-round "$clients_per_round" \
   --stragglers "$allowed_stragglers" \
   --max-accuracy "$accuracy_threshold" \
-  --out "$base_out_dir/$dataset_name-$straggler_percent" \
+  --out "$base_out_dir/$dataset_name" \
   --rounds "$rounds" \
-  --timeout "$client_timeout" \
-  --simulate-stragglers "$straggler_percent"
-
+  --timeout "$client_timeout" 

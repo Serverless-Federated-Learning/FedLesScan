@@ -3,14 +3,14 @@
 set -e
 
 server_ssh_host="lrz-4xlarge"
-server_ip="localhost"
+server_ip="0.0.0.0"
 port="31532"
 server_address="$server_ip:$port"
 server_cpus="2"    #"4"
 server_memory="18g" # "16g"
 # rounds=1
-min_num_clients=5
-num_clients_total=30
+# min_num_clients=20
+num_clients_total=6
 
 client_cpus=1.0
 client_memory="2g"
@@ -30,15 +30,16 @@ session_id="$RANDOM"
 # workers[4]='lrz-1;5'
 # workers[5]='lrz-2;5'
 # workers[6]='lrz-3;5'
-workers[0]='lrz-4xlarge;40'
+# workers[0]='lrz-4xlarge;40'
+worker='lrz-4xlarge;40' 
 
 echo "Update server and client images (build and push)"
-docker build -f server.Dockerfile -t "flower-server" .
-docker tag "flower-server" mohamedazab/flower:server
-docker push mohamedazab/flower:server
-docker build -f client.Dockerfile -t "flower-client" .
-docker tag "flower-client" mohamedazab/flower:client
-docker push mohamedazab/flower:client
+# docker build -f server.Dockerfile -t "flower-server" .
+# docker tag "flower-server" mohamedazab/flower:server
+# docker push mohamedazab/flower:server
+# docker build -f client.Dockerfile -t "flower-client" .
+# docker tag "flower-client" mohamedazab/flower:client
+# docker push mohamedazab/flower:client
 mkdir -p flower-logs
 
 run_experiment() {
@@ -63,7 +64,9 @@ run_experiment() {
   exp_filename="flower-logs/fedless_${dataset}_${min_num_clients}_${num_clients_total}_${epochs}_${session_id}"
 
   echo "Starting server, results are stored in $exp_filename.out and $exp_filename.err"
-  run_cmd="docker run --rm -p $port:$port --name fl-server \
+  run_cmd="docker run --rm -p $port:$port --name fl-server --network host \
+-e https_proxy=\$http_proxy \
+-e no_proxy=$server_ip \
 --cpus $server_cpus --memory $server_memory \
 mohamedazab/flower:server --rounds $rounds --min-num-clients $min_num_clients --dataset=$dataset"
   # shellcheck disable=SC2029
@@ -74,23 +77,22 @@ mohamedazab/flower:server --rounds $rounds --min-num-clients $min_num_clients --
   current_partition=0
 
   echo "Starting clients..."
-  for worker in "${workers[@]}"; do
     # shellcheck disable=SC2206
     worker_info=(${worker//;/ })
     ssh_host=${worker_info[0]}
     cores_assigned_to_host=${worker_info[1]}
-    if [[ $current_partition -ge $num_clients_total ]]; then
-      break
-    fi
+    # if [[ $current_partition -ge $num_clients_total ]]; then
+    #   break
+    # fi
     echo "Starting $cores_assigned_to_host clients on $ssh_host"
     for ((i = 1; i <= cores_assigned_to_host; i++)); do
       if [[ $current_partition -ge $num_clients_total ]]; then
         break
       fi
-      run_cmd="docker run \
+      run_cmd="docker run --rm --name fl-client-$current_partition \
 --network host \
---cpus $client_cpus \
---memory $client_memory \
+-e https_proxy=\$http_proxy \
+-e no_proxy=$server_ip \
 mohamedazab/flower:client \
 --server $server_address \
 --dataset $dataset \
@@ -105,7 +107,6 @@ mohamedazab/flower:client \
       nohup $run_cmd > ${exp_filename}_$current_partition.out 2> ${exp_filename}_$current_partition.err < /dev/null &
       current_partition=$((current_partition + 1))
     done
-  done
 
   if ((current_partition >= num_clients_total)); then
     echo "Successfully deployed all clients"
@@ -115,7 +116,7 @@ mohamedazab/flower:client \
   sleep 10
   while docker ps | grep mohamedazab/flower:server; do
     echo "Not finished yet"
-    sleep 30
+    sleep 20
   done
   sleep 10
   wait
@@ -124,5 +125,5 @@ mohamedazab/flower:client \
 #run_experiment dataset min_num_clients client_cpus client_memory batch_size epochs optimizer lr rounds session_id
 
 ## MNIST
-run_experiment "mnist" 5 1 "2g" 10 5 "Adam" 0.001 1 "$RANDOM"
+run_experiment "mnist" 6 1 "2g" 10 5 "Adam" 0.001 4 "$RANDOM"
 
