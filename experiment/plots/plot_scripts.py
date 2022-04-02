@@ -166,4 +166,5 @@ def plot_dataset_compare_3(path_normals,path_enhanced,path_prox,titles,dataset_t
     eur.savefig(f'{path}/eur_{dataset_title}.pdf', bbox_inches='tight')
     loss_p.savefig(f'{path}/loss_{dataset_title}.pdf', bbox_inches='tight')
     tim.savefig(f'{path}/tim_{dataset_title}.pdf', bbox_inches='tight')
+    var.savefig(f'{path}/var_{dataset_title}.pdf', bbox_inches='tight')
 
