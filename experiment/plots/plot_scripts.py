@@ -104,13 +104,13 @@ def get_plot():
     cols,rows = (3,2)  #3*2
     # grid = plt.GridSpec(rows, cols, wspace = .25, hspace = .25)
     # plot,subs = plt.subplots(rows, cols,figsize=(12,12),squeeze=False)
-    plot = plt.figure(figsize=(14,8))
-    ax1 = plt.subplot2grid(shape=(2,6), loc=(0,0), colspan=2)
-    ax2 = plt.subplot2grid((2,6), (0,2), colspan=2)
-    ax3 = plt.subplot2grid((2,6), (0,4), colspan=2)
-    ax4 = plt.subplot2grid((2,6), (1,1), colspan=2)
-    ax5 = plt.subplot2grid((2,6), (1,3), colspan=2)
-    plot.tight_layout(h_pad=5)
+    plot = plt.figure(figsize=(12,8))
+    ax1 = plt.subplot2grid(shape=(2,6), loc=(0,0), colspan=2,fig=plot)
+    ax2 = plt.subplot2grid((2,6), (0,2), colspan=2,fig=plot)
+    ax3 = plt.subplot2grid((2,6), (0,4), colspan=2,fig=plot)
+    ax4 = plt.subplot2grid((2,6), (1,1), colspan=2,fig=plot)
+    ax5 = plt.subplot2grid((2,6), (1,3), colspan=2,fig=plot)
+    plot.tight_layout(h_pad=4,w_pad=4)
     
     # subs[1][2].set_visible(False)
 
