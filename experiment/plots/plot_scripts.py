@@ -5,7 +5,7 @@ import numpy as np
 import os
 import math
 
-def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plot_type, line_style="solid",strategy_name = None):
+def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plot_type, line_style="solid",strategy_name = None,color="blue"):
     # line type is a string refering to line 
     data = pd.read_csv(file_path)
     x_data = data[x_axis_col].to_numpy()
@@ -24,9 +24,10 @@ def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plo
     sub_plt.xaxis.set_major_locator(MaxNLocator(integer=True))
     # sub_plt.set_xticks()
     # sub_plt.set_yticks(np.arange(0,100,10))
+    
     l = None
     if plot_type == "line":
-      l,=  sub_plt.plot(x_data,y_data,linestyle=line_style,label=strategy_name)
+      l,=  sub_plt.plot(x_data,y_data,linestyle=line_style,label=strategy_name,linewidth=2,color=color)
     elif plot_type == "violin":
       l,=  sub_plt.violinplot(x_data,y_data,label=strategy_name)
     elif plot_type == "bar":
@@ -78,7 +79,7 @@ def get_client_inv_group(path):
 
     return grouped_data
 
-def plot_dataset(path,eur_plot,acc_plot,loss_plot, time_plot,var_plot, algorithm_name, strategy_name,line_style,stragglers):
+def plot_dataset(path,eur_plot,acc_plot,loss_plot, time_plot,var_plot, strategy_name,line_style,stragglers,color):
     # use plot list for figures in order
     # use dataset name as legends
     x_labels = [("round_id", "Round Number"),("round_id", "Round Number"),("round_id", "Round Number"),("round_id", "Round Number")]
@@ -89,15 +90,16 @@ def plot_dataset(path,eur_plot,acc_plot,loss_plot, time_plot,var_plot, algorithm
     # max_norm, min_norm = plot_variance(clients_log_path,var_plot)
     # print(f'{algorithm_name}: variance: {max_norm-min_norm} for max of {max_norm} and min of {min_norm}')
     ## plot eur 
-    plot_figure(inv_path,x_labels[0][0],y_labels[0][0],x_labels[0][1],y_labels[0][1],eur_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name)
+    
+    plot_figure(inv_path,x_labels[0][0],y_labels[0][0],x_labels[0][1],y_labels[0][1],eur_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
     ## plot accuracy
-    plot_figure(timing_path,x_labels[1][0],y_labels[1][0],x_labels[1][1],y_labels[1][1],acc_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name)
+    plot_figure(timing_path,x_labels[1][0],y_labels[1][0],x_labels[1][1],y_labels[1][1],acc_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
     
     ## plot loss time 
-    plot_figure(timing_path,x_labels[2][0],y_labels[2][0],x_labels[2][1],y_labels[2][1],loss_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name)
+    plot_figure(timing_path,x_labels[2][0],y_labels[2][0],x_labels[2][1],y_labels[2][1],loss_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
     
     ## plot time 
-    plot_figure(timing_path,x_labels[3][0],y_labels[3][0],x_labels[3][1],y_labels[3][1],time_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name)
+    plot_figure(timing_path,x_labels[3][0],y_labels[3][0],x_labels[3][1],y_labels[3][1],time_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
     
 def get_plot():
     
@@ -143,9 +145,9 @@ def plot_dataset_compare_3(path_normals,path_enhanced,path_prox,titles,dataset_t
     # variance plots
     for idx, (normal,enhanced,prox) in enumerate(zip(path_normals,path_enhanced,path_prox)):
         
-        plot_dataset(normal,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"normal","fedAvg" if idx==0 else None, line_style="solid",stragglers=stragglers_p[idx])
-        plot_dataset(enhanced,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"enhanced","fedlesScan" if idx==0 else None,line_style="dashed",stragglers=stragglers_p[idx])
-        plot_dataset(prox,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"prox","fedProx" if idx==0 else None,line_style="dotted",stragglers=stragglers_p[idx])
+        plot_dataset(normal,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"fedAvg" if idx==0 else None, line_style="solid",stragglers=stragglers_p[idx],color="black")
+        plot_dataset(enhanced,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"fedlesScan" if idx==0 else None,line_style="dashed",stragglers=stragglers_p[idx],color="blue")
+        plot_dataset(prox,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"fedProx" if idx==0 else None,line_style="dotted",stragglers=stragglers_p[idx],color="brown")
         
         var_normal,var_e,var_prox = get_client_inv_group(normal),get_client_inv_group(enhanced),get_client_inv_group(prox)
         
