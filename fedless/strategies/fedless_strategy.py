@@ -36,7 +36,7 @@ class FedlessStrategy(ServerlessFlStrategy):
         provider: FaaSProvider,
         clients: List[ClientConfig],
         mongodb_config: MongodbConnectionConfig,
-        evaluator_config: FunctionDeploymentConfig,
+        evaluator_config: FunctionInvocationConfig,
         aggregator_config: FunctionInvocationConfig,
         selection_strategy: IntelligentClientSelection,
         aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
@@ -76,11 +76,11 @@ class FedlessStrategy(ServerlessFlStrategy):
         self.evaluation_timeout = evaluation_timeout
 
     async def deploy_all_functions(self, *args, **kwargs):
-        logger.info(f"aggregator is a function on openfaas...")
+        logger.info(f"aggregator and evaluator are functions on openfaas...")
         # logger.info(f"Deploying fedless functions...")
         # logger.info(f"Deploying aggregator and evaluator")
         # self._aggregator = await self.provider.deploy(self.aggregator_config.params)
-        self._evaluator = await self.provider.deploy(self.evaluator_config.params)
+        # self._evaluator = await self.provider.deploy(self.evaluator_config.params)
 
     async def call_clients(
         self, round: int, clients: List[ClientConfig], evaluate_only: bool = False

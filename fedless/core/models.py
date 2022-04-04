@@ -15,7 +15,7 @@ from fedless.models import (
 class ServerFunctions(pydantic.BaseModel):
     provider: Optional[str]
     invoker: Optional[FunctionDeploymentConfig]
-    evaluator: FunctionDeploymentConfig
+    evaluator: FunctionInvocationConfig
     aggregator: FunctionInvocationConfig
 
 

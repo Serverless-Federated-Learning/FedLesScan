@@ -48,7 +48,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         clients: List,
         provider: FaaSProvider,
         mongodb_config: MongodbConnectionConfig,
-        evaluator_config: FunctionDeploymentConfig,
+        evaluator_config: FunctionInvocationConfig,
         aggregator_config: FunctionInvocationConfig,
         selection_strategy: IntelligentClientSelection,
         aggregation_strategy: AggregationStrategy,
@@ -86,7 +86,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.global_test_data = global_test_data
 
         self._aggregator: Optional[FunctionInvocationConfig] = aggregator_config
-        self._evaluator: Optional[FunctionInvocationConfig] = None
+        self._evaluator: Optional[FunctionInvocationConfig] = evaluator_config
 
         self.evaluator_config: FunctionDeploymentConfig = evaluator_config
         self.aggregator_config: FunctionDeploymentConfig = aggregator_config
