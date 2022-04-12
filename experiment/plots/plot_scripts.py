@@ -1,10 +1,15 @@
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import numpy as np
 import os
 import math
-
+from cost import closestNumber,calculate_costs_gcf
+import json
+DPI = 300
+mpl.rcParams['figure.dpi'] = DPI
+axis_font = 14
 def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plot_type, line_style="solid",strategy_name = None,color="blue"):
     # line type is a string refering to line 
     data = pd.read_csv(file_path)
@@ -18,8 +23,8 @@ def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plo
         
     # data.plot(kind='line',x=x_axis_col,y=y_axis_col,ax=plt.gca())
     fig,sub_plt = plt
-    sub_plt.set_xlabel(x_label)
-    sub_plt.set_ylabel(y_label)
+    sub_plt.set_xlabel(x_label,fontsize = axis_font)
+    sub_plt.set_ylabel(y_label,fontsize = axis_font)
     sub_plt.set_title(title)
     sub_plt.xaxis.set_major_locator(MaxNLocator(integer=True))
     # sub_plt.set_xticks()
@@ -27,7 +32,7 @@ def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plo
     
     l = None
     if plot_type == "line":
-      l,=  sub_plt.plot(x_data,y_data,linestyle=line_style,label=strategy_name,linewidth=2,color=color)
+      l,=  sub_plt.plot(x_data,y_data,linestyle=line_style,label=strategy_name,linewidth=3,color=color)
     elif plot_type == "violin":
       l,=  sub_plt.violinplot(x_data,y_data,label=strategy_name)
     elif plot_type == "bar":
@@ -50,6 +55,34 @@ def get_dir_session_files(dir_path):
         
     return inv_file, timing_file, clients_log_file
 
+def get_min_max_cost(client_logs_path):
+    client_table = pd.read_csv(client_logs_path)
+    timings_max= np.array([])
+    timings_min = np.array([])
+    cost_min = 0
+    cost_max = 0
+    max_time = 40
+    for idx,client in client_table.iterrows():
+        client_func = json.loads(client['function'])
+        url = client_func['params']['url']
+        id = url.split("-")[2]
+        sim_delay = client_func['invocation_delay']
+        exec_time = client["seconds"]    
+            
+        if sim_delay ==-1:
+           timings_max = np.append(timings_max,max_time)
+        else:
+            timings_max = np.append(timings_max,exec_time)
+        timings_min = np.append(timings_min,exec_time)
+        
+
+    cost_list = calculate_costs_gcf(timings_min)
+    cost_min = np.sum(cost_list)
+    cost_max = np.sum(calculate_costs_gcf(timings_max))
+    print("costmin: ", cost_min, " costmax: ", cost_max)
+    
+    
+
 def plot_variance(grouped_data, plt, title):
     # data = pd.read_csv(clients_log_path)
     # grouped_data= data.groupby(['client_id']).size()
@@ -61,7 +94,7 @@ def plot_variance(grouped_data, plt, title):
     plot.set_title(title)
     # plot.xaxis.set_major_locator(MaxNLocator(integer=True))
     plot.set_xticks([1,2,3])
-    labels=["fedAvg","fedlesScan","fedprox"]
+    labels=["FedAvg","FedlesScan","Fedprox"]
     plot.set_xticklabels(labels)
     # plot.xaxis.set_tick_params(direction='out')
     # plot.xaxis.set_ticks_position('bottom')
@@ -90,7 +123,7 @@ def plot_dataset(path,eur_plot,acc_plot,loss_plot, time_plot,var_plot, strategy_
     # max_norm, min_norm = plot_variance(clients_log_path,var_plot)
     # print(f'{algorithm_name}: variance: {max_norm-min_norm} for max of {max_norm} and min of {min_norm}')
     ## plot eur 
-    
+    get_min_max_cost(clients_log_path)
     plot_figure(inv_path,x_labels[0][0],y_labels[0][0],x_labels[0][1],y_labels[0][1],eur_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
     ## plot accuracy
     plot_figure(timing_path,x_labels[1][0],y_labels[1][0],x_labels[1][1],y_labels[1][1],acc_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
@@ -100,6 +133,7 @@ def plot_dataset(path,eur_plot,acc_plot,loss_plot, time_plot,var_plot, strategy_
     
     ## plot time 
     plot_figure(timing_path,x_labels[3][0],y_labels[3][0],x_labels[3][1],y_labels[3][1],time_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
+    print("------------------------------------------------------------------")
     
 def get_plot():
     
@@ -127,7 +161,7 @@ def plot_dataset_compare_3(path_normals,path_enhanced,path_prox,titles,dataset_t
     y_labels = [("succs", "EUR"),("global_test_accuracy","accuracy")]
     graph_titles = ["Effective Update Ratio", "Test Accuracy"]
     cols,rows = (math.ceil(len(path_normals)/2),2)  #3*2
-    stragglers_p = ["normal","10% stragglers","30% stragglers","50% stragglers","70% stragglers"]
+    stragglers_p = ["Normal","10% Stragglers","30% Stragglers","50% Stragglers","70% Stragglers"]
     # cols,rows = len(path_normals),1 
     acc, acc_plts = get_plot()
     eur, eur_plts = get_plot()
@@ -145,14 +179,17 @@ def plot_dataset_compare_3(path_normals,path_enhanced,path_prox,titles,dataset_t
     # variance plots
     for idx, (normal,enhanced,prox) in enumerate(zip(path_normals,path_enhanced,path_prox)):
         
-        plot_dataset(normal,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"fedAvg" if idx==0 else None, line_style="solid",stragglers=stragglers_p[idx],color="black")
-        plot_dataset(enhanced,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"fedlesScan" if idx==0 else None,line_style="dashed",stragglers=stragglers_p[idx],color="blue")
-        plot_dataset(prox,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"fedProx" if idx==0 else None,line_style="dotted",stragglers=stragglers_p[idx],color="brown")
+        plot_dataset(normal,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"FedAvg" if idx==0 else None, line_style="solid",stragglers=stragglers_p[idx],color="black")
+        plot_dataset(enhanced,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"FedlesScan" if idx==0 else None,line_style="dashed",stragglers=stragglers_p[idx],color="blue")
+        plot_dataset(prox,(eur,eur_plts[idx]),(acc,acc_plts[idx]),(loss_p,loss_plts[idx]),(tim,time_plts[idx]),(var,variance_plts[idx]),"FedProx" if idx==0 else None,line_style="dotted",stragglers=stragglers_p[idx],color="brown")
         
         var_normal,var_e,var_prox = get_client_inv_group(normal),get_client_inv_group(enhanced),get_client_inv_group(prox)
         
         plot_variance([var_normal,var_e,var_prox],(var,variance_plts[idx]),title=stragglers_p[idx])
-       
+        print("------------------------------------------------------------------")
+        print("------------------------------------------------------------------")
+
+
         
         
         # variance plots here
@@ -164,9 +201,11 @@ def plot_dataset_compare_3(path_normals,path_enhanced,path_prox,titles,dataset_t
     leg = tim.legend(loc='lower right')
     leg = var.legend(loc='lower right')
     path = f"./figs/{dataset_title}"
-    acc.savefig(f'{path}/acc_{dataset_title}.pdf', bbox_inches='tight')
-    eur.savefig(f'{path}/eur_{dataset_title}.pdf', bbox_inches='tight')
-    loss_p.savefig(f'{path}/loss_{dataset_title}.pdf', bbox_inches='tight')
-    tim.savefig(f'{path}/tim_{dataset_title}.pdf', bbox_inches='tight')
-    var.savefig(f'{path}/var_{dataset_title}.pdf', bbox_inches='tight')
+    
+    
+    # acc.savefig(f'{path}/acc_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    # eur.savefig(f'{path}/eur_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    # loss_p.savefig(f'{path}/loss_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    # tim.savefig(f'{path}/tim_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    # var.savefig(f'{path}/var_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
 
