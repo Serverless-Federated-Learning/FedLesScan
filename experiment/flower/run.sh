@@ -10,11 +10,11 @@ server_cpus="2"    #"4"
 server_memory="18g" # "16g"
 # rounds=1
 # min_num_clients=20
-num_clients_total=6
+num_clients_total=3
 
 client_cpus=1.0
 client_memory="2g"
-dataset="mnist"
+dataset="shakespeare"
 batch_size=10
 epochs=5
 optimizer="Adam"
@@ -34,12 +34,12 @@ session_id="$RANDOM"
 worker='lrz-4xlarge;40' 
 
 echo "Update server and client images (build and push)"
-# docker build -f server.Dockerfile -t "flower-server" .
-# docker tag "flower-server" mohamedazab/flower:server
-# docker push mohamedazab/flower:server
-# docker build -f client.Dockerfile -t "flower-client" .
-# docker tag "flower-client" mohamedazab/flower:client
-# docker push mohamedazab/flower:client
+docker build -f server.Dockerfile -t "flower-server" .
+docker tag "flower-server" mohamedazab/flower:server
+docker push mohamedazab/flower:server
+docker build -f client.Dockerfile -t "flower-client" .
+docker tag "flower-client" mohamedazab/flower:client
+docker push mohamedazab/flower:client
 mkdir -p flower-logs
 
 run_experiment() {
@@ -71,7 +71,7 @@ run_experiment() {
 mohamedazab/flower:server --rounds $rounds --min-num-clients $min_num_clients --dataset=$dataset"
   # shellcheck disable=SC2029
   nohup $run_cmd > $exp_filename.out 2> $exp_filename.err < /dev/null &
-
+  sleep 10
   echo "Deploying and starting clients..."
 
   current_partition=0
@@ -91,8 +91,6 @@ mohamedazab/flower:server --rounds $rounds --min-num-clients $min_num_clients --
       fi
       run_cmd="docker run --rm --name fl-client-$current_partition \
 --network host \
--e https_proxy=\$http_proxy \
--e no_proxy=$server_ip \
 mohamedazab/flower:client \
 --server $server_address \
 --dataset $dataset \
@@ -114,6 +112,8 @@ mohamedazab/flower:client \
     echo "WARNING: Tried to deploy client partition ($current_partition / $num_clients_total) but no compute left..."
   fi
   sleep 10
+
+## call client.py with docker exec
   while docker ps | grep mohamedazab/flower:server; do
     echo "Not finished yet"
     sleep 20
@@ -125,5 +125,5 @@ mohamedazab/flower:client \
 #run_experiment dataset min_num_clients client_cpus client_memory batch_size epochs optimizer lr rounds session_id
 
 ## MNIST
-run_experiment "mnist" 6 1 "2g" 10 5 "Adam" 0.001 4 "$RANDOM"
+run_experiment "mnist" 2 1 "2g" 10 5 "Adam" 0.001 4 "$RANDOM"
 

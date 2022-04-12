@@ -1,4 +1,4 @@
-FROM mohamedazab/fedless:flower
+FROM mohamedazab/fedless:flower-custom
 
 COPY ./client.py client.py
 
