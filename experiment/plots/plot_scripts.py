@@ -21,11 +21,10 @@ def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plo
         y_data = y_data/total_clients
         print(f'{y_label} mean: {np.mean(y_data)}, straggler rounds: {straggler_rounds}')
         
-    # data.plot(kind='line',x=x_axis_col,y=y_axis_col,ax=plt.gca())
     fig,sub_plt = plt
     sub_plt.set_xlabel(x_label,fontsize = axis_font)
     sub_plt.set_ylabel(y_label,fontsize = axis_font)
-    sub_plt.set_title(title)
+    # sub_plt.set_title(title)
     sub_plt.xaxis.set_major_locator(MaxNLocator(integer=True))
     # sub_plt.set_xticks()
     # sub_plt.set_yticks(np.arange(0,100,10))
