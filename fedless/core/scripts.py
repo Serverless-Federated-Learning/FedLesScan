@@ -42,11 +42,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# todo  remove
-random.seed(10)
-logger.info("experiment_seed set to 5")
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
 
 @click.command()
 @click.option(
