@@ -9,7 +9,7 @@ from cost import closestNumber,calculate_costs_gcf
 import json
 DPI = 300
 mpl.rcParams['figure.dpi'] = DPI
-axis_font = 14
+axis_font = 15
 def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plot_type, line_style="solid",strategy_name = None,color="blue"):
     # line type is a string refering to line 
     data = pd.read_csv(file_path)
@@ -24,14 +24,16 @@ def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plo
     fig,sub_plt = plt
     sub_plt.set_xlabel(x_label,fontsize = axis_font)
     sub_plt.set_ylabel(y_label,fontsize = axis_font)
-    # sub_plt.set_title(title)
+    sub_plt.tick_params(axis='x', labelsize=axis_font-1)
+    sub_plt.tick_params(axis='y', labelsize=axis_font-1)
+    sub_plt.set_title(title)
     sub_plt.xaxis.set_major_locator(MaxNLocator(integer=True))
     # sub_plt.set_xticks()
     # sub_plt.set_yticks(np.arange(0,100,10))
     
     l = None
     if plot_type == "line":
-      l,=  sub_plt.plot(x_data,y_data,linestyle=line_style,label=strategy_name,linewidth=3,color=color)
+      l,=  sub_plt.plot(x_data,y_data,linestyle=line_style,label=strategy_name,linewidth=2,color=color)
     elif plot_type == "violin":
       l,=  sub_plt.violinplot(x_data,y_data,label=strategy_name)
     elif plot_type == "bar":
@@ -60,7 +62,7 @@ def get_min_max_cost(client_logs_path):
     timings_min = np.array([])
     cost_min = 0
     cost_max = 0
-    max_time = 40
+    max_time = 520
     for idx,client in client_table.iterrows():
         client_func = json.loads(client['function'])
         url = client_func['params']['url']
@@ -89,12 +91,12 @@ def plot_variance(grouped_data, plt, title):
     # print(grouped_data[0])
     fig,plot = plt
     # plot.set_xlabel("client index")
-    plot.set_ylabel("Invocations")
+    plot.set_ylabel("No. of Invocations/Client")
     plot.set_title(title)
     # plot.xaxis.set_major_locator(MaxNLocator(integer=True))
     plot.set_xticks([1,2,3])
     labels=["FedAvg","FedlesScan","Fedprox"]
-    plot.set_xticklabels(labels)
+    plot.set_xticklabels(labels,fontsize = 11)
     # plot.xaxis.set_tick_params(direction='out')
     # plot.xaxis.set_ticks_position('bottom')
     # plot.set_xticks(np.arange(1, len(labels) + 1), labels=labels)
@@ -160,7 +162,7 @@ def plot_dataset_compare_3(path_normals,path_enhanced,path_prox,titles,dataset_t
     y_labels = [("succs", "EUR"),("global_test_accuracy","accuracy")]
     graph_titles = ["Effective Update Ratio", "Test Accuracy"]
     cols,rows = (math.ceil(len(path_normals)/2),2)  #3*2
-    stragglers_p = ["Normal","10% Stragglers","30% Stragglers","50% Stragglers","70% Stragglers"]
+    stragglers_p = ["Standard","10% Stragglers","30% Stragglers","50% Stragglers","70% Stragglers"]
     # cols,rows = len(path_normals),1 
     acc, acc_plts = get_plot()
     eur, eur_plts = get_plot()
@@ -194,17 +196,17 @@ def plot_dataset_compare_3(path_normals,path_enhanced,path_prox,titles,dataset_t
         # variance plots here
 
             
-    leg = acc.legend(loc='lower right')
-    leg = eur.legend(loc='lower right')
-    leg = loss_p.legend(loc='lower right')
-    leg = tim.legend(loc='lower right')
-    leg = var.legend(loc='lower right')
+    leg = acc_plts[0].legend()
+    leg = eur_plts[0].legend()
+    leg = loss_plts[0].legend()
+    leg = time_plts[0].legend()
+    # leg = var.legend(loc='lower right')
     path = f"./figs/{dataset_title}"
     
     
-    # acc.savefig(f'{path}/acc_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
-    # eur.savefig(f'{path}/eur_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
-    # loss_p.savefig(f'{path}/loss_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
-    # tim.savefig(f'{path}/tim_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
-    # var.savefig(f'{path}/var_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    acc.savefig(f'{path}/acc_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    eur.savefig(f'{path}/eur_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    loss_p.savefig(f'{path}/loss_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    tim.savefig(f'{path}/tim_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    var.savefig(f'{path}/var_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
 
