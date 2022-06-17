@@ -1,4 +1,4 @@
-from fedless.models.models import *
+from fedless.common.models import *
 
 
 class AggregationStrategy(str, Enum):

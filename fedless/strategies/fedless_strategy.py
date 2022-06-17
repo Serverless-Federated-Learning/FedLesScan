@@ -20,20 +20,17 @@ from fedless.invocation import retry_session, InvocationError
 from fedless.models import (
     ClientConfig,
     MongodbConnectionConfig,
-    FunctionDeploymentConfig,
     DatasetLoaderConfig,
     InvocationResult,
     InvokerParams,
 )
-from fedless.providers import FaaSProvider
 
 logger = logging.getLogger(__name__)
-
 
 class FedlessStrategy(ServerlessFlStrategy):
     def __init__(
         self,
-        provider: FaaSProvider,
+
         clients: List[ClientConfig],
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionInvocationConfig,
@@ -54,7 +51,6 @@ class FedlessStrategy(ServerlessFlStrategy):
         max_test_client_count: int = 0,
     ):
         super().__init__(
-            provider=provider,
             session=session,
             clients=clients,
             mongodb_config=mongodb_config,
@@ -75,12 +71,12 @@ class FedlessStrategy(ServerlessFlStrategy):
         self.cognito = cognito
         self.evaluation_timeout = evaluation_timeout
 
-    async def deploy_all_functions(self, *args, **kwargs):
-        logger.info(f"aggregator and evaluator are functions on openfaas...")
-        # logger.info(f"Deploying fedless functions...")
-        # logger.info(f"Deploying aggregator and evaluator")
-        # self._aggregator = await self.provider.deploy(self.aggregator_config.params)
-        # self._evaluator = await self.provider.deploy(self.evaluator_config.params)
+    # async def deploy_all_functions(self, *args, **kwargs):
+    #     logger.info(f"aggregator and evaluator are functions on openfaas...")
+    #     # logger.info(f"Deploying fedless functions...")
+    #     # logger.info(f"Deploying aggregator and evaluator")
+    #     # self._aggregator = await self.provider.deploy(self.aggregator_config.params)
+    #     # self._evaluator = await self.provider.deploy(self.evaluator_config.params)
 
     async def call_clients(
         self, round: int, clients: List[ClientConfig], evaluate_only: bool = False

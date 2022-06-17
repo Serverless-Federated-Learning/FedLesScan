@@ -1,19 +1,16 @@
 import asyncio
 import logging
-import os
 import random
 import uuid
 from itertools import cycle
 from pathlib import Path
-from typing import List, Union, Tuple, Dict
+from typing import List, Union, Tuple
 
 import click
 import numpy as np
-import tensorflow as tf
 
 from fedless.core.common import parse_yaml_file
 from fedless.core.models import (
-    CognitoConfig,
     ExperimentConfig,
     FedkeeperClientsConfig,
 )
@@ -23,7 +20,7 @@ from fedless.datasets.benchmark_configurator import (
     create_mnist_test_config,
     create_data_configs,
 )
-from fedless.models.models import FedProxParams
+from fedless.common.models import FedProxParams
 
 from fedless.strategies.strategy_selector import select_strategy
 from fedless.models import (
@@ -36,16 +33,9 @@ from fedless.persistence.client_daos import (
     ClientConfigDao,
     ClientHistoryDao,
 )
-from fedless.providers import OpenwhiskCluster
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-# todo  remove
-random.seed(10)
-logger.info("experiment_seed set to 5")
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
 @click.command()
@@ -231,18 +221,19 @@ def run(
         store_json_serializable=(strategy == "fedkeeper"),
     )
 
-    cluster = OpenwhiskCluster(
-        apihost=config.cluster.apihost,
-        auth=config.cluster.auth,
-        insecure=config.cluster.insecure,
-        namespace=config.cluster.namespace,
-        package=config.cluster.package,
-    )
+    # todo remove
+    # cluster = OpenwhiskCluster(
+    #     apihost=config.cluster.apihost,
+    #     auth=config.cluster.auth,
+    #     insecure=config.cluster.insecure,
+    #     namespace=config.cluster.namespace,
+    #     package=config.cluster.package,
+    # )
 
     inv_params = {
         "session": session,
         "cognito": config.cognito,
-        "provider": cluster,
+        # "provider": cluster,
         "clients": clients,
         "evaluator_config": config.server.evaluator,
         "aggregator_config": config.server.aggregator,
@@ -266,7 +257,7 @@ def run(
 
     strategy = select_strategy(strategy, inv_params)
 
-    asyncio.run(strategy.deploy_all_functions())
+    # asyncio.run(strategy.deploy_all_functions())
     asyncio.run(
         strategy.fit(
             n_clients_in_round=clients_in_round,

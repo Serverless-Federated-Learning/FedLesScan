@@ -5,7 +5,7 @@ from tensorflow import keras
 from typing import Dict, Iterator, Optional
 from fedless.datasets.mnist.dataset_loader import MNISTConfig
 
-from fedless.models.models import DatasetLoaderConfig
+from fedless.common.models import DatasetLoaderConfig
 
 
 from fedless.cache import cache

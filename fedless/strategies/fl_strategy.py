@@ -1,18 +1,13 @@
 import logging
-import random
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Tuple
 
 import numpy as np
 
-
-from fedless.core.common import run_in_executor
-from fedless.invocation import retry_session, invoke_sync
 from fedless.models import (
     TestMetrics,
 )
 from fedless.models.aggregation_models import AggregationStrategy
-from fedless.providers import FaaSProvider
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 
 logger = logging.getLogger(__name__)

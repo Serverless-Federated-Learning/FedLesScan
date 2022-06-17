@@ -11,7 +11,7 @@ import yaml
 from pydantic import ValidationError
 
 from fedless.auth import CognitoClient
-from fedless.providers import OpenwhiskCluster, FaaSProvider
+# from fedless.providers import OpenwhiskCluster, FaaSProvider
 
 logger = logging.getLogger(__name__)
 
@@ -74,13 +74,3 @@ def fetch_cognito_auth_token(
         required_scopes=required_scopes,
     )
 
-
-async def get_deployment_manager(cluster_provider) -> FaaSProvider:
-    if cluster_provider.type == "openwhisk":
-        return OpenwhiskCluster(
-            apihost=cluster_provider.params.apihost, auth=cluster_provider.params.auth
-        )
-    else:
-        raise NotImplementedError(
-            f"Deployment manager for {cluster_provider.type} not implemented!"
-        )

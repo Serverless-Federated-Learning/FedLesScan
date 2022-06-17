@@ -5,7 +5,6 @@ from urllib import parse
 
 import numpy as np
 from pydantic import (
-    AnyHttpUrl,
     Field,
     BaseModel,
     validator,
@@ -105,7 +104,6 @@ class DatasetLoaderConfig(BaseModel):
 
     type: str
     params: Union[LEAFConfig, MNISTConfig, FedScaleConfig]
-    # TODO check parsing datasets based on type
     # params: DatasetConfig
 
     _params_type_matches_type = validator("params", allow_reuse=True)(

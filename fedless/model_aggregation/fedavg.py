@@ -3,7 +3,7 @@ import time
 
 import numpy as np
 from keras.losses import sparse_categorical_crossentropy
-from tensorflow_privacy.privacy.membership_inference_attack.data_structures import (
+from tensorflow_privacy.privacy.privacy_tests.membership_inference_attack.data_structures import (
     AttackType,
 )
 
@@ -41,10 +41,10 @@ from fedless.serialization import (
 
 
 def simulate_mia(train, test, model):
-    from tensorflow_privacy.privacy.membership_inference_attack import (
+    from tensorflow_privacy.privacy.privacy_tests.membership_inference_attack import (
         membership_inference_attack,
     )
-    from tensorflow_privacy.privacy.membership_inference_attack.data_structures import (
+    from tensorflow_privacy.privacy.privacy_tests.membership_inference_attack.data_structures import (
         AttackInputData,
     )
 

@@ -7,8 +7,6 @@ from fedless.models import (
     FunctionInvocationConfig,
     Hyperparams,
     MongodbConnectionConfig,
-    FaaSProviderConfig,
-    OpenwhiskClusterConfig,
 )
 
 
@@ -38,18 +36,18 @@ class CognitoConfig(pydantic.BaseModel):
     invoker_client_secret: str
     required_scopes: List[str] = ["client-functions/invoke"]
 
-
-class ClusterConfig(pydantic.BaseModel):
-    database: MongodbConnectionConfig
-    clients: FedkeeperClientsConfig
-    providers: Dict[str, FaaSProviderConfig]
-    function: ServerFunctions
-    cognito: Optional[CognitoConfig]
+# todo remove
+# class ClusterConfig(pydantic.BaseModel):
+#     database: MongodbConnectionConfig
+#     clients: FedkeeperClientsConfig
+#     providers: Dict[str, FaaSProviderConfig]
+#     function: ServerFunctions
+#     cognito: Optional[CognitoConfig]
 
 
 class ExperimentConfig(pydantic.BaseModel):
     cognito: Optional[CognitoConfig] = None
     database: MongodbConnectionConfig
-    cluster: OpenwhiskClusterConfig
+    # cluster: OpenwhiskClusterConfig
     server: ServerFunctions
     clients: FedkeeperClientsConfig

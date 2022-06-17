@@ -13,7 +13,7 @@ import random
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
-from fedless.models.models import ClientPersistentHistory
+from fedless.common.models import ClientPersistentHistory
 
 from fedless.persistence.client_daos import ClientHistoryDao
 from fedless.core.models import MongodbConnectionConfig

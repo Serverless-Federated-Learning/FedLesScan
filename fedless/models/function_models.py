@@ -74,14 +74,14 @@ class FunctionInvocationConfig(BaseModel):
         params_validate_types_match
     )
 
-
-class OpenwhiskClusterConfig(BaseModel):
-    type: str = Field("openwhisk", const=True)
-    apihost: str
-    auth: str
-    insecure: bool = True
-    namespace: str = "guest"
-    package: str = "default"
+# todo remove
+# class OpenwhiskClusterConfig(BaseModel):
+#     type: str = Field("openwhisk", const=True)
+#     apihost: str
+#     auth: str
+#     insecure: bool = True
+#     namespace: str = "guest"
+#     package: str = "default"
 
 
 class GCloudProjectConfig(BaseModel):
@@ -89,14 +89,14 @@ class GCloudProjectConfig(BaseModel):
     account: str
     project: str
 
+# todo remove
+# class FaaSProviderConfig(BaseModel):
+#     type: str
+#     params: Union[OpenwhiskClusterConfig, GCloudProjectConfig]
 
-class FaaSProviderConfig(BaseModel):
-    type: str
-    params: Union[OpenwhiskClusterConfig, GCloudProjectConfig]
-
-    _params_type_matches_type = validator("params", allow_reuse=True)(
-        params_validate_types_match
-    )
+#     _params_type_matches_type = validator("params", allow_reuse=True)(
+#         params_validate_types_match
+#     )
 
 
 class OpenwhiskFunctionDeploymentConfig(BaseModel):

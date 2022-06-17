@@ -8,9 +8,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import List, Optional, Dict, Set, Tuple
 
-import numpy as np
 import pandas as pd
-from requests_mock import mock
 import urllib3
 from pydantic import ValidationError
 from requests import Session
@@ -19,13 +17,12 @@ from fedless.core.common import run_in_executor
 from fedless.mocks.mock_aggregation import MockAggregator
 from fedless.mocks.mock_client import MockClient
 from fedless.models.aggregation_models import AggregationStrategy
-from fedless.models.models import ClientPersistentHistory, InvokerParams
+from fedless.common.models import ClientPersistentHistory, InvokerParams
 from fedless.persistence.client_daos import ClientHistoryDao
 from fedless.strategies.Intelligent_selection import IntelligentClientSelection
 from fedless.strategies.fl_strategy import FLStrategy
 from fedless.invocation import InvocationError, retry_session, invoke_sync
 from fedless.models import (
-    TestMetrics,
     MongodbConnectionConfig,
     FunctionDeploymentConfig,
     DatasetLoaderConfig,
@@ -37,7 +34,6 @@ from fedless.models import (
     EvaluatorParams,
     InvocationResult,
 )
-from fedless.providers import FaaSProvider
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +42,6 @@ class ServerlessFlStrategy(FLStrategy, ABC):
     def __init__(
         self,
         clients: List,
-        provider: FaaSProvider,
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionInvocationConfig,
         aggregator_config: FunctionInvocationConfig,
@@ -76,7 +71,6 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             self.max_test_client_count = max_test_client_count
         urllib3.disable_warnings()
         self.session: str = session or str(uuid.uuid4())
-        self.provider = provider
         self.log_metrics = []
         self.client_timings = []
         self.allowed_stragglers = allowed_stragglers
