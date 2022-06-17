@@ -18,7 +18,7 @@ config_dir="$script_dir/mnist-demo.yaml"
 echo $base_out_dir
 
 
-python -m fedless.core.scripts \
+python -m fedless.controller.scripts \
   -d "mnist" \
   -s "fedless" \
   -c "$config_dir" \

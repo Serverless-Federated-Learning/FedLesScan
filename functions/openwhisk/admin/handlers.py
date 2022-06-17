@@ -4,15 +4,15 @@ import uuid
 
 import boto3
 
-from fedless.auth import CognitoClient
+from fedless.common.auth import CognitoClient
 
-from fedless.auth import (
+from fedless.common.auth import (
     verify_invoker_token,
     fetch_cognito_public_keys,
     AuthenticationError,
     ResourceServerScope,
 )
-from fedless.providers import openwhisk_action_handler
+from fedless.common.providers import openwhisk_action_handler
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

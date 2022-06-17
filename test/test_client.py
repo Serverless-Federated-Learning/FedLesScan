@@ -3,17 +3,16 @@ from copy import copy
 from typing import List
 from unittest.mock import patch
 
-from tensorflow.keras.optimizers import SGD, Adam
+import tensorflow as tf
 
-from fedless.data import DatasetNotLoadedError
-from fedless.serialization import SerializationError, ModelLoadError
+from fedless.common.serialization import SerializationError, ModelLoadError
 from fedless.client import (
     run,
     ClientError,
     default_handler,
 )
-from fedless.models import SerializedParameters
-
+from fedless.common.models import SerializedParameters
+from fedless.datasets.dataset_loaders import DatasetNotLoadedError
 from .fixtures import *
 from .stubs import DatasetLoaderStub, ModelLoaderStub
 
@@ -114,7 +113,7 @@ def test_run_batches_data(
 @pytest.mark.parametrize(
     ["optimizer", "loss", "metrics"],
     itertools.product(
-        [SGD(learning_rate=0.01), Adam()],
+        [tf.keras.optimizers.SGD(learning_rate=0.01), tf.keras.optimizers.Adam()],
         ["sparse_categorical_crossentropy"],
         [[], ["accuracy", "mse"]],
     ),

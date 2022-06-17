@@ -6,8 +6,8 @@ from fedless.client import (
     default_handler,
     ClientError,
 )
-from fedless.models import ClientInvocationParams
-from fedless.providers import lambda_proxy_handler
+from fedless.common.models import ClientInvocationParams
+from fedless.common.providers import lambda_proxy_handler
 
 logging.basicConfig(level=logging.DEBUG)
 

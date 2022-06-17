@@ -10,7 +10,7 @@ from fedless.client import (
     default_handler,
     ClientError,
 )
-from fedless.models import (
+from fedless.common.models import (
     Hyperparams,
     ClientInvocationParams,
     ClientResult,
@@ -20,12 +20,12 @@ from fedless.models import (
     ModelLoaderConfig,
     LocalDifferentialPrivacyParams,
 )
-from fedless.providers import (
+from fedless.common.providers import (
     lambda_proxy_handler,
     gcloud_http_error_handler,
     openwhisk_action_handler,
 )
-from fedless.serialization import (
+from fedless.common.serialization import (
     deserialize_parameters,
 )
 from .common import resource_folder_path

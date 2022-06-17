@@ -12,7 +12,7 @@ rounds=40
 
 # shellcheck disable=SC2034
 # for curr_repeat in {1..1}; do
-python -m fedless.core.scripts \
+python -m fedless.controller.scripts \
   -d "shakespeare" \
   -s "fedless" \
   -c "$script_dir/shakespeare-demo.yaml" \
@@ -31,7 +31,7 @@ sleep 5
 
 # done
 
-python -m fedless.core.scripts \
+python -m fedless.controller.scripts \
   -d "shakespeare" \
   -s "fedless_enhanced" \
   -c "$script_dir/shakespeare-demo.yaml" \

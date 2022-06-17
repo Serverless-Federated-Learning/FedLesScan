@@ -13,7 +13,7 @@
             "name": "speech-exp",
             "type": "python",
             "request": "launch",
-            "module": "fedless.core.scripts",
+            "module": "fedless.controller.scripts",
             "console": "integratedTerminal",
             "args": [
                 "-d",
@@ -54,7 +54,7 @@
             "name": "femnist-exp",
             "type": "python",
             "request": "launch",
-            "module": "fedless.core.scripts",
+            "module": "fedless.controller.scripts",
             "console": "integratedTerminal",
             "args": [
                 "-d",
@@ -90,7 +90,7 @@
             "name": "mnist-exp",
             "type": "python",
             "request": "launch",
-            "module": "fedless.core.scripts",
+            "module": "fedless.controller.scripts",
             "console": "integratedTerminal",
             "args": [
                 "-d",

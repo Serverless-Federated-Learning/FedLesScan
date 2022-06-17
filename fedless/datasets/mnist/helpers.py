@@ -7,9 +7,6 @@ from fedless.datasets.mnist.dataset_loader import MNISTConfig
 
 from fedless.common.models import DatasetLoaderConfig
 
-
-from fedless.cache import cache
-
 # from pydantic import (BaseModel, Field)
 
 

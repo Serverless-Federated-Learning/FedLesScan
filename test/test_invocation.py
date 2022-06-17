@@ -2,7 +2,7 @@ import httpretty
 import pytest
 import requests
 
-from fedless.invocation import (
+from fedless.controller.invocation import (
     retry_session,
     invoke_wsk_action_async,
     InvocationError,
@@ -13,7 +13,7 @@ from fedless.invocation import (
     invoke_wsk_action_sync,
     invoke_http_function_sync,
 )
-from fedless.models import OpenwhiskActionConfig
+from fedless.common.models import OpenwhiskActionConfig
 from .common import get_error_function
 
 

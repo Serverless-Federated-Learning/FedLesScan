@@ -11,7 +11,6 @@ from fedless.datasets.mnist.dataset_loader import MNIST
 from fedless.datasets.mnist.model import create_mnist_cnn
 
 
-
 # logging.basicConfig(level=logging.DEBUG)
 # logger = logging.getLogger(__name__)
 

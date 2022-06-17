@@ -5,8 +5,8 @@ from fedless.client import (
     default_handler,
     ClientError,
 )
-from fedless.models import ClientInvocationParams
-from fedless.providers import openwhisk_action_handler
+from fedless.common.models import ClientInvocationParams
+from fedless.common.providers import openwhisk_action_handler
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"

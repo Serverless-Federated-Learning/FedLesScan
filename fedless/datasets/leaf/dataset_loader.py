@@ -18,7 +18,7 @@ import tensorflow as tf
 from pydantic import BaseModel, validate_arguments, AnyHttpUrl
 from requests import RequestException
 
-from fedless.cache import cache
+from fedless.common.cache import cache
 
 from enum import Enum
 from pydantic import Field
@@ -62,7 +62,7 @@ class LEAF(DatasetLoader):
     ):
         """
         Create dataset loader for the specified source
-        :param dataset: Dataset name, one of :py:class:`fedless.models.LeafDataset`
+        :param dataset: Dataset name, one of :py:class:`fedless.common.models.LeafDataset`
         :param location: Location of dataset partition in form of a json file.
         :param http_params: Additional parameters to send with http request. Only used when location is an URL
          Use location:// to load from disk. For valid entries see :py:meth:`requests.get`

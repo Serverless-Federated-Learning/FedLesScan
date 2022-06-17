@@ -5,7 +5,7 @@ from fedless.evaluation import EvaluationError, default_evaluation_handler
 
 
 from fedless.common.models import EvaluatorParams
-from fedless.providers import openfaas_action_handler
+from fedless.common.providers import openfaas_action_handler
 
 logging.basicConfig(level=logging.DEBUG)
 

@@ -12,7 +12,7 @@ rounds=25
 
 # shellcheck disable=SC2034
 # for curr_repeat in {1..1}; do
-python -m fedless.core.scripts \
+python -m fedless.controller.scripts \
   -d "speech" \
   -s "fedless" \
   -c "$script_dir/speech-demo.yaml" \
@@ -27,7 +27,7 @@ python -m fedless.core.scripts \
 
 sleep 2
 
-python -m fedless.core.scripts \
+python -m fedless.controller.scripts \
   -d "speech" \
   -s "fedless_enhanced" \
   -c "$script_dir/speech-demo.yaml" \

@@ -3,12 +3,12 @@ import logging
 from pydantic import ValidationError
 
 
-from fedless.model_aggregation.aggregation import (
+from fedless.aggregator.aggregation import (
     default_aggregation_handler,
     AggregationError,
 )
-from fedless.models import AggregatorFunctionParams
-from fedless.providers import openfaas_action_handler
+from fedless.common.models import AggregatorFunctionParams
+from fedless.common.providers import openfaas_action_handler
 
 logging.basicConfig(level=logging.DEBUG)
 

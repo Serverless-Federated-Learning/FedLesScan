@@ -3,8 +3,8 @@ import logging
 import azure.functions
 from pydantic import ValidationError
 
-from fedless.providers import azure_handler
-from fedless.models import InvokerParams
+from fedless.common.providers import azure_handler
+from fedless.common.models import InvokerParams
 from fedless.client import fedless_mongodb_handler, ClientError
 
 logging.basicConfig(level=logging.DEBUG)

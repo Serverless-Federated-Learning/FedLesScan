@@ -4,20 +4,20 @@ import pytest
 import numpy as np
 import tensorflow as tf
 
-from fedless.aggregation import (
+from fedless.aggregator import (
     FedAvgAggregator,
     UnknownCardinalityError,
     StreamFedAvgAggregator,
     chunks,
 )
-from fedless.models import (
+from fedless.common.models import (
     ClientResult,
     NpzWeightsSerializerConfig,
     WeightsSerializerConfig,
     SerializedParameters,
     BinaryStringFormat,
 )
-from fedless.serialization import NpzWeightsSerializer, Base64StringConverter
+from fedless.common.serialization import NpzWeightsSerializer, Base64StringConverter
 
 
 @pytest.fixture

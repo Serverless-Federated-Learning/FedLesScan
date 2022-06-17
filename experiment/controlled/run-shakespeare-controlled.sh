@@ -13,7 +13,7 @@ straggler_percent=0.3
 
 # shellcheck disable=SC2034
 # for curr_repeat in {1..1}; do
-python -m fedless.core.scripts \
+python -m fedless.controller.scripts \
   -d "shakespeare" \
   -s "fedless" \
   -c "$script_dir/shakespeare-demo.yaml" \
@@ -32,7 +32,7 @@ python -m fedless.core.scripts \
 
 # done
 
-python -m fedless.core.scripts \
+python -m fedless.controller.scripts \
   -d "shakespeare" \
   -s "fedless_enhanced" \
   -c "$script_dir/shakespeare-demo.yaml" \

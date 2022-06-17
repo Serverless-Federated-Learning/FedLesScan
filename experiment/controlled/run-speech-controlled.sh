@@ -16,7 +16,7 @@ base_out_dir="$root_directory/out/controlled-expo"
 # shellcheck disable=SC2034
 for straggler_percent in 0.1 0.2 0.3; do
 
-  python -m fedless.core.scripts \
+  python -m fedless.controller.scripts \
     -d "speech" \
     -s "fedless_enhanced" \
     -c "$script_dir/speech-demo.yaml" \
@@ -31,7 +31,7 @@ for straggler_percent in 0.1 0.2 0.3; do
     --simulate-stragglers "$straggler_percent"
   sleep 2
   
-  python -m fedless.core.scripts \
+  python -m fedless.controller.scripts \
     -d "speech" \
     -s "fedless" \
     -c "$script_dir/speech-demo.yaml" \
@@ -48,7 +48,7 @@ for straggler_percent in 0.1 0.2 0.3; do
   sleep 2
 
 done
-# python -m fedless.core.scripts \
+# python -m fedless.controller.scripts \
 #   -d "speech" \
 #   -s "fedprox" \
 #   -c "$script_dir/speech-demo.yaml" \

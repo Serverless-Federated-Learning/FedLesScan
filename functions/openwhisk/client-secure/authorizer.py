@@ -1,6 +1,6 @@
 import logging
 
-from fedless.auth import (
+from fedless.common.auth import (
     verify_invoker_token,
     fetch_cognito_public_keys,
     AuthenticationError,

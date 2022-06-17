@@ -1,11 +1,7 @@
 import yaml
-from fedless.models import (
-    ApiGatewayLambdaFunctionConfig,
+from fedless.common.models import (
     FunctionInvocationConfig,
     GCloudFunctionConfig,
-    OpenwhiskWebActionConfig,
-    AzureFunctionHTTPConfig,
-    OpenFaasFunctionConfig,
 )
 
 if __name__ == "__main__":

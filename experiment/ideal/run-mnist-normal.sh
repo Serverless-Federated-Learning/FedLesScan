@@ -12,7 +12,7 @@ rounds=80
 
 # shellcheck disable=SC2034
 # for curr_repeat in {1..1}; do
-python -m fedless.core.scripts \
+python -m fedless.controller.scripts \
   -d "mnist" \
   -s "fedless_enhanced" \
   -c "$script_dir/mnist-demo.yaml" \
@@ -27,7 +27,7 @@ python -m fedless.core.scripts \
 
 sleep 2
 
-python -m fedless.core.scripts \
+python -m fedless.controller.scripts \
   -d "mnist" \
   -s "fedless" \
   -c "$script_dir/mnist-demo.yaml" \

@@ -19,7 +19,7 @@ echo $base_out_dir
 
 # shellcheck disable=SC2034
 for straggler_percent in 0.7; do
-  python -m fedless.core.scripts \
+  python -m fedless.controller.scripts \
     -d "mnist" \
     -s "fedless" \
     -c "$config_dir" \
@@ -34,7 +34,7 @@ for straggler_percent in 0.7; do
 
   sleep1
 
-  python -m fedless.core.scripts \
+  python -m fedless.controller.scripts \
     -d "mnist" \
     -s "fedprox" \
     -c "$config_dir" \
@@ -50,7 +50,7 @@ for straggler_percent in 0.7; do
   
   sleep 1
   
-  python -m fedless.core.scripts \
+  python -m fedless.controller.scripts \
     -d "mnist" \
     -s "fedless_enhanced" \
     -c "$config_dir" \

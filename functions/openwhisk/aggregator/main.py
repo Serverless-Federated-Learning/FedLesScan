@@ -2,9 +2,9 @@ import logging
 
 from pydantic import ValidationError
 
-from fedless.model_aggregation import default_aggregation_handler, AggregationError
-from fedless.providers import openwhisk_action_handler
-from fedless.models import AggregatorFunctionParams
+from fedless.aggregator import default_aggregation_handler, AggregationError
+from fedless.common.providers import openwhisk_action_handler
+from fedless.common.models import AggregatorFunctionParams
 
 logging.basicConfig(level=logging.DEBUG)
 

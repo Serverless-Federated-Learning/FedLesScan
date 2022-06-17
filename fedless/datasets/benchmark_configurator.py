@@ -19,7 +19,7 @@ from fedless.datasets.fedscale.google_speech.model import create_speech_cnn
 from fedless.datasets.leaf.model import create_femnist_cnn, create_shakespeare_lstm
 from fedless.datasets.mnist.helpers import create_mnist_train_data_loader_configs
 from fedless.datasets.mnist.model import create_mnist_cnn
-from fedless.models import (
+from fedless.common.models import (
     BinaryStringFormat,
     DatasetLoaderConfig,
     MongodbConnectionConfig,
@@ -27,8 +27,8 @@ from fedless.models import (
     SerializedParameters,
     WeightsSerializerConfig,
 )
-from fedless.persistence.client_daos import ModelDao, ParameterDao
-from fedless.serialization import (
+from fedless.common.persistence.client_daos import ModelDao, ParameterDao
+from fedless.common.serialization import (
     Base64StringConverter,
     NpzWeightsSerializer,
     serialize_model,
