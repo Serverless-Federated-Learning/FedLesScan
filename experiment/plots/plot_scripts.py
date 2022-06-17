@@ -5,29 +5,38 @@ from matplotlib.ticker import MaxNLocator
 import numpy as np
 import os
 import math
+
 from cost import closestNumber,calculate_costs_gcf
 import json
 DPI = 300
 mpl.rcParams['figure.dpi'] = DPI
 axis_font = 15
-def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plt,title,plot_type, line_style="solid",strategy_name = None,color="blue"):
+def plot_figure(file_path, x_axis_col, y_axis_col,x_label,y_label, plts,title,plot_type, line_style="solid",strategy_name = None,color="blue"):
     # line type is a string refering to line 
     data = pd.read_csv(file_path)
     x_data = data[x_axis_col].to_numpy()
     y_data = data[y_axis_col].to_numpy()
+    fig,sub_plt = plts
+
     if(y_axis_col=="succs"):
         total_clients = y_data[0]+data["failed"][0]
         straggler_rounds = np.count_nonzero(y_data<total_clients)
         y_data = y_data/total_clients
         print(f'{y_label} mean: {np.mean(y_data)}, straggler rounds: {straggler_rounds}')
+        # plt.setp(sub_plt,  ylim=(0,1.1))
+
+    # elif y_axis_col=="global_test_accuracy":
+        # plt.setp(sub_plt,ylim=(0,0.85))
+
         
-    fig,sub_plt = plt
     sub_plt.set_xlabel(x_label,fontsize = axis_font)
     sub_plt.set_ylabel(y_label,fontsize = axis_font)
     sub_plt.tick_params(axis='x', labelsize=axis_font-1)
     sub_plt.tick_params(axis='y', labelsize=axis_font-1)
-    sub_plt.set_title(title)
+    sub_plt.set_title(title,fontsize=axis_font)
     sub_plt.xaxis.set_major_locator(MaxNLocator(integer=True))
+    sub_plt.axes.get_yaxis().set_visible(True)
+
     # sub_plt.set_xticks()
     # sub_plt.set_yticks(np.arange(0,100,10))
     
@@ -84,25 +93,28 @@ def get_min_max_cost(client_logs_path):
     
     
 
-def plot_variance(grouped_data, plt, title):
+def plot_variance(grouped_data, plts, title):
     # data = pd.read_csv(clients_log_path)
     # grouped_data= data.groupby(['client_id']).size()
     # print("num clients:", len(grouped_data))
     # print(grouped_data[0])
-    fig,plot = plt
+    fig,plot = plts
     # plot.set_xlabel("client index")
-    plot.set_ylabel("No. of Invocations/Client")
-    plot.set_title(title)
+    plot.set_ylabel("Invocations/Client",fontsize=axis_font)
+    plot.set_title(title,fontsize=axis_font)
     # plot.xaxis.set_major_locator(MaxNLocator(integer=True))
-    plot.set_xticks([1,2,3])
+    plot.set_xticks([1,3,5],)
     labels=["FedAvg","FedlesScan","Fedprox"]
-    plot.set_xticklabels(labels,fontsize = 11)
+    plot.set_xticklabels(labels,fontsize = axis_font)
+    plot.tick_params(axis='y', labelsize=axis_font-1)
+    # plt.setp(plot,  ylim=(0,60))
+
     # plot.xaxis.set_tick_params(direction='out')
     # plot.xaxis.set_ticks_position('bottom')
     # plot.set_xticks(np.arange(1, len(labels) + 1), labels=labels)
-    plot.set_xlim(0.25, len(labels) + 0.75)
+    # plot.set_xlim(0.25, len(labels) + 0.75)
     
-    plot.violinplot(grouped_data,[1,2,3])
+    plot.violinplot(grouped_data,[1,3,5])
     
 
 def get_client_inv_group(path):
@@ -123,16 +135,16 @@ def plot_dataset(path,eur_plot,acc_plot,loss_plot, time_plot,var_plot, strategy_
     ## this function plots the variance too
     # max_norm, min_norm = plot_variance(clients_log_path,var_plot)
     # print(f'{algorithm_name}: variance: {max_norm-min_norm} for max of {max_norm} and min of {min_norm}')
-    ## plot eur 
     get_min_max_cost(clients_log_path)
-    plot_figure(inv_path,x_labels[0][0],y_labels[0][0],x_labels[0][1],y_labels[0][1],eur_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
     ## plot accuracy
     plot_figure(timing_path,x_labels[1][0],y_labels[1][0],x_labels[1][1],y_labels[1][1],acc_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
+    ## plot eur 
+    plot_figure(inv_path,x_labels[0][0],y_labels[0][0],x_labels[0][1],y_labels[0][1],eur_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
     
     ## plot loss time 
     plot_figure(timing_path,x_labels[2][0],y_labels[2][0],x_labels[2][1],y_labels[2][1],loss_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
     
-    ## plot time 
+    # plot time 
     plot_figure(timing_path,x_labels[3][0],y_labels[3][0],x_labels[3][1],y_labels[3][1],time_plot,stragglers,plot_type="line",line_style=line_style,strategy_name = strategy_name,color=color)
     print("------------------------------------------------------------------")
     
@@ -141,7 +153,12 @@ def get_plot():
     cols,rows = (3,2)  #3*2
     # grid = plt.GridSpec(rows, cols, wspace = .25, hspace = .25)
     # plot,subs = plt.subplots(rows, cols,figsize=(12,12),squeeze=False)
-    plot = plt.figure(figsize=(12,8))
+    
+    # plot, (ax1,ax2,ax3,ax4,ax5) = plt.subplots(1,5,figsize=(32,3))
+    # plot.tight_layout()
+    # plt.subplots_adjust( wspace = 0.25)
+
+    plot = plt.figure(figsize=(14,8),facecolor=(1, 1, 1))
     ax1 = plt.subplot2grid(shape=(2,6), loc=(0,0), colspan=2,fig=plot)
     ax2 = plt.subplot2grid((2,6), (0,2), colspan=2,fig=plot)
     ax3 = plt.subplot2grid((2,6), (0,4), colspan=2,fig=plot)
@@ -153,6 +170,8 @@ def get_plot():
 
     # subs[1][0].set_position([0.24,0.125,0.343,0.343])
     # subs[1][1].set_position([0.55,0.125,0.343,0.343])
+    
+
     return plot,[ax1,ax2,ax3,ax4,ax5]
     
             
@@ -196,17 +215,22 @@ def plot_dataset_compare_3(path_normals,path_enhanced,path_prox,titles,dataset_t
         # variance plots here
 
             
-    leg = acc_plts[0].legend()
-    leg = eur_plts[0].legend()
+    leg = acc_plts[0].legend(loc='lower right',fontsize = axis_font)
+    leg = eur_plts[0].legend(loc='lower right',fontsize = axis_font)
     leg = loss_plts[0].legend()
     leg = time_plts[0].legend()
     # leg = var.legend(loc='lower right')
-    path = f"./figs/{dataset_title}"
+    path = f"./figs/pres/{dataset_title}"
+
+    acc.savefig(f'{path}/acc_{dataset_title}', bbox_inches='tight',dpi = DPI)
+    eur.savefig(f'{path}/eur_{dataset_title}', bbox_inches='tight',dpi = DPI)
+    loss_p.savefig(f'{path}/loss_{dataset_title}', bbox_inches='tight',dpi = DPI)
+    tim.savefig(f'{path}/tim_{dataset_title}', bbox_inches='tight',dpi = DPI)
+    var.savefig(f'{path}/var_{dataset_title}', bbox_inches='tight',dpi = DPI)
     
-    
-    acc.savefig(f'{path}/acc_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
-    eur.savefig(f'{path}/eur_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
-    loss_p.savefig(f'{path}/loss_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
-    tim.savefig(f'{path}/tim_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
-    var.savefig(f'{path}/var_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    # acc.savefig(f'{path}/acc_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    # eur.savefig(f'{path}/eur_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    # loss_p.savefig(f'{path}/loss_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    # tim.savefig(f'{path}/tim_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
+    # var.savefig(f'{path}/var_{dataset_title}.pdf', bbox_inches='tight',dpi = DPI)
 
