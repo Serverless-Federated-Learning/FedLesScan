@@ -175,14 +175,16 @@ class ClientResultDao(MongoDbDao):
 
     @wrap_pymongo_errors
     def load_results_for_session(
-        self,
-        session_id: str,
-        round_id: int,
-        tolerance: int
+        self, session_id: str, round_id: int, tolerance: int
     ) -> Tuple[List, Iterator[ClientResult]]:
         try:
             result_dicts = list(
-                self._collection.find(filter={"session_id": session_id, "round_id" :{"$gte": round_id-tolerance}})
+                self._collection.find(
+                    filter={
+                        "session_id": session_id,
+                        "round_id": {"$gte": round_id - tolerance},
+                    }
+                )
             )
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e

@@ -3,12 +3,12 @@ from typing import List
 import numpy as np
 import tensorflow as tf
 
-from fedless.data import DatasetLoader
 from fedless.common.serialization import (
     ModelLoader,
     WeightsSerializer,
     StringSerializer,
 )
+from fedless.datasets.dataset_loaders import DatasetLoader
 
 
 # noinspection PyMissingOrEmptyDocstring

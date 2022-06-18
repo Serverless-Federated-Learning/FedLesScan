@@ -24,6 +24,5 @@ def handle(event, context):
         serializer=config.serializer,
         test_data=config.test_data,
         aggregation_strategy=config.aggregation_strategy,
-        aggregation_hyper_params= config.aggregation_hyper_params
-
+        aggregation_hyper_params=config.aggregation_hyper_params,
     )

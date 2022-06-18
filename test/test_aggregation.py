@@ -3,13 +3,13 @@ from itertools import zip_longest
 import pytest
 import numpy as np
 import tensorflow as tf
-
-from fedless.aggregator import (
+from fedless.aggregator.exceptions import UnknownCardinalityError
+from fedless.aggregator.fed_avg_aggregator import (
     FedAvgAggregator,
-    UnknownCardinalityError,
     StreamFedAvgAggregator,
-    chunks,
 )
+
+
 from fedless.common.models import (
     ClientResult,
     NpzWeightsSerializerConfig,
@@ -136,11 +136,3 @@ def test_streamfedavg_aggregate_function(
     assert all(
         [np.allclose(a, b) for a, b in zip_longest(final_params, dummy_expected_result)]
     )
-
-
-def test_chunks():
-    iterator = list(x for x in range(10))
-    assert list(chunks(iterator, 3)) == [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
-    assert list(chunks(iterator, 2)) == [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]
-    assert list(chunks(iterator, 1)) == [[i] for i in range(10)]
-    assert list(chunks(iterator, 20)) == [[i for i in range(10)]]

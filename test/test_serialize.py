@@ -5,10 +5,8 @@ from typing import Tuple, Dict
 from unittest.mock import patch, MagicMock
 
 import h5py
-import keras
 import pydantic
 from _pytest.monkeypatch import MonkeyPatch
-from keras import layers
 from keras.utils.losses_utils import ReductionV2
 from pydantic import ValidationError
 
@@ -21,7 +19,6 @@ from fedless.common.models import (
     PayloadModelLoaderConfig,
     ModelSerializerConfig,
     BinaryStringFormat,
-    SerializedModel,
 )
 from fedless.common.serialization import (
     H5FullModelSerializer,

@@ -7,7 +7,7 @@ from fedless.common.models import (
     FunctionInvocationConfig,
     Hyperparams,
     MongodbConnectionConfig,
-    AggregationHyperParams
+    AggregationHyperParams,
 )
 
 
@@ -20,11 +20,12 @@ class ClientFunctionConfig(pydantic.BaseModel):
 class ClientFunctionConfigList(pydantic.BaseModel):
     functions: List[ClientFunctionConfig]
     hyperparams: Optional[Hyperparams]
-    
-class AggregationFunctionConfig(pydantic.BaseModel): 
+
+
+class AggregationFunctionConfig(pydantic.BaseModel):
     function: FunctionInvocationConfig
     # configure aggregation hyper params has default values
-    hyperparams: AggregationHyperParams 
+    hyperparams: AggregationHyperParams
 
 
 class CognitoConfig(pydantic.BaseModel):
@@ -41,7 +42,8 @@ class CognitoConfig(pydantic.BaseModel):
 #     invoker: Optional[FunctionDeploymentConfig]
 #     evaluator: FunctionInvocationConfig
 #     aggregator: AggregationFunctionConfig
-    
+
+
 class ExperimentConfig(pydantic.BaseModel):
     cognito: Optional[CognitoConfig] = None
     database: MongodbConnectionConfig

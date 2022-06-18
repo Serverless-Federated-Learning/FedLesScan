@@ -27,5 +27,5 @@ class MockAggregator:
             self.test_data,
             self.delete_results_after_finish,
             self.aggregation_strategy,
-            self.aggregation_hyper_params
+            self.aggregation_hyper_params,
         )

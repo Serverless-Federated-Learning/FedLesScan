@@ -194,7 +194,7 @@ def run(
         session=session,
         model=model,
         database=config.database,
-        store_json_serializable= False,
+        store_json_serializable=False,
     )
 
     inv_params = {
@@ -207,7 +207,6 @@ def run(
         "allowed_stragglers": stragglers,
         "client_timeout": timeout,
         "save_dir": log_dir,
-
         "global_test_data": (
             create_mnist_test_config(proxies=(proxies if proxy_in_evaluator else None))
             if dataset.lower() == "mnist"

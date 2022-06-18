@@ -15,10 +15,12 @@ class AggregationStrategy(str, Enum):
     PER_ROUND = "per_round"
     PER_SESSION = "per_session"  # enhanced with staleness aware aggregation
 
+
 class AggregationHyperParams(BaseModel):
     tolerance: int = 0
     aggregate_online: bool = False
     test_batch_size: int = 10
+
 
 class AggregatorFunctionParams(BaseModel):
     session_id: str

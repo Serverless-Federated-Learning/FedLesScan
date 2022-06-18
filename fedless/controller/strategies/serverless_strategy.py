@@ -92,7 +92,6 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.invocation_delay: Optional[float] = invocation_delay
         self.mock = mock
 
-
     def save_round_results(
         self, session: str, round: int, dir: Optional[Path] = None, **kwargs
     ) -> None:
@@ -152,7 +151,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             database=self.mongodb_config,
             test_data=self.global_test_data,
             aggregation_strategy=self.aggregation_strategy,
-            aggregation_hyper_params= self.aggregator.hyperparams,
+            aggregation_hyper_params=self.aggregator.hyperparams,
         )
         aggregator = MockAggregator(params=params)
         result = aggregator.run_aggregator()

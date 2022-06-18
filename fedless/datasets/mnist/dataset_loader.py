@@ -21,7 +21,9 @@ class MNISTConfig(BaseModel):
     indices: List[int] = None
     split: str = "train"
     proxies: Optional[Dict] = None
-    location: str = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
+    location: str = (
+        "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
+    )
 
 
 class MNIST(DatasetLoader):
