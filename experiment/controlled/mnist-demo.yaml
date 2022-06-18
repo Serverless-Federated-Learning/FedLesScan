@@ -1,28 +1,23 @@
 database:
-  host: "138.246.235.81"
+  host: "cluster0.ucq8wni.mongodb.net/test"
+  port: 1
+  username: fedless
+  password: fedless
 
-cluster:
-  apihost: 138.246.235.81:31001
-  auth: 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+evaluator:
+  params:
+    type: openfaas
+    url: http://138.246.234.228:31112/function/evaluator
+  type: openfaas
 
-server:
-  evaluator:
-    type: openwhisk
+aggregator:
+  hyperparams:
+    tolerance: 2
+  function:
     params:
-      name: evaluator
-      file: /home/ubuntu/mitigating-stragglers-fl-project/functions/openwhisk/evaluator/main.py
-      image: mohamedazab/fedless-openwhisk:clients
-      memory: 2048
-      timeout: 60000
-
-  aggregator:
-    type: openwhisk
-    params:
-      name: aggregator
-      file: /home/ubuntu/mitigating-stragglers-fl-project/functions/openwhisk/aggregator/main.py
-      image: mohamedazab/fedless-openwhisk:clients
-      memory: 2024
-      timeout: 60000
+      type: openfaas
+      url: http://138.246.234.228:31112/function/aggregator
+    type: openfaas
 
 clients:
   hyperparams:

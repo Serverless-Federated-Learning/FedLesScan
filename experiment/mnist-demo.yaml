@@ -1,24 +1,23 @@
 database:
   host: "cluster0.ucq8wni.mongodb.net/test"
-  port: 27017
-  username: "ml96"
-  password: "ml96"
+  port: 1
+  username: fedless
+  password: fedless
 
-server:
-  evaluator:
+evaluator:
+  params:
+    type: openfaas
+    url: http://138.246.234.228:31112/function/evaluator
+  type: openfaas
+
+aggregator:
+  hyperparams:
+    tolerance: 2
+  function:
     params:
       type: openfaas
-      url: http://138.246.234.228:31112/function/evaluator
+      url: http://138.246.234.228:31112/function/aggregator
     type: openfaas
-
-  aggregator:
-    hyperparams:
-      tolerance: 2
-    function:
-      params:
-        type: openfaas
-        url: http://138.246.234.228:31112/function/aggregator
-      type: openfaas
 
 clients:
   hyperparams:
