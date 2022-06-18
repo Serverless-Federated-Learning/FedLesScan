@@ -491,8 +491,7 @@ def test_payload_model_loader_throws_model_error_for_invalid_payload(
 
 @patch("fedless.serialization.deserialize_parameters")
 def test_simple_model_loader_works_works_and_compiles_model(
-    deserialize_parameters_mock,
-    simple_model: tf.keras.Model,
+    deserialize_parameters_mock, simple_model: tf.keras.Model,
 ):
     deserialize_parameters_mock.return_value = simple_model.get_weights()
 
@@ -517,9 +516,7 @@ def test_simple_model_loader_works_without_compiling_model(
     deserialize_parameters_mock.return_value = simple_model.get_weights()
 
     loader = SimpleModelLoader(
-        parameters=None,
-        model=simple_model.to_json(),
-        compiled=False,
+        parameters=None, model=simple_model.to_json(), compiled=False,
     )
 
     model = loader.load()
@@ -534,17 +531,13 @@ def test_simple_model_loader_throws_correct_errors(
     with pytest.raises(ModelLoadError):
         deserialize_parameters_mock.return_value = simple_model.get_weights()
         SimpleModelLoader(
-            parameters=None,
-            model="invalid-json:'",
-            compiled=False,
+            parameters=None, model="invalid-json:'", compiled=False,
         ).load()
 
     with pytest.raises(ModelLoadError):
         deserialize_parameters_mock.side_effect = SerializationError
         SimpleModelLoader(
-            parameters=None,
-            model=simple_model.to_json(),
-            compiled=False,
+            parameters=None, model=simple_model.to_json(), compiled=False,
         ).load()
 
 

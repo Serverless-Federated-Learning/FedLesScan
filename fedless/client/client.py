@@ -229,9 +229,7 @@ def fedless_mongodb_handler(
         logger.debug(f"Finished writing to database")
 
         return InvocationResult(
-            session_id=session_id,
-            round_id=round_id,
-            client_id=client_id,
+            session_id=session_id, round_id=round_id, client_id=client_id,
         )
 
     except (

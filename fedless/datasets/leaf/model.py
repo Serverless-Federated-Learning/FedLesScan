@@ -40,12 +40,7 @@ def create_shakespeare_lstm(
 ):
     model = keras.Sequential()
     keras.layers.InputLayer((sequence_length, vocab_size))
-    model.add(
-        keras.layers.Embedding(
-            vocab_size,
-            embedding_size,
-        )
-    )
+    model.add(keras.layers.Embedding(vocab_size, embedding_size,))
     model.add(keras.layers.LSTM(units, return_sequences=True))
     model.add(keras.layers.LSTM(units))
     model.add(keras.layers.Dense(vocab_size, activation="softmax"))

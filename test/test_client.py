@@ -150,9 +150,7 @@ def test_run_overwrites_hyperparameters(
         )
 
         mocked_compile.assert_called_with(
-            optimizer=optimizer,
-            loss=tf.keras.losses.get(loss),
-            metrics=metrics,
+            optimizer=optimizer, loss=tf.keras.losses.get(loss), metrics=metrics,
         )
 
 

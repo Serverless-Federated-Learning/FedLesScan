@@ -149,9 +149,9 @@ class DBScanClientSelection(ClientSelectionScheme):
         # we didnt sort with the missed rounds because fast clients will probably not miss alot of rounds
 
         # normalize by no of clients/cluster
-        for cluster_idx, (
-            cluster_total_ema,
-            cluster_clients,
+        for (
+            cluster_idx,
+            (cluster_total_ema, cluster_clients,),
         ) in cluster_number_map.items():
             cluster_number_map[cluster_idx] = (
                 cluster_total_ema / len(cluster_clients),
@@ -182,9 +182,9 @@ class DBScanClientSelection(ClientSelectionScheme):
     ) -> None:
 
         cluster_dict_list = []
-        for cluster_idx, (
-            cluster_ema,
-            cluster_client_configs,
+        for (
+            cluster_idx,
+            (cluster_ema, cluster_client_configs,),
         ) in sorted_clusters.items():
 
             for client_config in cluster_client_configs:

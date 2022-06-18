@@ -10,9 +10,7 @@ from pydantic import ValidationError
 from requests import Session
 
 from fedless.controller.misc import fetch_cognito_auth_token
-from fedless.controller.strategies.Intelligent_selection import (
-    ClientSelectionScheme,
-)
+from fedless.controller.strategies.Intelligent_selection import ClientSelectionScheme
 from fedless.controller.strategies.serverless_strategy import ServerlessFlStrategy
 from fedless.controller.invocation import InvocationError
 

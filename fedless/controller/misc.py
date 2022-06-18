@@ -63,10 +63,7 @@ def fetch_cognito_auth_token(
     invoker_client_secret,
     required_scopes,
 ) -> str:
-    cognito = CognitoClient(
-        user_pool_id=user_pool_id,
-        region_name=region_name,
-    )
+    cognito = CognitoClient(user_pool_id=user_pool_id, region_name=region_name,)
     return cognito.fetch_token_for_client(
         auth_endpoint=auth_endpoint,
         client_id=invoker_client_id,

@@ -100,11 +100,7 @@ class AggregateCustomMetricStrategy(fl.server.strategy.FedAvg):
         print(rnd, results, failures)
         loss_aggregated = weighted_loss_avg(
             [
-                (
-                    evaluate_res.num_examples,
-                    evaluate_res.loss,
-                    evaluate_res.accuracy,
-                )
+                (evaluate_res.num_examples, evaluate_res.loss, evaluate_res.accuracy,)
                 for _, evaluate_res in results
             ]
         )
@@ -141,9 +137,7 @@ def run(dataset, min_num_clients, rounds, port):
 
     # Run server
     fl.server.start_server(
-        f"[::]:{port}",
-        server,
-        config={"num_rounds": rounds},
+        f"[::]:{port}", server, config={"num_rounds": rounds},
     )
 
 

@@ -180,8 +180,7 @@ def openfaas_action_handler(
 def openwhisk_action_handler(
     caught_exceptions: tuple(Iterable[Exception]),
 ) -> Callable[
-    [Callable[[Dict], Union[pydantic.BaseModel, str]]],
-    Callable[[Dict], Dict],
+    [Callable[[Dict], Union[pydantic.BaseModel, str]]], Callable[[Dict], Dict],
 ]:
     """Decorator for Openwhisk action handlers to parse input,
     catch certain exceptions and respond to them with 400 errors.
@@ -225,4 +224,3 @@ async def check_program_installed(name: str):
     # )
     exitcode, _ = subprocess.getstatusoutput(f"hash {name}")
     return exitcode == 0
-

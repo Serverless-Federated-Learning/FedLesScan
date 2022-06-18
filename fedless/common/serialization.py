@@ -220,9 +220,7 @@ class H5FullModelSerializer(ModelSerializer):
             "does not matter", mode="w", driver="core", backing_store=False
         ) as h5file:
             model.save(
-                filepath=h5file,
-                include_optimizer=True,
-                save_traces=self.save_traces,
+                filepath=h5file, include_optimizer=True, save_traces=self.save_traces,
             )
             return h5file.id.get_file_image()
 

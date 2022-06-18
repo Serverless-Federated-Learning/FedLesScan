@@ -17,9 +17,7 @@ from fedless.controller.misc import run_in_executor
 from fedless.controller.mocks.mock_aggregation import MockAggregator
 from fedless.controller.mocks.mock_client import MockClient
 from fedless.controller.models import AggregationFunctionConfig
-from fedless.controller.strategies.Intelligent_selection import (
-    ClientSelectionScheme,
-)
+from fedless.controller.strategies.Intelligent_selection import ClientSelectionScheme
 from fedless.controller.strategies.fl_strategy import FLStrategy
 from fedless.controller.invocation import InvocationError, retry_session, invoke_sync
 
@@ -360,10 +358,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
 
         logger.info(f"Round {round}: loss={loss}, acc={acc}")
         self.save_round_results(
-            session=self.session,
-            round=round,
-            dir=self.save_dir,
-            **metrics_misc,
+            session=self.session, round=round, dir=self.save_dir, **metrics_misc,
         )
         return loss, acc, metrics_misc
 

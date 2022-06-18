@@ -113,8 +113,9 @@ class LEAF(DatasetLoader):
                 split=tf.strings.bytes_split,
                 vocabulary=[c for c in vocabulary],
             )
-            return vectorizer(tf.convert_to_tensor(user_data["x"])), vectorizer(
-                tf.convert_to_tensor(user_data["y"])
+            return (
+                vectorizer(tf.convert_to_tensor(user_data["x"])),
+                vectorizer(tf.convert_to_tensor(user_data["y"])),
             )
 
         return user_data["x"], user_data["y"]

@@ -138,9 +138,7 @@ def function_invoker_handler(
             )
 
         return InvocationResult(
-            session_id=session_id,
-            round_id=round_id,
-            client_id=client_id,
+            session_id=session_id, round_id=round_id, client_id=client_id,
         )
 
     except PersistenceError as e:

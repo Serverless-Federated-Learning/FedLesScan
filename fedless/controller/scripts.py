@@ -62,10 +62,7 @@ logger = logging.getLogger(__name__)
     required=True,
 )
 @click.option(
-    "--clients",
-    type=int,
-    help="number of clients",
-    required=True,
+    "--clients", type=int, help="number of clients", required=True,
 )
 @click.option(
     "--clients-in-round",
@@ -74,10 +71,7 @@ logger = logging.getLogger(__name__)
     required=True,
 )
 @click.option(
-    "--stragglers",
-    type=int,
-    help="number of allowed stragglers per round",
-    default=0,
+    "--stragglers", type=int, help="number of allowed stragglers per round", default=0,
 )
 @click.option(
     "--timeout",
@@ -86,10 +80,7 @@ logger = logging.getLogger(__name__)
     default=300,
 )
 @click.option(
-    "--rounds",
-    type=int,
-    help="maximum wait time for functions to finish",
-    default=100,
+    "--rounds", type=int, help="maximum wait time for functions to finish", default=100,
 )
 @click.option(
     "--max-accuracy",
@@ -105,9 +96,7 @@ logger = logging.getLogger(__name__)
     required=True,
 )
 @click.option(
-    "--tum-proxy/--no-tum-proxy",
-    help="use in.tum.de proxy",
-    default=False,
+    "--tum-proxy/--no-tum-proxy", help="use in.tum.de proxy", default=False,
 )
 @click.option(
     "--proxy-in-evaluator/--no-proxy-in-evaluator",
@@ -115,9 +104,7 @@ logger = logging.getLogger(__name__)
     default=False,
 )
 @click.option(
-    "--mock/--no-mock",
-    help="use mocks",
-    default=False,
+    "--mock/--no-mock", help="use mocks", default=False,
 )
 
 # straggler simulation per client if specified in function or with percentages
@@ -128,10 +115,7 @@ logger = logging.getLogger(__name__)
     default=0.0,
 )
 @click.option(
-    "--mu",
-    help="param for fedprox training",
-    type=float,
-    default=0.001,
+    "--mu", help="param for fedprox training", type=float, default=0.001,
 )
 def run(
     dataset: str,
@@ -287,8 +271,7 @@ def store_client_configs(
             # client_config.function.invocation_delay = -2
 
         client_history = ClientPersistentHistory(
-            client_id=client_id,
-            session_id=session,
+            client_id=client_id, session_id=session,
         )
 
         logger.info(

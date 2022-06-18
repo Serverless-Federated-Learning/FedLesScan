@@ -2,9 +2,7 @@ from pathlib import Path
 from typing import Optional, Dict, List
 import numpy as np
 
-from fedless.datasets.dataset_loaders import (
-    DatasetLoader,
-)
+from fedless.datasets.dataset_loaders import DatasetLoader
 
 from typing import Union, Dict, List, Optional
 

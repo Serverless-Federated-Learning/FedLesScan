@@ -125,9 +125,7 @@ def plot_variance(grouped_data, plts, title):
     plot.set_ylabel("Invocations/Client", fontsize=axis_font)
     plot.set_title(title, fontsize=axis_font)
     # plot.xaxis.set_major_locator(MaxNLocator(integer=True))
-    plot.set_xticks(
-        [1, 3, 5],
-    )
+    plot.set_xticks([1, 3, 5],)
     labels = ["FedAvg", "FedlesScan", "Fedprox"]
     plot.set_xticklabels(labels, fontsize=axis_font)
     plot.tick_params(axis="y", labelsize=axis_font - 1)

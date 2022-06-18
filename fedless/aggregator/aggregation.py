@@ -32,9 +32,7 @@ from fedless.common.serialization import (
     WeightsSerializerBuilder,
     SerializationError,
 )
-from fedless.aggregator.exceptions import (
-    AggregationError,
-)
+from fedless.aggregator.exceptions import AggregationError
 
 from fedless.aggregator.fed_avg_aggregator import (
     FedAvgAggregator,

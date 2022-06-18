@@ -83,9 +83,7 @@ def test_leaf_loader_handles_too_many_redirects_error(
         )
 
 
-def test_leaf_loader_fetches_file_correctly(
-    requests_mock: requests_mock.Mocker,
-):
+def test_leaf_loader_fetches_file_correctly(requests_mock: requests_mock.Mocker,):
     dummy_data = {"att1": "value"}
     requests_mock.get(DUMMY_FEMNIST_FILE_URL, json=dummy_data)
 
@@ -95,9 +93,7 @@ def test_leaf_loader_fetches_file_correctly(
     assert dummy_data == returned_dict
 
 
-def test_leaf_loader_parses_returned_json(
-    requests_mock: requests_mock.Mocker,
-):
+def test_leaf_loader_parses_returned_json(requests_mock: requests_mock.Mocker,):
     invalid_data = b'{att1: value"}'
     requests_mock.get(DUMMY_FEMNIST_FILE_URL, content=invalid_data)
 
