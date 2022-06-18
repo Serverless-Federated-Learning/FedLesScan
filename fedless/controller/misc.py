@@ -12,7 +12,6 @@ from pydantic import ValidationError
 
 from fedless.common.auth import CognitoClient
 
-# from fedless.providers import OpenwhiskCluster, FaaSProvider
 
 logger = logging.getLogger(__name__)
 
