@@ -8,7 +8,7 @@ PORT="${FEDLESS_MONGODB_PORT?"Need to set FEDLESS_MONGODB_PORT"}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ROOT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
-HELM_CHART_DIR="$ROOT_DIR/kubernetes/parameter-server"
+HELM_CHART_DIR="$ROOT_DIR/scripts/deployment_scripts//kubernetes/parameter-server"
 if [ -d "$HELM_CHART_DIR" ]; then
   ### Take action if $DIR exists ###
   echo "Installing helm chart ${HELM_CHART_DIR}..."
