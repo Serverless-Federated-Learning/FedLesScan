@@ -41,17 +41,20 @@ class GCloudFunctionConfig(BaseModel):
     type: str = Field("gcloud", const=True)
     url: str
 
+
 class OpenFaasFunctionConfig(BaseModel):
     """OpenFaas function"""
 
     type: str = Field("openfaas", const=True)
     url: str
 
+
 class AzureFunctionHTTPConfig(BaseModel):
     """Azure function"""
 
     type: str = Field("azure", const=True)
     trigger_url: str
+
 
 class FunctionInvocationConfig(BaseModel):
     """Necessary information to invoke a function"""
@@ -71,10 +74,12 @@ class FunctionInvocationConfig(BaseModel):
         params_validate_types_match
     )
 
+
 class GCloudProjectConfig(BaseModel):
     type: str = Field("gcloud", const=True)
     account: str
     project: str
+
 
 class OpenwhiskFunctionDeploymentConfig(BaseModel):
     type: str = Field("openwhisk", const=True)

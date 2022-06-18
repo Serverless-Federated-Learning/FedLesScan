@@ -20,8 +20,8 @@ from fedless.common.models import (
 )
 from fedless.common.models.aggregation_models import (
     AggregationHyperParams,
-    AggregationStrategy
-    )
+    AggregationStrategy,
+)
 from fedless.common.persistence import (
     ClientResultDao,
     ParameterDao,
@@ -32,9 +32,7 @@ from fedless.common.serialization import (
     WeightsSerializerBuilder,
     SerializationError,
 )
-from fedless.aggregator.exceptions import (
-    AggregationError,
-)
+from fedless.aggregator.exceptions import AggregationError
 
 from fedless.aggregator.fed_avg_aggregator import (
     FedAvgAggregator,
@@ -52,17 +50,16 @@ def default_aggregation_handler(
     test_data: Optional[DatasetLoaderConfig] = None,
     delete_results_after_finish: bool = True,
     aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
-    aggregation_hyper_params: AggregationHyperParams = None
+    aggregation_hyper_params: AggregationHyperParams = None,
 ) -> AggregatorFunctionResult:
-    
-    
+
     # mongo_client = pymongo.MongoClient(
     #     host=database.host,
     #     port=database.port,
     #     username=database.username,
     #     password=database.password,
     # )
-    
+
     mongo_client = pymongo.MongoClient(database.url)
     logger.info(f"Aggregator invoked for session {session_id} and round {round_id}")
     try:
@@ -72,7 +69,7 @@ def default_aggregation_handler(
         # logger.debug(f"Establishing database connection")
         # aggregator = FedAvgAggregator()
         aggregator = (
-            StallAwareAggregator(round_id,aggregation_hyper_params)
+            StallAwareAggregator(round_id, aggregation_hyper_params)
             if aggregation_strategy == AggregationStrategy.PER_SESSION
             else FedAvgAggregator()
         )
@@ -82,7 +79,7 @@ def default_aggregation_handler(
         if aggregation_hyper_params.aggregate_online:
             logger.debug(f"Using online aggregation")
             aggregator = (
-                StreamStallAwareAggregator(round_id,aggregation_hyper_params)
+                StreamStallAwareAggregator(round_id, aggregation_hyper_params)
                 if aggregation_strategy == AggregationStrategy.PER_SESSION
                 else StreamFedAvgAggregator()
             )

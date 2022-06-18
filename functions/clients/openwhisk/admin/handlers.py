@@ -59,10 +59,7 @@ def create_resource_server(request):
     resource_server_name = body.get("name", resource_server_identifier)
 
     logger.info(
-        {
-            "region": region,
-            "expected_client_id": expected_client_id,
-        }
+        {"region": region, "expected_client_id": expected_client_id,}
     )
 
     session = boto3.Session(
@@ -72,9 +69,7 @@ def create_resource_server(request):
     )
     client = session.client("cognito-idp")
     cognito = CognitoClient(
-        client=client,
-        user_pool_id=userpool_id,
-        region_name=region,
+        client=client, user_pool_id=userpool_id, region_name=region,
     )
 
     token = get_token_from_request(request)

@@ -5,9 +5,7 @@ from typing import List, Optional, Dict, Tuple
 import numpy as np
 
 from fedless.common.models import TestMetrics, AggregationStrategy
-from fedless.controller.strategies.Intelligent_selection import (
-    ClientSelectionScheme,
-)
+from fedless.controller.strategies.Intelligent_selection import ClientSelectionScheme
 
 logger = logging.getLogger(__name__)
 
