@@ -18,7 +18,7 @@ for straggler_percent in 0.1 0.2 0.3; do
 
   python -m fedless.controller.scripts \
     -d "speech" \
-    -s "fedless_enhanced" \
+    -s "fedlesscan" \
     -c "$script_dir/speech-demo.yaml" \
     --clients "$n_clients" \
     --clients-in-round "$clients_per_round" \
@@ -33,7 +33,7 @@ for straggler_percent in 0.1 0.2 0.3; do
   
   python -m fedless.controller.scripts \
     -d "speech" \
-    -s "fedless" \
+    -s "fedavg" \
     -c "$script_dir/speech-demo.yaml" \
     --clients "$n_clients" \
     --clients-in-round "$clients_per_round" \

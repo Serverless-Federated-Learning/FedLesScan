@@ -19,7 +19,7 @@ base_out_dir="$root_directory/out/controlled-expo"
 for straggler_percent in 0.1 0.2 0.3; do
   python -m fedless.controller.scripts \
     -d "femnist" \
-    -s "fedless_enhanced" \
+    -s "fedlesscan" \
     -c "$script_dir/femnist-demo.yaml" \
     --clients "$n_clients" \
     --clients-in-round "$clients_per_round" \
@@ -36,7 +36,7 @@ for straggler_percent in 0.1 0.2 0.3; do
 
   python -m fedless.controller.scripts \
     -d "femnist" \
-    -s "fedless" \
+    -s "fedavg" \
     -c "$script_dir/femnist-demo.yaml" \
     --clients "$n_clients" \
     --clients-in-round "$clients_per_round" \

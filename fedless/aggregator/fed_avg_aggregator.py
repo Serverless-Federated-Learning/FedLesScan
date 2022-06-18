@@ -43,7 +43,7 @@ class FedAvgAggregator(ParameterAggregator):
 
     def select_aggregation_candidates(self, mongo_client, session_id, round_id):
         result_dao = ClientResultDao(mongo_client)
-        parameter_dao = ParameterDao(mongo_client)
+        # parameter_dao = ParameterDao(mongo_client)
         logger.debug(f"Establishing database connection")
         round_dicts, round_candidates = result_dao.load_results_for_round(
             session_id=session_id, round_id=round_id

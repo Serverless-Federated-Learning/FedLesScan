@@ -17,10 +17,13 @@ server:
     type: openfaas
 
   aggregator:
-    params:
+    hyperparams:
+      tolerance: 2
+    function:
+      params:
+        type: openfaas
+        url: http://138.246.234.228:31112/function/aggregator
       type: openfaas
-      url: http://138.246.234.228:31112/function/aggregator
-    type: openfaas
 
 clients:
   hyperparams:

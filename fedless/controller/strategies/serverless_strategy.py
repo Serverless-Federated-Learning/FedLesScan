@@ -16,8 +16,9 @@ from requests import Session
 from fedless.controller.misc import run_in_executor
 from fedless.controller.mocks.mock_aggregation import MockAggregator
 from fedless.controller.mocks.mock_client import MockClient
+from fedless.controller.models import AggregationFunctionConfig
 from fedless.controller.strategies.Intelligent_selection import (
-    IntelligentClientSelection,
+    ClientSelectionScheme,
 )
 from fedless.controller.strategies.fl_strategy import FLStrategy
 from fedless.controller.invocation import InvocationError, retry_session, invoke_sync
@@ -50,7 +51,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionInvocationConfig,
         aggregator_config: FunctionInvocationConfig,
-        selection_strategy: IntelligentClientSelection,
+        selection_strategy: ClientSelectionScheme,
         aggregation_strategy: AggregationStrategy,
         client_timeout: float = 300,
         allowed_stragglers: int = 0,
@@ -84,7 +85,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.aggregator_params = aggregator_params or {}
         self.global_test_data = global_test_data
 
-        self._aggregator: Optional[FunctionInvocationConfig] = aggregator_config
+        self._aggregator: Optional[AggregationFunctionConfig] = aggregator_config
         self._evaluator: Optional[FunctionInvocationConfig] = evaluator_config
 
         self.evaluator_config: FunctionDeploymentConfig = evaluator_config

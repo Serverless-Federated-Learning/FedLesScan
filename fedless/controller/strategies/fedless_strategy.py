@@ -10,13 +10,16 @@ from pydantic import ValidationError
 from requests import Session
 
 from fedless.controller.misc import fetch_cognito_auth_token
-from fedless.controller.models import CognitoConfig
 from fedless.controller.strategies.Intelligent_selection import (
-    IntelligentClientSelection,
+    ClientSelectionScheme,
 )
 from fedless.controller.strategies.serverless_strategy import ServerlessFlStrategy
 from fedless.controller.invocation import InvocationError
 
+from fedless.controller.models import(
+    AggregationFunctionConfig,
+    CognitoConfig
+    )
 from fedless.common.models import (
     ClientConfig,
     MongodbConnectionConfig,
@@ -36,8 +39,8 @@ class FedlessStrategy(ServerlessFlStrategy):
         clients: List[ClientConfig],
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionInvocationConfig,
-        aggregator_config: FunctionInvocationConfig,
-        selection_strategy: IntelligentClientSelection,
+        aggregator_config: AggregationFunctionConfig,
+        selection_strategy: ClientSelectionScheme,
         aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
         client_timeout: float = 300,  # 5 mins default
         cognito: Optional[CognitoConfig] = None,

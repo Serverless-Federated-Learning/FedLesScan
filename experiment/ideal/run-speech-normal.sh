@@ -14,7 +14,7 @@ rounds=25
 # for curr_repeat in {1..1}; do
 python -m fedless.controller.scripts \
   -d "speech" \
-  -s "fedless" \
+  -s "fedavg" \
   -c "$script_dir/speech-demo.yaml" \
   --clients "$n_clients" \
   --clients-in-round "$clients_per_round" \
@@ -29,7 +29,7 @@ sleep 2
 
 python -m fedless.controller.scripts \
   -d "speech" \
-  -s "fedless_enhanced" \
+  -s "fedlesscan" \
   -c "$script_dir/speech-demo.yaml" \
   --clients "$n_clients" \
   --clients-in-round "$clients_per_round" \

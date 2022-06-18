@@ -20,7 +20,7 @@ echo $base_out_dir
 
 python -m fedless.controller.scripts \
   -d "mnist" \
-  -s "fedless" \
+  -s "fedavg" \
   -c "$config_dir" \
   --clients "$n_clients" \
   --clients-in-round "$clients_per_round" \

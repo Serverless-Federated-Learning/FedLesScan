@@ -20,7 +20,7 @@ from fedless.common.persistence.client_daos import ClientHistoryDao
 logger = logging.getLogger(__name__)
 
 
-class IntelligentClientSelection(ABC):
+class ClientSelectionScheme(ABC):
     def __init__(self, execution_func, function_params={}):
         """
         execution_func: function to execute the selection procedure
@@ -43,7 +43,7 @@ class IntelligentClientSelection(ABC):
         )
 
 
-class RandomClientSelection(IntelligentClientSelection):
+class RandomClientSelection(ClientSelectionScheme):
     def __init__(self):
         super().__init__(self.sample_clients)
 
@@ -51,7 +51,7 @@ class RandomClientSelection(IntelligentClientSelection):
         return random.sample(pool, clients)
 
 
-class DBScanClientSelection(IntelligentClientSelection):
+class DBScanClientSelection(ClientSelectionScheme):
     def __init__(self, db_config: MongodbConnectionConfig, session, log_dir=Path.cwd()):
         super().__init__(self.db_fit)
         self.db_config = db_config

@@ -11,8 +11,7 @@ from fedless.controller.strategies.Intelligent_selection import (
 
 def select_strategy(strategy: str, invocation_attrs: dict):
     switcher = {
-        # "fedkeeper": FedkeeperStrategy(**invocation_attrs),
-        "fedless_enhanced": FedlessStrategy(
+        "fedlesscan": FedlessStrategy(
             selection_strategy=DBScanClientSelection(
                 invocation_attrs["mongodb_config"],
                 invocation_attrs["session"],
@@ -21,7 +20,7 @@ def select_strategy(strategy: str, invocation_attrs: dict):
             aggregation_strategy=AggregationStrategy.PER_SESSION,
             **invocation_attrs,
         ),
-        "fedless": FedlessStrategy(
+        "fedavg": FedlessStrategy(
             selection_strategy=RandomClientSelection(),
             aggregation_strategy=AggregationStrategy.PER_ROUND,
             **invocation_attrs,
@@ -34,4 +33,4 @@ def select_strategy(strategy: str, invocation_attrs: dict):
     }
 
     # default to fedless strategy
-    return switcher.get(strategy, switcher["fedless_enhanced"])
+    return switcher.get(strategy, switcher["fedlesscan"])

@@ -12,7 +12,7 @@ import numpy as np
 from fedless.controller.misc import parse_yaml_file
 from fedless.controller.models import (
     ExperimentConfig,
-    FedkeeperClientsConfig,
+    ClientFunctionConfigList,
 )
 from fedless.datasets.benchmark_configurator import (
     create_model,
@@ -58,7 +58,7 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-s",
     "--strategy",
-    type=click.Choice(["fedless", "fedless_enhanced", "fedprox"], case_sensitive=False),
+    type=click.Choice(["fedavg", "fedlesscan", "fedprox"], case_sensitive=False),
     required=True,
 )
 @click.option(
@@ -91,11 +91,6 @@ logger = logging.getLogger(__name__)
     help="maximum wait time for functions to finish",
     default=100,
 )
-# @click.option(
-#     "--separate-invokers/--no-separate-invokers",
-#     help="use separate invoker function for each client (only applies when fedkeeper strategy is used)",
-#     default=True,
-# )
 @click.option(
     "--max-accuracy",
     help="stop training if this test accuracy is reached",
@@ -218,22 +213,12 @@ def run(
         session=session,
         model=model,
         database=config.database,
-        store_json_serializable=(strategy == "fedkeeper"),
+        store_json_serializable= False,
     )
-
-    # todo remove
-    # cluster = OpenwhiskCluster(
-    #     apihost=config.cluster.apihost,
-    #     auth=config.cluster.auth,
-    #     insecure=config.cluster.insecure,
-    #     namespace=config.cluster.namespace,
-    #     package=config.cluster.package,
-    # )
 
     inv_params = {
         "session": session,
         "cognito": config.cognito,
-        # "provider": cluster,
         "clients": clients,
         "evaluator_config": config.server.evaluator,
         "aggregator_config": config.server.aggregator,
@@ -244,6 +229,7 @@ def run(
         "aggregator_params": {
             "online": aggregate_online,
             "test_batch_size": test_batch_size,
+            "aggregation_hyper_params":config.server.aggregator.hyperparams
         },
         "global_test_data": (
             create_mnist_test_config(proxies=(proxies if proxy_in_evaluator else None))
@@ -269,7 +255,7 @@ def run(
 def store_client_configs(
     session: str,
     strategy: str,
-    clients: FedkeeperClientsConfig,
+    clients: ClientFunctionConfigList,
     num_clients: int,
     data_configs: List[
         Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]

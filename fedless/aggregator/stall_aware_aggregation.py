@@ -10,8 +10,13 @@ from fedless.aggregator.exceptions import (
     InsufficientClientResults,
     UnknownCardinalityError,
 )
-from fedless.common.models import Parameters, ClientResult, TestMetrics
-from fedless.common.persistence.client_daos import ClientResultDao, ParameterDao
+from fedless.common.models import (
+    Parameters,
+    ClientResult,
+    TestMetrics
+    )
+from fedless.common.models.aggregation_models import AggregationHyperParams
+from fedless.common.persistence.client_daos import ClientResultDao
 
 from fedless.common.serialization import deserialize_parameters
 
@@ -21,8 +26,9 @@ logger = logging.getLogger(__name__)
 
 
 class StallAwareAggregator(ParameterAggregator):
-    def __init__(self, current_round):
+    def __init__(self, current_round, aggregation_hyper_params: AggregationHyperParams):
         self.current_round = current_round
+        self.tolerance = aggregation_hyper_params.tolerance if aggregation_hyper_params is not None else 0
         super().__init__()
 
     def _score_clients(self, client_result: List[dict]):
@@ -62,11 +68,10 @@ class StallAwareAggregator(ParameterAggregator):
 
     def select_aggregation_candidates(self, mongo_client, session_id, round_id):
         result_dao = ClientResultDao(mongo_client)
-        parameter_dao = ParameterDao(mongo_client)
+        # parameter_dao = ParameterDao(mongo_client)
         logger.debug(f"Establishing database connection")
-        # todo: add limit to the accepted rounds
         round_dicts, round_candidates = result_dao.load_results_for_session(
-            session_id=session_id, round_id=round_id
+            session_id=session_id, round_id=round_id,tolerance = self.tolerance
         )
         if not round_candidates:
             raise InsufficientClientResults(
@@ -113,8 +118,8 @@ class StallAwareAggregator(ParameterAggregator):
 
 
 class StreamStallAwareAggregator(StallAwareAggregator):
-    def __init__(self, current_round: int, chunk_size: int = 25):
-        super().__init__(current_round)
+    def __init__(self, current_round: int,aggregation_hyper_params: AggregationHyperParams, chunk_size: int = 25):
+        super().__init__(current_round, aggregation_hyper_params)
         self.chunk_size = chunk_size
 
     def chunks(self, iterator: Iterator, n) -> Iterator[List]:

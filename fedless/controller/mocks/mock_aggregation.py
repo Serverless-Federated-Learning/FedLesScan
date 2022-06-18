@@ -18,6 +18,7 @@ class MockAggregator:
         self.test_batch_size = params.test_batch_size
         self.delete_results_after_finish = delete_results_after_finish
         self.aggregation_strategy = params.aggregation_strategy
+        self.aggregation_hyper_params = params.aggregation_hyper_params
 
     def run_aggregator(self):
         return default_aggregation_handler(
@@ -30,4 +31,5 @@ class MockAggregator:
             self.test_batch_size,
             self.delete_results_after_finish,
             self.aggregation_strategy,
+            self.aggregation_hyper_params
         )

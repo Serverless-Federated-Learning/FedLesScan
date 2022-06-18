@@ -26,4 +26,6 @@ def handle(event, context):
         test_data=config.test_data,
         test_batch_size=config.test_batch_size,
         aggregation_strategy=config.aggregation_strategy,
+        aggregation_hyper_params= config.aggregation_hyper_params
+
     )

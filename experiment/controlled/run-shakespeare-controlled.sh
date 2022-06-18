@@ -15,7 +15,7 @@ straggler_percent=0.3
 # for curr_repeat in {1..1}; do
 python -m fedless.controller.scripts \
   -d "shakespeare" \
-  -s "fedless" \
+  -s "fedavg" \
   -c "$script_dir/shakespeare-demo.yaml" \
   --clients "$n_clients" \
   --clients-in-round "$clients_per_round" \
@@ -34,7 +34,7 @@ python -m fedless.controller.scripts \
 
 python -m fedless.controller.scripts \
   -d "shakespeare" \
-  -s "fedless_enhanced" \
+  -s "fedlesscan" \
   -c "$script_dir/shakespeare-demo.yaml" \
   --clients "$n_clients" \
   --clients-in-round "$clients_per_round" \

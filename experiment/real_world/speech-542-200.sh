@@ -20,7 +20,7 @@ for straggler_percent in 0.7 ; do
   
   python -m fedless.controller.scripts \
     -d "$dataset_name" \
-    -s "fedless" \
+    -s "fedavg" \
     -c "$config_dir" \
     --clients "$n_clients" \
     --clients-in-round "$clients_per_round" \
@@ -35,7 +35,7 @@ for straggler_percent in 0.7 ; do
 
   python -m fedless.controller.scripts \
     -d "$dataset_name" \
-    -s "fedless_enhanced" \
+    -s "fedlesscan" \
     -c "$config_dir" \
     --clients "$n_clients" \
     --clients-in-round "$clients_per_round" \

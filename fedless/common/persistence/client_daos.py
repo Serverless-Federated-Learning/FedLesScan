@@ -178,10 +178,11 @@ class ClientResultDao(MongoDbDao):
         self,
         session_id: str,
         round_id: int,
+        tolerance: int
     ) -> Tuple[List, Iterator[ClientResult]]:
         try:
             result_dicts = list(
-                self._collection.find(filter={"session_id": session_id})
+                self._collection.find(filter={"session_id": session_id, "round_id" :{"$gte": round_id-tolerance}})
             )
         except ConnectionFailure as e:
             raise StorageConnectionError(e) from e

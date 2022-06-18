@@ -6,7 +6,7 @@ import numpy as np
 
 from fedless.common.models import TestMetrics, AggregationStrategy
 from fedless.controller.strategies.Intelligent_selection import (
-    IntelligentClientSelection,
+    ClientSelectionScheme,
 )
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ class FLStrategy(ABC):
     def __init__(
         self,
         clients,
-        selectionStrategy: IntelligentClientSelection,
+        selectionStrategy: ClientSelectionScheme,
         aggregation_strategy: AggregationStrategy,
     ):
         self.clients = clients

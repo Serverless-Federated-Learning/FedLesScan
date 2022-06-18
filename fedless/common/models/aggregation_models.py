@@ -13,8 +13,10 @@ from typing import Optional, List
 
 class AggregationStrategy(str, Enum):
     PER_ROUND = "per_round"
-    PER_SESSION = "per_session"  # enhanced with stall aware aggregation
+    PER_SESSION = "per_session"  # enhanced with staleness aware aggregation
 
+class AggregationHyperParams(BaseModel):
+    tolerance: int = 0
 
 class AggregatorFunctionParams(BaseModel):
     session_id: str
@@ -27,6 +29,7 @@ class AggregatorFunctionParams(BaseModel):
     test_data: Optional[DatasetLoaderConfig]
     test_batch_size: int = 512
     aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND
+    aggregation_hyper_params: Optional[AggregationHyperParams]
 
 
 class AggregatorFunctionResult(BaseModel):

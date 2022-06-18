@@ -18,7 +18,10 @@ from fedless.common.models import (
     DatasetLoaderConfig,
     SerializedModel,
 )
-from fedless.common.models.aggregation_models import AggregationStrategy
+from fedless.common.models.aggregation_models import (
+    AggregationHyperParams,
+    AggregationStrategy
+    )
 from fedless.common.persistence import (
     ClientResultDao,
     ParameterDao,
@@ -51,6 +54,7 @@ def default_aggregation_handler(
     test_batch_size: int = 512,
     delete_results_after_finish: bool = True,
     aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
+    aggregation_hyper_params: AggregationHyperParams = None
 ) -> AggregatorFunctionResult:
     
     
@@ -70,7 +74,7 @@ def default_aggregation_handler(
         # logger.debug(f"Establishing database connection")
         # aggregator = FedAvgAggregator()
         aggregator = (
-            StallAwareAggregator(round_id)
+            StallAwareAggregator(round_id,aggregation_hyper_params)
             if aggregation_strategy == AggregationStrategy.PER_SESSION
             else FedAvgAggregator()
         )
@@ -80,7 +84,7 @@ def default_aggregation_handler(
         if online:
             logger.debug(f"Using online aggregation")
             aggregator = (
-                StreamStallAwareAggregator(round_id)
+                StreamStallAwareAggregator(round_id,aggregation_hyper_params)
                 if aggregation_strategy == AggregationStrategy.PER_SESSION
                 else StreamFedAvgAggregator()
             )

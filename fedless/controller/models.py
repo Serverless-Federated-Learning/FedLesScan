@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict
+from typing import Optional, List
 
 import pydantic
 
@@ -7,25 +7,23 @@ from fedless.common.models import (
     FunctionInvocationConfig,
     Hyperparams,
     MongodbConnectionConfig,
+    AggregationHyperParams
 )
 
 
-class ServerFunctions(pydantic.BaseModel):
-    provider: Optional[str]
-    invoker: Optional[FunctionDeploymentConfig]
-    evaluator: FunctionInvocationConfig
-    aggregator: FunctionInvocationConfig
-
-
-class FedkeeperClientConfig(pydantic.BaseModel):
+class ClientFunctionConfig(pydantic.BaseModel):
     function: FunctionInvocationConfig
     hyperparams: Optional[Hyperparams]
     replicas: int = 1
 
 
-class FedkeeperClientsConfig(pydantic.BaseModel):
-    functions: List[FedkeeperClientConfig]
+class ClientFunctionConfigList(pydantic.BaseModel):
+    functions: List[ClientFunctionConfig]
     hyperparams: Optional[Hyperparams]
+    
+class AggregationFunctionConfig(pydantic.BaseModel): 
+    function: FunctionInvocationConfig
+    hyperparams: Optional[AggregationHyperParams]   
 
 
 class CognitoConfig(pydantic.BaseModel):
@@ -35,20 +33,15 @@ class CognitoConfig(pydantic.BaseModel):
     invoker_client_id: str
     invoker_client_secret: str
     required_scopes: List[str] = ["client-functions/invoke"]
-
-
-# todo remove
-# class ClusterConfig(pydantic.BaseModel):
-#     database: MongodbConnectionConfig
-#     clients: FedkeeperClientsConfig
-#     providers: Dict[str, FaaSProviderConfig]
-#     function: ServerFunctions
-#     cognito: Optional[CognitoConfig]
-
-
+class ServerFunctions(pydantic.BaseModel):
+    provider: Optional[str]
+    invoker: Optional[FunctionDeploymentConfig]
+    evaluator: FunctionInvocationConfig
+    aggregator: AggregationFunctionConfig
+    
 class ExperimentConfig(pydantic.BaseModel):
     cognito: Optional[CognitoConfig] = None
     database: MongodbConnectionConfig
     # cluster: OpenwhiskClusterConfig
     server: ServerFunctions
-    clients: FedkeeperClientsConfig
+    clients: ClientFunctionConfigList
