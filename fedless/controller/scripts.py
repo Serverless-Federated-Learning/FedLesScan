@@ -115,21 +115,6 @@ logger = logging.getLogger(__name__)
     default=False,
 )
 @click.option(
-    "--aggregate-online/--aggregate-offline",
-    help="use in.tum.de proxy",
-    default=False,
-)
-@click.option(
-    "--test-batch-size",
-    type=int,
-    default=10,
-)
-# @click.option(
-#     "--invocation-delay",
-#     type=float,
-#     default=None,
-# )
-@click.option(
     "--mock/--no-mock",
     help="use mocks",
     default=False,
@@ -157,14 +142,10 @@ def run(
     stragglers: int,
     timeout: float,
     rounds: int,
-    # separate_invokers: bool,
     max_accuracy: float,
     out: str,
     tum_proxy: bool,
     proxy_in_evaluator: bool,
-    aggregate_online: bool,
-    test_batch_size: int,
-    # invocation_delay: float,
     mock: bool,
     simulate_stragglers: float,
     mu: float,
@@ -220,17 +201,13 @@ def run(
         "session": session,
         "cognito": config.cognito,
         "clients": clients,
-        "evaluator_config": config.server.evaluator,
-        "aggregator_config": config.server.aggregator,
+        "evaluator_config": config.evaluator,
+        "aggregator_config": config.aggregator,
         "mongodb_config": config.database,
         "allowed_stragglers": stragglers,
         "client_timeout": timeout,
         "save_dir": log_dir,
-        "aggregator_params": {
-            "online": aggregate_online,
-            "test_batch_size": test_batch_size,
-            "aggregation_hyper_params":config.server.aggregator.hyperparams
-        },
+
         "global_test_data": (
             create_mnist_test_config(proxies=(proxies if proxy_in_evaluator else None))
             if dataset.lower() == "mnist"

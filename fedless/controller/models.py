@@ -23,7 +23,8 @@ class ClientFunctionConfigList(pydantic.BaseModel):
     
 class AggregationFunctionConfig(pydantic.BaseModel): 
     function: FunctionInvocationConfig
-    hyperparams: Optional[AggregationHyperParams]   
+    # configure aggregation hyper params has default values
+    hyperparams: AggregationHyperParams 
 
 
 class CognitoConfig(pydantic.BaseModel):
@@ -33,15 +34,18 @@ class CognitoConfig(pydantic.BaseModel):
     invoker_client_id: str
     invoker_client_secret: str
     required_scopes: List[str] = ["client-functions/invoke"]
-class ServerFunctions(pydantic.BaseModel):
-    provider: Optional[str]
-    invoker: Optional[FunctionDeploymentConfig]
-    evaluator: FunctionInvocationConfig
-    aggregator: AggregationFunctionConfig
+
+
+# class ServerFunctions(pydantic.BaseModel):
+#     provider: Optional[str]
+#     invoker: Optional[FunctionDeploymentConfig]
+#     evaluator: FunctionInvocationConfig
+#     aggregator: AggregationFunctionConfig
     
 class ExperimentConfig(pydantic.BaseModel):
     cognito: Optional[CognitoConfig] = None
     database: MongodbConnectionConfig
-    # cluster: OpenwhiskClusterConfig
-    server: ServerFunctions
+    # server: ServerFunctions
+    evaluator: FunctionInvocationConfig
+    aggregator: AggregationFunctionConfig
     clients: ClientFunctionConfigList

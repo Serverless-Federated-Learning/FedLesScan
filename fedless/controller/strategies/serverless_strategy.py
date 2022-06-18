@@ -27,7 +27,6 @@ from fedless.common.persistence.client_daos import ClientHistoryDao
 
 from fedless.common.models import (
     MongodbConnectionConfig,
-    FunctionDeploymentConfig,
     DatasetLoaderConfig,
     FunctionInvocationConfig,
     ClientConfig,
@@ -50,13 +49,12 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         clients: List,
         mongodb_config: MongodbConnectionConfig,
         evaluator_config: FunctionInvocationConfig,
-        aggregator_config: FunctionInvocationConfig,
+        aggregator_config: AggregationFunctionConfig,
         selection_strategy: ClientSelectionScheme,
         aggregation_strategy: AggregationStrategy,
         client_timeout: float = 300,
         allowed_stragglers: int = 0,
         global_test_data: Optional[DatasetLoaderConfig] = None,
-        aggregator_params: Optional[Dict] = None,
         session: Optional[str] = None,
         save_dir: Optional[Path] = None,
         proxies: Dict = None,
@@ -82,14 +80,11 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         self.allowed_stragglers = allowed_stragglers
 
         self.mongodb_config = mongodb_config
-        self.aggregator_params = aggregator_params or {}
         self.global_test_data = global_test_data
 
         self._aggregator: Optional[AggregationFunctionConfig] = aggregator_config
         self._evaluator: Optional[FunctionInvocationConfig] = evaluator_config
 
-        self.evaluator_config: FunctionDeploymentConfig = evaluator_config
-        self.aggregator_config: FunctionDeploymentConfig = aggregator_config
         self.client_timeout: float = client_timeout
         self.clients: List[ClientConfig] = clients
         self.save_dir = save_dir
@@ -138,7 +133,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
         )
 
     @property
-    def aggregator(self) -> FunctionInvocationConfig:
+    def aggregator(self) -> AggregationFunctionConfig:
         if not self._aggregator:
             raise ValueError()
         return self._aggregator
@@ -157,7 +152,7 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             database=self.mongodb_config,
             test_data=self.global_test_data,
             aggregation_strategy=self.aggregation_strategy,
-            **self.aggregator_params,
+            aggregation_hyper_params= self.aggregator.hyperparams,
         )
         aggregator = MockAggregator(params=params)
         result = aggregator.run_aggregator()
@@ -203,12 +198,12 @@ class ServerlessFlStrategy(FLStrategy, ABC):
             database=self.mongodb_config,
             test_data=self.global_test_data,
             aggregation_strategy=self.aggregation_strategy,
-            **self.aggregator_params,
+            **self.aggregator.hyperparams,
         )
         session = Session()
         # session.proxies.update(self.proxies)
         result = invoke_sync(
-            self.aggregator,
+            self.aggregator.function,
             data=params.dict(),
             session=retry_session(backoff_factor=1.0, retries=5, session=session),
         )

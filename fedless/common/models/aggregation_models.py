@@ -17,6 +17,8 @@ class AggregationStrategy(str, Enum):
 
 class AggregationHyperParams(BaseModel):
     tolerance: int = 0
+    aggregate_online: bool = False
+    test_batch_size: int = 10
 
 class AggregatorFunctionParams(BaseModel):
     session_id: str
@@ -25,11 +27,9 @@ class AggregatorFunctionParams(BaseModel):
     serializer: WeightsSerializerConfig = WeightsSerializerConfig(
         type="npz", params=NpzWeightsSerializerConfig(compressed=False)
     )
-    online: bool = False
     test_data: Optional[DatasetLoaderConfig]
-    test_batch_size: int = 512
+    aggregation_hyper_params: AggregationHyperParams
     aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND
-    aggregation_hyper_params: Optional[AggregationHyperParams]
 
 
 class AggregatorFunctionResult(BaseModel):

@@ -49,9 +49,7 @@ def default_aggregation_handler(
     round_id: int,
     database: MongodbConnectionConfig,
     serializer: WeightsSerializerConfig,
-    online: bool = False,
     test_data: Optional[DatasetLoaderConfig] = None,
-    test_batch_size: int = 512,
     delete_results_after_finish: bool = True,
     aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
     aggregation_hyper_params: AggregationHyperParams = None
@@ -81,7 +79,7 @@ def default_aggregation_handler(
         previous_dic, previous_results = aggregator.select_aggregation_candidates(
             mongo_client, session_id, round_id
         )
-        if online:
+        if aggregation_hyper_params.aggregate_online:
             logger.debug(f"Using online aggregation")
             aggregator = (
                 StreamStallAwareAggregator(round_id,aggregation_hyper_params)
@@ -110,7 +108,7 @@ def default_aggregation_handler(
             serialized_model: SerializedModel = model_dao.load(session_id=session_id)
             test_data = DatasetLoaderBuilder.from_config(test_data).load()
             cardinality = test_data.cardinality()
-            test_data = test_data.batch(test_batch_size)
+            test_data = test_data.batch(aggregation_hyper_params.test_batch_size)
             model: tf.keras.Model = tf.keras.models.model_from_json(
                 serialized_model.model_json
             )

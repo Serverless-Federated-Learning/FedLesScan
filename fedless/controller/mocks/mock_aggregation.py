@@ -13,9 +13,7 @@ class MockAggregator:
         self.round_id = params.round_id
         self.database = params.database
         self.serializer = params.serializer
-        self.online = params.online
         self.test_data = params.test_data
-        self.test_batch_size = params.test_batch_size
         self.delete_results_after_finish = delete_results_after_finish
         self.aggregation_strategy = params.aggregation_strategy
         self.aggregation_hyper_params = params.aggregation_hyper_params
@@ -26,9 +24,7 @@ class MockAggregator:
             self.round_id,
             self.database,
             self.serializer,
-            self.online,
             self.test_data,
-            self.test_batch_size,
             self.delete_results_after_finish,
             self.aggregation_strategy,
             self.aggregation_hyper_params
