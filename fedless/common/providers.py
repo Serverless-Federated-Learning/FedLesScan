@@ -83,7 +83,7 @@ def create_azure_user_error_response(
 
 
 def azure_handler(
-    caught_exceptions: Iterable[Exception],
+    caught_exceptions: tuple(Iterable[Exception]),
 ) -> Callable[[Callable], Callable]:
     """Azure function compatible decorator to parse input, catch certain exceptions and respond to them with 400 errors."""
 
@@ -107,7 +107,7 @@ def azure_handler(
 
 
 def lambda_proxy_handler(
-    caught_exceptions: Iterable[Exception],
+    caught_exceptions: tuple(Iterable[Exception]),
 ) -> Callable[[Callable], Callable]:
     """API Gateway's lambda proxy integration compatible
     decorator to parse input, catch certain exceptions and respond to them with 400 errors."""
@@ -130,7 +130,7 @@ def lambda_proxy_handler(
 
 
 def gcloud_http_error_handler(
-    caught_exceptions: Iterable[Exception],
+    caught_exceptions: tuple(Iterable[Exception]),
 ) -> Callable[
     [Callable[["flask.Request"], Union[pydantic.BaseModel, str]]],
     Callable[["flask.Request"], Dict],
@@ -154,7 +154,7 @@ def gcloud_http_error_handler(
 
 
 def openfaas_action_handler(
-    caught_exceptions: Iterable[Exception],
+    caught_exceptions: tuple(Iterable[Exception]),
 ) -> Callable[
     [Callable[["flask.Request"], Union[pydantic.BaseModel, str]]],
     Callable[["flask.Request"], Dict],
@@ -178,7 +178,7 @@ def openfaas_action_handler(
 
 
 def openwhisk_action_handler(
-    caught_exceptions: Iterable[Exception],
+    caught_exceptions: tuple(Iterable[Exception]),
 ) -> Callable[
     [Callable[[Dict], Union[pydantic.BaseModel, str]]],
     Callable[[Dict], Dict],
