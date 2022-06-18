@@ -1,21 +1,17 @@
 from pathlib import Path
-from typing import Iterable, Optional, Dict, List, Iterator
+from typing import Optional, Dict, List
 import numpy as np
 
 from fedless.datasets.dataset_loaders import (
-    DatasetFormatError,
     DatasetLoader,
-    DatasetNotLoadedError,
-    merge_datasets,
 )
 
-from typing import Union, Dict, Iterator, List, Optional, Tuple
+from typing import Union, Dict, List, Optional
 
-import re
 import tensorflow as tf
 from pydantic import BaseModel, validate_arguments, AnyHttpUrl
 
-from fedless.cache import cache
+from fedless.common.cache import cache
 
 from enum import Enum
 from pydantic import Field

@@ -4,12 +4,11 @@ import tensorflow as tf
 from _pytest.fixtures import fixture
 from tensorflow.python.data import Dataset
 
-from fedless.models import Hyperparams
-from fedless.serialization import Base64StringConverter, NpzWeightsSerializer
+from fedless.common.models import Hyperparams
+from fedless.common.serialization import Base64StringConverter, NpzWeightsSerializer
 from .stubs import (
     DatasetLoaderStub,
     ModelLoaderStub,
-    WeightsSerializerStub,
 )
 
 SAMPLES = 10

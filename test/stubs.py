@@ -4,7 +4,11 @@ import numpy as np
 import tensorflow as tf
 
 from fedless.data import DatasetLoader
-from fedless.serialization import ModelLoader, WeightsSerializer, StringSerializer
+from fedless.common.serialization import (
+    ModelLoader,
+    WeightsSerializer,
+    StringSerializer,
+)
 
 
 # noinspection PyMissingOrEmptyDocstring

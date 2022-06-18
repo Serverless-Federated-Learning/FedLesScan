@@ -2,12 +2,12 @@ import logging
 
 from pydantic import ValidationError
 
-from fedless.invocation import (
+from fedless.controller.invocation import (
     InvocationError,
     function_invoker_handler,
 )
-from fedless.providers import openwhisk_action_handler
-from fedless.models import InvokerParams
+from fedless.common.providers import openwhisk_action_handler
+from fedless.common.models import InvokerParams
 
 logging.basicConfig(level=logging.DEBUG)
 

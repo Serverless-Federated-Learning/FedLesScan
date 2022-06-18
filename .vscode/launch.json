@@ -13,21 +13,22 @@
             "name": "speech-exp",
             "type": "python",
             "request": "launch",
-            "module": "fedless.core.scripts",
+            "module": "fedless.controller.scripts",
             "console": "integratedTerminal",
             "args": [
                 "-d",
                 "speech",
                 "-s",
-                "fedless_mock",
+                // "fedlesscan",
+                "fedprox",
                 "-c",
                 "${workspaceFolder}/experiment/speech-demo.yaml",
                 "--clients",
-                "5",
+                "6",
                 "--clients-in-round",
-                "4",
+                "5",
                 "--stragglers",
-                "1",
+                "5",
                 "--max-accuracy",
                 "0.6",
                 "--out",
@@ -37,6 +38,11 @@
                 "--timeout",
                 "120",
                 // "--tum-proxy"
+                "--mock",
+                // "--simulate-stragglers",
+                // "0.3",
+                // "--mu",
+                // "0.1"
             ]
         },
         {
@@ -48,13 +54,13 @@
             "name": "femnist-exp",
             "type": "python",
             "request": "launch",
-            "module": "fedless.core.scripts",
+            "module": "fedless.controller.scripts",
             "console": "integratedTerminal",
             "args": [
                 "-d",
                 "femnist",
                 "-s",
-                "fedless_mock",
+                "fedlesscan",
                 "-c",
                 "${workspaceFolder}/experiment/femnist-demo.yaml",
                 "--clients",
@@ -72,6 +78,7 @@
                 "--timeout",
                 "120",
                 // "--tum-proxy"
+                "--mock"
             ]
         },
         {
@@ -83,13 +90,13 @@
             "name": "mnist-exp",
             "type": "python",
             "request": "launch",
-            "module": "fedless.core.scripts",
+            "module": "fedless.controller.scripts",
             "console": "integratedTerminal",
             "args": [
                 "-d",
                 "mnist",
                 "-s",
-                "fedless_mock",
+                "fedlesscan",
                 "-c",
                 "${workspaceFolder}/experiment/mnist-demo.yaml",
                 "--clients",
@@ -101,13 +108,13 @@
                 "--max-accuracy",
                 "0.6",
                 "--out",
-                "${workspaceFolder}/out/fedkeeper-mnist-demo",
+                "${workspaceFolder}/out/fedless-mnist-demo",
                 "--rounds",
-                "3",
+                "2",
                 "--timeout",
-                "900",
-                "--separate-invokers"
+                "800",
                 // "--tum-proxy"
+                "--mock"
             ]
         }
     ]

@@ -1,0 +1,41 @@
+database:
+  host: "cluster0.ucq8wni.mongodb.net/test"
+  port: 1
+  username: fedless
+  password: fedless
+
+evaluator:
+  params:
+    type: openfaas
+    url: http://138.246.234.228:31112/function/evaluator
+  type: openfaas
+
+aggregator:
+  hyperparams:
+    tolerance: 2
+  function:
+    params:
+      type: openfaas
+      url: http://138.246.234.228:31112/function/aggregator
+    type: openfaas
+
+clients:
+  hyperparams:
+    epochs: 1
+    batch_size: 32
+    optimizer:
+      class_name: "SGD"
+      config:
+        name: "SGD"
+        learning_rate: 0.8
+    metrics:
+      - accuracy
+  functions:
+    - function:
+        replicas: 10
+        params:
+          endpoint: https://138.246.235.81:31002/api/v1/web/guest/default/client-indep-5.json
+          self_signed_cert: true
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
+          type: openwhisk-web
+        type: openwhisk-web

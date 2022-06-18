@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError, BaseModel, validator
 
-from fedless.models import params_validate_types_match
+from fedless.common.models import params_validate_types_match
 
 
 class Model(BaseModel):

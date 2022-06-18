@@ -7,15 +7,12 @@ import requests
 import requests_mock
 from pydantic import ValidationError
 
-from fedless.data import (
-    LEAF,
-    DatasetNotLoadedError,
-    DatasetFormatError,
-    DatasetLoaderBuilder,
-)
-from fedless.cache import _clear_cache
-from fedless.models import DatasetLoaderConfig
-from fedless.datasets.leaf.dataset_loader import LEAFConfig, LeafDataset
+
+from fedless.common.cache import _clear_cache
+from fedless.common.models import DatasetLoaderConfig
+from fedless.datasets.benchmark_configurator import DatasetLoaderBuilder
+from fedless.datasets.dataset_loaders import DatasetFormatError, DatasetNotLoadedError
+from fedless.datasets.leaf.dataset_loader import LEAF, LEAFConfig, LeafDataset
 from .common import resource_folder_path, get_error_function
 
 LEAF_RES_PATH = resource_folder_path() / "leaf"

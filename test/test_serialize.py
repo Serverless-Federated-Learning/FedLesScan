@@ -12,7 +12,7 @@ from keras import layers
 from keras.utils.losses_utils import ReductionV2
 from pydantic import ValidationError
 
-from fedless.models import (
+from fedless.common.models import (
     WeightsSerializerConfig,
     H5FullModelSerializerConfig,
     SerializedParameters,
@@ -23,7 +23,7 @@ from fedless.models import (
     BinaryStringFormat,
     SerializedModel,
 )
-from fedless.serialization import (
+from fedless.common.serialization import (
     H5FullModelSerializer,
     WeightsSerializerBuilder,
     deserialize_parameters,
@@ -356,7 +356,7 @@ def test_model_loader_builder_returns_simple_loader(simple_model_loader_mock):
     simple_model_loader_mock.from_config.assert_called_with(config_mock.params)
 
 
-@patch("fedless.models.params_validate_types_match")
+@patch("fedless.common.models.params_validate_types_match")
 def test_model_loader_config_types_match(params_validate_types_match):
     payload_config = MagicMock(PayloadModelLoaderConfig)
     with pytest.raises(pydantic.ValidationError):

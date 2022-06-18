@@ -1,0 +1,67 @@
+database:
+  host: "cluster0.ucq8wni.mongodb.net/test"
+  port: 1
+  username: fedless
+  password: fedless
+
+evaluator:
+  params:
+    type: openfaas
+    url: http://138.246.234.228:31112/function/evaluator
+  type: openfaas
+
+aggregator:
+  hyperparams:
+    tolerance: 2
+  function:
+    params:
+      type: openfaas
+      url: http://138.246.234.228:31112/function/aggregator
+    type: openfaas
+
+clients:
+  hyperparams:
+    epochs: 5
+    batch_size: 5
+    optimizer:
+      class_name: "Adam"
+      config:
+        name: "Adam"
+        learning_rate: 0.001
+    metrics:
+      - accuracy
+    # fedprox:
+    #   mu: 0.2
+  functions:
+    - function:
+        replicas: 5
+        params:
+          endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-1.json
+          self_signed_cert: true
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        replicas: 5
+        params:
+          endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-2.json
+          self_signed_cert: true
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        replicas: 5
+        params:
+          endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-3.json
+          self_signed_cert: true
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
+          type: openwhisk-web
+        type: openwhisk-web
+    - function:
+        replicas: 5
+        params:
+          endpoint: https://138.246.235.81:31001/api/v1/web/guest/default/client-indep-4.json
+          self_signed_cert: true
+          token: kM51WYtVNnbALwHGhcfkmIJ05WUIowDgnc+mfnFf
+          type: openwhisk-web
+        type: openwhisk-web

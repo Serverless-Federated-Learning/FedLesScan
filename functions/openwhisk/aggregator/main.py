@@ -2,9 +2,9 @@ import logging
 
 from pydantic import ValidationError
 
-from fedless.aggregation import default_aggregation_handler, AggregationError
-from fedless.providers import openwhisk_action_handler
-from fedless.models import AggregatorFunctionParams
+from fedless.aggregator.aggregation import default_aggregation_handler, AggregationError
+from fedless.common.providers import openwhisk_action_handler
+from fedless.common.models import AggregatorFunctionParams
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -18,8 +18,7 @@ def main(request):
         round_id=config.round_id,
         database=config.database,
         serializer=config.serializer,
-        online=config.online,
         test_data=config.test_data,
-        test_batch_size=config.test_batch_size,
-        aggregation_strategy=config.aggregation_strategy
+        aggregation_strategy=config.aggregation_strategy,
+        aggregation_hyper_params= config.aggregation_hyper_params
     )

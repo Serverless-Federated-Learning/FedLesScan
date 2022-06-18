@@ -19,7 +19,7 @@ from fedless.datasets.fedscale.google_speech.model import create_speech_cnn
 from fedless.datasets.leaf.model import create_femnist_cnn, create_shakespeare_lstm
 from fedless.datasets.mnist.helpers import create_mnist_train_data_loader_configs
 from fedless.datasets.mnist.model import create_mnist_cnn
-from fedless.models import (
+from fedless.common.models import (
     BinaryStringFormat,
     DatasetLoaderConfig,
     MongodbConnectionConfig,
@@ -27,8 +27,8 @@ from fedless.models import (
     SerializedParameters,
     WeightsSerializerConfig,
 )
-from fedless.persistence.client_daos import ModelDao, ParameterDao
-from fedless.serialization import (
+from fedless.common.persistence.client_daos import ModelDao, ParameterDao
+from fedless.common.serialization import (
     Base64StringConverter,
     NpzWeightsSerializer,
     serialize_model,
@@ -93,17 +93,23 @@ def create_mnist_test_config(proxies) -> DatasetLoaderConfig:
     )
 
 
+# returns the configs and the number of clients available for testing
 # noinspection PydanticTypeChecker,PyTypeChecker
 def create_data_configs(
     dataset: str, clients: int, proxies: Optional[Dict] = None
-) -> List[Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]]:
+) -> Tuple[
+    List[Union[DatasetLoaderConfig, Tuple[DatasetLoaderConfig, DatasetLoaderConfig]]],
+    int,
+]:
     dataset = dataset.lower()
     if dataset == "mnist":
-        return list(
+        mn_configs = list(
             create_mnist_train_data_loader_configs(
                 n_devices=clients, n_shards=600, proxies=proxies
             )
         )
+        return mn_configs, len(mn_configs)
+
     elif dataset in ["femnist", "shakespeare"]:
         configs = []
         for client_idx in range(clients):
@@ -124,7 +130,7 @@ def create_data_configs(
                 ),
             )
             configs.append((train, test))
-        return configs
+        return configs, len(configs)
     elif dataset == "speech":
         configs = []
         num_test_clients = 216
@@ -133,7 +139,7 @@ def create_data_configs(
                 type="speech",
                 params=FedScaleConfig(
                     dataset=dataset,
-                    location=f"{FILE_SERVER}/datasets/google_speech/npz/train/client_{client_idx}.npz",
+                    location=f"{FILE_SERVER}/datasets/google_speech/npz_570/train/client_{client_idx}.npz",
                 ),
             )
             # if number of test clients is smaller tha number of clients just reloop the assignment
@@ -145,7 +151,7 @@ def create_data_configs(
                 ),
             )
             configs.append((train, test))
-        return configs
+        return configs, min(len(configs), num_test_clients)
     else:
         raise NotImplementedError(f"Dataset {dataset} not supported")
 

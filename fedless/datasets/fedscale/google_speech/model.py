@@ -1,7 +1,7 @@
 from tensorflow.keras import layers
 from tensorflow.keras import models, optimizers
 
-
+## todo remove
 def create_cnn1(input_shape, num_classes):
     norm_layer = layers.Normalization()
     # # Fit the state of the layer to the spectrograms

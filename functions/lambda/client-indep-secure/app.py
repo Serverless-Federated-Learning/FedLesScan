@@ -6,8 +6,8 @@ from fedless.client import (
     fedless_mongodb_handler,
     ClientError,
 )
-from fedless.models import InvokerParams
-from fedless.providers import lambda_proxy_handler
+from fedless.common.models import InvokerParams
+from fedless.common.providers import lambda_proxy_handler
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -28,4 +28,5 @@ def handler(event, context):
         client_id=config.client_id,
         database=config.database,
         evaluate_only=config.evaluate_only,
+        invocation_delay=config.invocation_delay,
     )

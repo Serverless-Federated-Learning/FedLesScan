@@ -1,16 +1,15 @@
-from typing import Iterator, Optional, Dict
+from typing import Optional, Dict
 
 import numpy as np
-from tensorflow import keras
 from fedless.datasets.dataset_loaders import DatasetLoader, DatasetNotLoadedError
 import tensorflow as tf
-from typing import Dict, Iterator, List, Optional
+from typing import Dict, List, Optional
 
 
-import requests
-import tempfile
-import os
-from fedless.cache import cache
+# import requests
+# import tempfile
+# import os
+from fedless.common.cache import cache
 
 from pydantic import BaseModel, Field
 
@@ -22,9 +21,7 @@ class MNISTConfig(BaseModel):
     indices: List[int] = None
     split: str = "train"
     proxies: Optional[Dict] = None
-    location: str = (
-        "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
-    )
+    location: str = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
 
 
 class MNIST(DatasetLoader):
@@ -42,15 +39,19 @@ class MNIST(DatasetLoader):
 
     @cache
     def load(self) -> tf.data.Dataset:
-        response = requests.get(
-            self.location,
-            proxies=self.proxies,
+        # response = requests.get(
+        #     self.location,
+        #     proxies=self.proxies,
+        # )
+        # TODO remove for deploy
+        # fp, path = tempfile.mkstemp(prefix="mnist",dir="/home/ubuntu/mnist_temp")
+        # with os.fdopen(fp, "wb") as f:
+        #     f.write(response.content)
+        tx_file_path = tf.keras.utils.get_file(
+            cache_subdir="data", origin=self.location
         )
-        fp, path = tempfile.mkstemp()
-        with os.fdopen(fp, "wb") as f:
-            f.write(response.content)
 
-        with np.load(path, allow_pickle=True) as f:
+        with np.load(tx_file_path, allow_pickle=True) as f:
             x_train, y_train = f["x_train"], f["y_train"]
             x_test, y_test = f["x_test"], f["y_test"]
 
