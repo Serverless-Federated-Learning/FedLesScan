@@ -1,3 +1,4 @@
+This repository has been archived. The latest version of FedLess can be found [here](https://github.com/Serverless-Federated-Learning/FedLess).
 
 FedLess
 ================================
