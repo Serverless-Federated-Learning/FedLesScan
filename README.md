@@ -1,5 +1,3 @@
-** Disclamer
-the code in this project is based on the work done by Andreas  in developing FedLess <https://github.com/andreas-grafberger/thesis-code>
 
 FedLess
 ================================
@@ -168,5 +166,18 @@ Options:
 -  --mu FLOAT                      param for fedprox training
   --help                          Show this message and exit.
 
-
+## Citation.
+If you use FedLesScan in your work, please cite our paper:
+```
+@INPROCEEDINGS{fedlesscan,
+  author={Elzohairy, Mohamed and Chadha, Mohak and Jindal, Anshul and Grafberger, Andreas and Gu, Jianfeng and Gerndt, Michael and Abboud, Osama},
+  booktitle={2022 IEEE International Conference on Big Data (Big Data)}, 
+  title={FedLesScan: Mitigating Stragglers in Serverless Federated Learning}, 
+  year={2022},
+  volume={},
+  number={},
+  pages={1230-1237},
+  doi={10.1109/BigData55660.2022.10021037}
+}
+```
 
